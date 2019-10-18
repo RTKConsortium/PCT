@@ -83,6 +83,7 @@ int main(int argc, char * argv[])
   projection->SetMostLikelyPathType( args_info.mlptype_arg );
   projection->SetIonizationPotential( args_info.ionpot_arg * CLHEP::eV );
   projection->SetDisableRotation( args_info.norotation_flag );
+  projection->SetWeightsCF( args_info.weightsCF_flag );
 
   // Geometry
   if(args_info.verbose_flag)

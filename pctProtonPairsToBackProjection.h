@@ -29,7 +29,7 @@ public:
   typedef itk::Image<ProtonPairsPixelType,2>           ProtonPairsImageType;
   typedef ProtonPairsImageType::Pointer                ProtonPairsImagePointer;
 
-  typedef typename itk::Image< unsigned int,
+  typedef typename itk::Image< double,
                                TInputImage::ImageDimension> CountImageType;
   typedef typename CountImageType::Pointer                  CountImagePointer;
 
@@ -90,6 +90,11 @@ public:
   itkSetMacro(DisableRotation, bool);
   itkBooleanMacro(DisableRotation);
 
+  /** Get / Set the boolean to use Collins-Fekete binning. Default is off. */
+  itkGetMacro(WeightsCF, bool);
+  itkSetMacro(WeightsCF, bool);
+  itkBooleanMacro(WeightsCF);
+
 protected:
   ProtonPairsToBackProjection();
   virtual ~ProtonPairsToBackProjection() {}
@@ -133,6 +138,9 @@ private:
   bool m_DisableRotation = false;
 
   std::mutex m_Mutex;
+
+  /** Use binning as in Collins-Fekete */
+  bool m_WeightsCF;
 };
 
 } // end namespace pct

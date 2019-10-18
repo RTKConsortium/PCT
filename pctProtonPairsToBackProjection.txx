@@ -96,7 +96,7 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
         const typename OutputImageType::SpacingType imgSpacing = this->GetInput()->GetSpacing();
 
         typename OutputImageType::PixelType *imgData = this->GetOutput()->GetBufferPointer();
-        unsigned int *imgCountData = m_Counts->GetBufferPointer();
+        double *imgCountData = m_Counts->GetBufferPointer();
         itk::Vector<float, 3> imgSpacingInv;
         double minSpacing = imgSpacing[0];
         for(unsigned int i=0; i<3; i++)
@@ -179,6 +179,14 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
             value = m_ConvFunc->GetValue(eOut, eIn); // convert to WEPL
           ++it;
 
+          VectorType nucInfo(0.);
+
+          if(it.GetIndex()[0] != 0)
+            {
+            nucInfo = it.Get();
+            ++it;
+            }
+
           // Move straight to entrance and exit shapes
           VectorType pSIn = pIn;
           VectorType pSOut = pOut;
@@ -210,6 +218,9 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
 
           // Init MLP before mm to voxel conversion
           mlp->Init(pSIn, pSOut, dIn, dOut);
+
+          int totalLength = 0.;
+          std::vector<typename OutputImageType::OffsetValueType> offsets;
 
           for(unsigned int k=0; k<zmm.size(); k++)
             {
@@ -288,10 +299,33 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
                idx[1]>=0 && idx[1]<(int)imgSize[1] &&
                idx[2]>=0 && idx[2]<(int)imgSize[2])
               {
-              typename OutputImageType::OffsetValueType offset = this->GetOutput()->ComputeOffset(idx);
+              if(m_WeightsCF)
+                {
+                idx[2] = 0;
+                offsets.push_back(this->GetOutput()->ComputeOffset(idx));
+                totalLength++;
+                }
+              else
+                {
+                typename OutputImageType::OffsetValueType offset = this->GetOutput()->ComputeOffset(idx);
+                m_Mutex.lock();
+                imgData[ offset ] += value;
+                imgCountData[ offset ]++;
+                m_Mutex.unlock();
+                }
+              }
+            }
+          if(m_WeightsCF)
+            {
+            std::vector<typename OutputImageType::OffsetValueType> channels(offsets);
+            std::sort( channels.begin(), channels.end() );
+            channels.erase( std::unique( channels.begin(), channels.end() ), channels.end() );
+            for(unsigned int k=0; k<channels.size(); k++)
+              {
+              double weight =  (double) std::count(offsets.begin(),offsets.end(),channels[k])/totalLength;
               m_Mutex.lock();
-              imgData[ offset ] += value;
-              imgCountData[ offset ]++;
+              imgData[ channels[k] ] += value * weight * weight;
+              imgCountData[ channels[k] ] += weight * weight;
               m_Mutex.unlock();
               }
             }
