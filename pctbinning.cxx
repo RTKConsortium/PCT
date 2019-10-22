@@ -44,6 +44,7 @@ int main(int argc, char * argv[])
   projection->SetIonizationPotential( args_info.ionpot_arg * CLHEP::eV );
   projection->SetRobust( args_info.robust_flag );
   projection->SetComputeScattering( args_info.scatwepl_given );
+  projection->SetWeightsCF( args_info.weightsCF_flag );
 
   if(args_info.quadricIn_given)
     {

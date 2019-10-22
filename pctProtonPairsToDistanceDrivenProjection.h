@@ -26,7 +26,7 @@ public:
   typedef itk::Image<ProtonPairsPixelType,2>                ProtonPairsImageType;
   typedef ProtonPairsImageType::Pointer                     ProtonPairsImagePointer;
 
-  typedef itk::Image<unsigned int, 3>                       CountImageType;
+  typedef itk::Image<double, 3>                       CountImageType;
   typedef CountImageType::Pointer                           CountImagePointer;
 
   typedef itk::Image<float, 3>                              AngleImageType;
@@ -84,6 +84,11 @@ public:
   itkGetConstMacro(ComputeScattering, bool);
   itkBooleanMacro(ComputeScattering);
 
+  /** Get / Set the boolean to use Collins-Fekete binning. Default is off. */
+  itkGetMacro(WeightsCF, bool);
+  itkSetMacro(WeightsCF, bool);
+  itkBooleanMacro(WeightsCF);
+
 protected:
   ProtonPairsToDistanceDrivenProjection();
   virtual ~ProtonPairsToDistanceDrivenProjection() {}
@@ -135,6 +140,9 @@ private:
   ProtonPairsImageType::Pointer m_ProtonPairs;
   bool                          m_Robust;
   bool                          m_ComputeScattering;
+
+  /** Use binning as in Collins-Fekete */
+  bool m_WeightsCF;
 };
 
 } // end namespace pct

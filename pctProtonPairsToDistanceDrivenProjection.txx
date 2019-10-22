@@ -107,7 +107,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
   const unsigned long npixelsPerSlice = imgSize[0] * imgSize[1];
 
   typename OutputImageType::PixelType *imgData = m_Outputs[threadId]->GetBufferPointer();
-  unsigned int *imgCountData = m_Counts[threadId]->GetBufferPointer();
+  double *imgCountData = m_Counts[threadId]->GetBufferPointer();
   float *imgAngleData = NULL, *imgAngleSqData = NULL;
   if(m_ComputeScattering && !m_Robust)
     {
@@ -230,6 +230,9 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
     // Init MLP before mm to voxel conversion
     mlp->Init(pSIn, pSOut, dIn, dOut);
 
+    int totalLength = 0.;
+    std::vector<typename OutputImageType::OffsetValueType> offsets;
+
     for(unsigned int k=0; k<imgSize[2]; k++)
       {
       double xx, yy;
@@ -261,9 +264,19 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
       if(i>=0 && i<(int)imgSize[0] &&
          j>=0 && j<(int)imgSize[1])
         {
+        //const unsigned long idx;
         const unsigned long idx = i+j*imgSize[0]+k*npixelsPerSlice;
-        imgData[ idx ] += value;
-        imgCountData[ idx ]++;
+        if(m_WeightsCF)
+          {
+          offsets.push_back(i+j*imgSize[0]);
+          totalLength++;
+          }
+        else
+         {
+          imgData[ idx ] += value;
+          imgCountData[ idx ]++;
+         }
+
         if(m_ComputeScattering)
           {
           if(m_Robust)
@@ -282,6 +295,19 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
             }
           }
         }
+        if(m_WeightsCF)
+          {
+          std::vector<typename OutputImageType::OffsetValueType> channels(offsets);
+          std::sort( channels.begin(), channels.end() );
+          channels.erase( std::unique( channels.begin(), channels.end() ), channels.end() );
+          for(unsigned int k=0; k<channels.size(); k++)
+            {
+            double weight =  (double) std::count(offsets.begin(),offsets.end(),channels[k])/totalLength;
+            imgData[ channels[k] ] += value * weight * weight;
+            imgCountData[ channels[k] ] += weight * weight;
+            }
+          }
+
       }
   }
 
