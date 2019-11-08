@@ -295,19 +295,18 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
             }
           }
         }
-        if(m_WeightsCF)
-          {
-          std::vector<typename OutputImageType::OffsetValueType> channels(offsets);
-          std::sort( channels.begin(), channels.end() );
-          channels.erase( std::unique( channels.begin(), channels.end() ), channels.end() );
-          for(unsigned int k=0; k<channels.size(); k++)
-            {
-            double weight =  (double) std::count(offsets.begin(),offsets.end(),channels[k])/totalLength;
-            imgData[ channels[k] ] += value * weight * weight;
-            imgCountData[ channels[k] ] += weight * weight;
-            }
-          }
-
+      }
+    if(m_WeightsCF)
+      {
+      std::vector<typename OutputImageType::OffsetValueType> channels(offsets);
+      std::sort( channels.begin(), channels.end() );
+      channels.erase( std::unique( channels.begin(), channels.end() ), channels.end() );
+      for(unsigned int k=0; k<channels.size(); k++)
+        {
+        double weight =  (double) std::count(offsets.begin(),offsets.end(),channels[k])/totalLength;
+        imgData[ channels[k] ] += value * weight * weight;
+        imgCountData[ channels[k] ] += weight * weight;
+        }
       }
   }
 
