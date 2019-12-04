@@ -120,9 +120,9 @@ void WritePairs(const std::vector< std::pair<ParticleData,ParticleData> > &pairs
     ++it;
     if(size[0] == 6)
       {
-      eet[0] = particlesInfo[i].creatorProcess;
-      eet[1] = particlesInfo[i].nuclearProcess;
-      eet[2] = particlesInfo[i].order;
+      nuclearinfo[0] = particlesInfo[i].creatorProcess;
+      nuclearinfo[1] = particlesInfo[i].nuclearProcess;
+      nuclearinfo[2] = particlesInfo[i].order;
 
       it.Set( nuclearinfo );
       ++it;
