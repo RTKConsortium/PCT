@@ -230,7 +230,6 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
     // Init MLP before mm to voxel conversion
     mlp->Init(pSIn, pSOut, dIn, dOut);
 
-    int totalLength = 0.;
     std::vector<typename OutputImageType::OffsetValueType> offsets;
 
     for(unsigned int k=0; k<imgSize[2]; k++)
@@ -269,7 +268,6 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
         if(m_WeightsCF)
           {
           offsets.push_back(i+j*imgSize[0]);
-          totalLength++;
           }
         else
          {
@@ -303,7 +301,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
       channels.erase( std::unique( channels.begin(), channels.end() ), channels.end() );
       for(unsigned int k=0; k<channels.size(); k++)
         {
-        double weight =  (double) std::count(offsets.begin(),offsets.end(),channels[k])/totalLength;
+        double weight =  (double) std::count(offsets.begin(),offsets.end(),channels[k])/imgSize[2];
         imgData[ channels[k] ] += value * weight * weight;
         imgCountData[ channels[k] ] += weight * weight;
         }
