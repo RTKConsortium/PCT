@@ -62,15 +62,16 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
       [this, iProj](const ProtonPairsImageType::RegionType & outputRegionForThread)
         {
         // Create MLP depending on type
-        pct::MostLikelyPathFunction<double>::Pointer mlp;
-        if(m_MostLikelyPathType == "polynomial")
-          mlp = pct::ThirdOrderPolynomialMLPFunction<double>::New();
-        else if (m_MostLikelyPathType == "schulte")
-          mlp = pct::SchulteMLPFunction::New();
-        else
-          {
-          itkGenericExceptionMacro("MLP must either be schulte or polynomial, not [" << m_MostLikelyPathType << ']');
-          }
+        //pct::MostLikelyPathFunction<double>::Pointer mlp;
+	pct::SchulteMLPFunction::Pointer mlp = pct::SchulteMLPFunction::New();
+        //if(m_MostLikelyPathType == "polynomial")
+        //  mlp = pct::ThirdOrderPolynomialMLPFunction<double>::New();
+        //else if (m_MostLikelyPathType == "schulte")
+        //  mlp = pct::SchulteMLPFunction::New();
+        //else
+        //  {
+        //  itkGenericExceptionMacro("MLP must either be schulte or polynomial, not [" << m_MostLikelyPathType << ']');
+        //  }
 
         // Get geometry information. We need the rotation matrix alone to rotate the direction
         // and the same matrix combined with mm (physical point) to voxel conversion for the volume.
@@ -203,6 +204,13 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
               if(pSOut[2]<pIn[2] || pSOut[2]>pOut[2])
                 pSOut = pOut + dOut * farDistOut;
               }
+            else
+              {
+            //  pSIn = pOut;
+            //  pSOut = pIn;
+              pSIn[2] = 0;
+              pSOut[2] = 0;
+              }
             }
 
           // Normalize direction with respect to z
@@ -215,15 +223,18 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
 
           VectorType dCurr = dIn;
           VectorType pCurr(0.);
+          itk::Matrix<double, 2, 2> mlp_error;
+          mlp_error.Fill(0);
 
           // Init MLP before mm to voxel conversion
           mlp->Init(pSIn, pSOut, dIn, dOut);
-
+          mlp->SetTrackerInfo(200,200,10,0.15,0.005);
           int totalLength = 0.;
           std::vector<typename OutputImageType::OffsetValueType> offsets;
 
           for(unsigned int k=0; k<zmm.size(); k++)
             {
+            double std_error=0;
             pCurr[2] = zmm[k];
             if(pCurr[2]<=pSIn[2]) //before entrance
               {
@@ -231,6 +242,10 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
               pCurr[0] = pIn[0]+z*dIn[0];
               pCurr[1] = pIn[1]+z*dIn[1];
               dCurr = dIn;
+              //mlp->EvaluateError(zmm[k],mlp_error);
+              mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error);
+              std_error=mlp_error(0,0); ///2 std::sqrt(
+              //std_error=0;
               }
             else if(pCurr[2]>=pSOut[2]) //after exit
               {
@@ -238,6 +253,10 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
               pCurr[0] = pSOut[0]+z*dOut[0];
               pCurr[1] = pSOut[1]+z*dOut[1];
               dCurr = dOut;
+              //mlp->EvaluateError(zmm[k],mlp_error);
+              mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error);
+              std_error=mlp_error(0,0); ///2 std::sqrt(
+              //std_error=0;
               }
             else //MLP
               {
@@ -247,6 +266,10 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
               mlp->Evaluate(zmm[k], pCurr[0], pCurr[1]);
               dCurr[0] = pCurr[0] - dCurr[0];
               dCurr[1] = pCurr[1] - dCurr[1];
+              //mlp->EvaluateError(zmm[k],mlp_error);
+              mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error);
+              std_error=mlp_error(0,0); ///2 std::sqrt(
+              //std_error=mlp_error(1,1); ///2 std::sqrt(
               }
             dCurr[2] *= -1.;
             pCurr[2] *= -1.;
@@ -304,6 +327,14 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
                 idx[2] = 0;
                 offsets.push_back(this->GetOutput()->ComputeOffset(idx));
                 totalLength++;
+                }
+              else if(m_SigmaMap && std_error==std_error)
+                {
+                typename OutputImageType::OffsetValueType offset = this->GetOutput()->ComputeOffset(idx);
+                m_Mutex.lock();
+                imgData[ offset ] += std_error;
+                imgCountData[ offset ]++;
+                m_Mutex.unlock();
                 }
               else
                 {

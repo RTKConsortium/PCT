@@ -95,6 +95,11 @@ public:
   itkSetMacro(WeightsCF, bool);
   itkBooleanMacro(WeightsCF);
 
+  /** Get / Set the boolean to output MLP uncertainty map. Default is off. */
+  itkGetMacro(SigmaMap, bool);
+  itkSetMacro(SigmaMap, bool);
+  itkBooleanMacro(SigmaMap);
+
 protected:
   ProtonPairsToBackProjection();
   virtual ~ProtonPairsToBackProjection() {}
@@ -141,6 +146,9 @@ private:
 
   /** Use binning as in Collins-Fekete */
   bool m_WeightsCF;
+
+  /** Output sigma map */
+  bool m_SigmaMap;
 };
 
 } // end namespace pct

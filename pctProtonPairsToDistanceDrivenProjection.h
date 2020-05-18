@@ -68,6 +68,9 @@ public:
  /** Get/Set the angle of proton pairs per pixel. */
   itkGetMacro(Angle, AngleImagePointer);
 
+ /** Get/Set the MLP uncertainty of proton pairs per pixel. */
+  itkGetMacro(Sigma, OutputImagePointer);
+
   /** Get/Set the ionization potential used in the Bethe-Bloch equation. */
   itkGetMacro(IonizationPotential, double);
   itkSetMacro(IonizationPotential, double);
@@ -88,6 +91,11 @@ public:
   itkGetMacro(WeightsCF, bool);
   itkSetMacro(WeightsCF, bool);
   itkBooleanMacro(WeightsCF);
+
+  /** Get / Set the boolean to output MLP uncertainty map. Default is off. */
+  itkGetMacro(SigmaMap, bool);
+  itkSetMacro(SigmaMap, bool);
+  itkBooleanMacro(SigmaMap);
 
 protected:
   ProtonPairsToDistanceDrivenProjection();
@@ -126,6 +134,8 @@ private:
   std::vector<OutputImagePointer> m_Outputs;
   std::vector<OutputImagePointer> m_AngleOutputs;
   std::vector<OutputImagePointer> m_AngleSqOutputs;
+  std::vector<OutputImagePointer> m_Sigmas;
+  OutputImagePointer m_Sigma;
 
   /** The two quadric functions defining the object support. */
   RQIType::Pointer m_QuadricIn;
@@ -143,6 +153,9 @@ private:
 
   /** Use binning as in Collins-Fekete */
   bool m_WeightsCF;
+
+  /** Output sigma map */
+  bool m_SigmaMap;
 };
 
 } // end namespace pct

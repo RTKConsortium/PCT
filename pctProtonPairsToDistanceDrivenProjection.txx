@@ -29,6 +29,10 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
     m_AnglesVectors.resize( this->GetInput()->GetLargestPossibleRegion().GetNumberOfPixels() );
     m_AnglesSq.resize( this->GetNumberOfWorkUnits() );
     }
+  if(m_SigmaMap)
+    {
+    m_Sigmas.resize( this->GetNumberOfWorkUnits() );
+    }
 
   if(m_QuadricOut.GetPointer()==NULL)
     m_QuadricOut = m_QuadricIn;
@@ -48,15 +52,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
 ::ThreadedGenerateData( const OutputImageRegionType& itkNotUsed(outputRegionForThread), rtk::ThreadIdType threadId)
 {
   // Create MLP depending on type
-  pct::MostLikelyPathFunction<double>::Pointer mlp;
-  if(m_MostLikelyPathType == "polynomial")
-    mlp = pct::ThirdOrderPolynomialMLPFunction<double>::New();
-  else if (m_MostLikelyPathType == "schulte")
-    mlp = pct::SchulteMLPFunction::New();
-  else
-    {
-    itkGenericExceptionMacro("MLP must either be schulte or polynomial, not [" << m_MostLikelyPathType << ']');
-    }
+  pct::SchulteMLPFunction::Pointer mlp = pct::SchulteMLPFunction::New();
 
   // Create thread image and corresponding stack to count events
   m_Counts[threadId] = CountImageType::New();
@@ -77,6 +73,14 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
     m_AnglesSq[threadId]->FillBuffer(0);
     }
 
+  if( m_SigmaMap )
+    {
+    m_Sigmas[threadId] = OutputImageType::New();
+    m_Sigmas[threadId]->SetRegions(this->GetInput()->GetLargestPossibleRegion());
+    m_Sigmas[threadId]->Allocate();
+    m_Sigmas[threadId]->FillBuffer(0);
+    }
+
   if(threadId==0)
     {
     m_Outputs[0] = this->GetOutput();
@@ -85,6 +89,10 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
       {
       m_Angle = m_Angles[0];
       m_AngleSq = m_AnglesSq[0];
+      }
+    if(m_SigmaMap)
+      {
+      m_Sigma = m_Sigmas[0];
       }
     }
   else
@@ -109,10 +117,15 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
   typename OutputImageType::PixelType *imgData = m_Outputs[threadId]->GetBufferPointer();
   double *imgCountData = m_Counts[threadId]->GetBufferPointer();
   float *imgAngleData = NULL, *imgAngleSqData = NULL;
+  float *imgSigmaData = NULL;
   if(m_ComputeScattering && !m_Robust)
     {
     imgAngleData = m_Angles[threadId]->GetBufferPointer();
     imgAngleSqData = m_AnglesSq[threadId]->GetBufferPointer();
+    }
+  if(m_SigmaMap)
+    {
+    imgSigmaData = m_Sigmas[threadId]->GetBufferPointer();
     }
 
   itk::Vector<float, 3> imgSpacingInv;
@@ -217,6 +230,12 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
         if(pSOut[2]<pIn[2] || pSOut[2]>pOut[2])
           pSOut = pOut + dOut * farDistOut;
         }
+      else
+        {
+        pSOut = pOut - dOut * pOut[2];
+	pSIn[2] = 0;
+        pSOut[2] = 0;
+        }
       }
 
     // Normalize direction with respect to z
@@ -227,13 +246,17 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
     dOut[1] /= dOut[2];
     //dOut[2] = 1.; SR: implicit in the following
 
+    itk::Matrix<double, 2, 2> mlp_error;
+    mlp_error.Fill(0);
     // Init MLP before mm to voxel conversion
     mlp->Init(pSIn, pSOut, dIn, dOut);
-
+    if(m_SigmaMap)
+      mlp->SetTrackerInfo(200,200,10,0.15,0.005);
     std::vector<typename OutputImageType::OffsetValueType> offsets;
 
     for(unsigned int k=0; k<imgSize[2]; k++)
       {
+      double std_error = 0;
       double xx, yy;
       const double dk = zmm[k];
       if(dk<=pSIn[2]) //before entrance
@@ -251,6 +274,11 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
       else //MLP
         {
         mlp->Evaluate(zmm[k], xx, yy);
+        }
+      if(m_SigmaMap)
+        {
+        mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error);
+        std_error=mlp_error(0,0); 
         }
 
       // Source at (0,0,args_info.source_arg), mag then to voxel
@@ -274,6 +302,11 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
           imgData[ idx ] += value;
           imgCountData[ idx ]++;
          }
+
+        if(m_SigmaMap && std_error==std_error)
+          {
+          imgSigmaData[ idx ] += std_error;
+          }
 
         if(m_ComputeScattering)
           {
@@ -367,6 +400,42 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
     ++itCOut;
     }
 
+  if(m_SigmaMap)
+    {
+    ImageIteratorType itSigmaOut(m_Sigmas[0], m_Outputs[0]->GetLargestPossibleRegion());
+
+    // Merge the projection computed in each thread to the first one
+    for(unsigned int i=1; i<this->GetNumberOfWorkUnits(); i++)
+      {
+      if(m_Outputs[i].GetPointer() == NULL)
+        continue;
+      ImageIteratorType itSigmaOutThread(m_Sigmas[i], m_Outputs[i]->GetLargestPossibleRegion());
+
+      while(!itSigmaOut.IsAtEnd())
+	{
+	itSigmaOut.Set(itSigmaOut.Get()+itSigmaOutThread.Get());
+	++itSigmaOutThread;
+	++itSigmaOut;
+	}
+
+      itSigmaOut.GoToBegin();
+      }
+
+    // Set count image information
+    m_Sigma->SetSpacing( this->GetOutput()->GetSpacing() );
+    m_Sigma->SetOrigin( this->GetOutput()->GetOrigin() );
+
+    itCOut.GoToBegin();
+    // Normalize variance with proton count (average)
+    while(!itCOut.IsAtEnd())
+      {
+      if(itCOut.Get())
+      itSigmaOut.Set(itSigmaOut.Get()/itCOut.Get());
+      ++itSigmaOut;
+      ++itCOut;
+      }
+    }
+
   if(m_ComputeScattering)
     {
     typedef itk::ImageRegionIterator<AngleImageType> ImageAngleIteratorType;
@@ -450,6 +519,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
   m_Angles.resize( 0 );
   m_AnglesSq.resize( 0 );
   m_AnglesVectors.resize( 0 );
+  m_Sigmas.resize( 0 );
 }
 
 }

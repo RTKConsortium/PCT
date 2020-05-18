@@ -45,6 +45,7 @@ int main(int argc, char * argv[])
   projection->SetRobust( args_info.robust_flag );
   projection->SetComputeScattering( args_info.scatwepl_given );
   projection->SetWeightsCF( args_info.weightsCF_flag );
+  projection->SetSigmaMap( args_info.SigmaMap_given );
 
   if(args_info.quadricIn_given)
     {
@@ -122,6 +123,16 @@ int main(int argc, char * argv[])
     cwriter->SetFileName( args_info.count_arg );
     cwriter->SetInput( projection->GetCount() );
     TRY_AND_EXIT_ON_ITK_EXCEPTION( cwriter->Update() )
+    }
+
+  if(args_info.SigmaMap_given)
+    {
+    // Write
+    typedef itk::ImageFileWriter< ProjectionFilter::OutputImageType > SigmaWriterType;
+    SigmaWriterType::Pointer sigmawriter = SigmaWriterType::New();
+    sigmawriter->SetFileName( args_info.SigmaMap_arg );
+    sigmawriter->SetInput( projection->GetSigma() );
+    TRY_AND_EXIT_ON_ITK_EXCEPTION( sigmawriter->Update() )
     }
 
   if(args_info.scatwepl_given)

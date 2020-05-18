@@ -148,6 +148,13 @@ public:
   /** Evaluate the error (x,y) (equation 27) at depth z. */
   void EvaluateError( const double u1, itk::Matrix<double, 2, 2> &error);
 
+  /** Set tracker parameters. */
+  void SetTrackerInfo(const double dentry, const double dexit, const double dT, const double sigmap, const double xOverX0 );
+
+  /** Evaluate error including tracker uncertainties. */
+  void EvaluateErrorWithTrackerUncertainty(const double u1, const double eIn, const double eOut, itk::Matrix<double, 2, 2> &error);
+
+
 #ifdef MLP_TIMING
   /** Print timing information */
   virtual void PrintTiming(std::ostream& os);
@@ -196,6 +203,13 @@ private:
   double m_IntForSigmaSqTheta2;
   double m_IntForSigmaSqTTheta2;
   double m_IntForSigmaSqT2;
+
+  // Tracker info
+  double m_dentry;
+  double m_dexit;
+  double m_sigmap;
+  double m_dT;
+  double m_xOverX0;
 
 #ifdef MLP_TIMING
   TimeProbe m_EvaluateProbe1;

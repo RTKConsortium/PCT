@@ -17,6 +17,7 @@ option "bpVal"       - "Input backprojection image values"                      
 option "bpCount"     - "Input backprojection image counts"                        string          no
 option "norotation"  - "Bin in parallel coordinate system"                        flag            off
 option "weightsCF"   - "Use Collins-Fekete binning"                               flag            off
+option "SigmaMap"    - "Output is an MLP error map"                                flag            off
 
 section "Projections parameters"
 option "origin"    - "Origin (default=centered)" double multiple no
