@@ -192,10 +192,26 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
           VectorType pSIn = pIn;
           VectorType pSOut = pOut;
           double nearDistIn, nearDistOut, farDistIn, farDistOut;
+
+          VectorType pRotIn (0.);
+          VectorType dRotIn (0.);
+          VectorType pRotOut(0.);
+          VectorType dRotOut (0.);
+          for(unsigned int i=0; i<3; i++)
+            {
+            for(unsigned int j=0; j<3; j++)
+              {
+              pRotIn[i] += rotMat[i][j] * pIn[j];
+              dRotIn[i] += rotMat[i][j] * dIn[j];
+              pRotOut[i] += rotMat[i][j] * pOut[j];
+              dRotOut[i] += rotMat[i][j] * dOut[j];
+              }
+            }
+
           if(m_QuadricIn.GetPointer()!=NULL)
             {
-            if(m_QuadricIn->IsIntersectedByRay(pIn,dIn,nearDistIn,farDistIn) &&
-               m_QuadricOut->IsIntersectedByRay(pOut,dOut,nearDistOut,farDistOut))
+            if(m_QuadricIn->IsIntersectedByRay(pRotIn,dRotIn,nearDistIn,farDistIn) &&
+               m_QuadricOut->IsIntersectedByRay(pRotOut,dRotOut,nearDistOut,farDistOut))
               {
               pSIn  = pIn  + dIn  * nearDistIn;
               if(pSIn[2]<pIn[2]  || pSIn[2]>pOut[2])
@@ -228,13 +244,11 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
 
           // Init MLP before mm to voxel conversion
           mlp->Init(pSIn, pSOut, dIn, dOut);
-          mlp->SetTrackerInfo(200,200,10,0.15,0.005);
           int totalLength = 0.;
           std::vector<typename OutputImageType::OffsetValueType> offsets;
 
           for(unsigned int k=0; k<zmm.size(); k++)
             {
-            double std_error=0;
             pCurr[2] = zmm[k];
             if(pCurr[2]<=pSIn[2]) //before entrance
               {
@@ -242,10 +256,6 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
               pCurr[0] = pIn[0]+z*dIn[0];
               pCurr[1] = pIn[1]+z*dIn[1];
               dCurr = dIn;
-              //mlp->EvaluateError(zmm[k],mlp_error);
-              mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error);
-              std_error=mlp_error(0,0); ///2 std::sqrt(
-              //std_error=0;
               }
             else if(pCurr[2]>=pSOut[2]) //after exit
               {
@@ -253,10 +263,6 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
               pCurr[0] = pSOut[0]+z*dOut[0];
               pCurr[1] = pSOut[1]+z*dOut[1];
               dCurr = dOut;
-              //mlp->EvaluateError(zmm[k],mlp_error);
-              mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error);
-              std_error=mlp_error(0,0); ///2 std::sqrt(
-              //std_error=0;
               }
             else //MLP
               {
@@ -266,10 +272,6 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
               mlp->Evaluate(zmm[k], pCurr[0], pCurr[1]);
               dCurr[0] = pCurr[0] - dCurr[0];
               dCurr[1] = pCurr[1] - dCurr[1];
-              //mlp->EvaluateError(zmm[k],mlp_error);
-              mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error);
-              std_error=mlp_error(0,0); ///2 std::sqrt(
-              //std_error=mlp_error(1,1); ///2 std::sqrt(
               }
             dCurr[2] *= -1.;
             pCurr[2] *= -1.;
@@ -327,14 +329,6 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>
                 idx[2] = 0;
                 offsets.push_back(this->GetOutput()->ComputeOffset(idx));
                 totalLength++;
-                }
-              else if(m_SigmaMap && std_error==std_error)
-                {
-                typename OutputImageType::OffsetValueType offset = this->GetOutput()->ComputeOffset(idx);
-                m_Mutex.lock();
-                imgData[ offset ] += std_error;
-                imgCountData[ offset ]++;
-                m_Mutex.unlock();
                 }
               else
                 {

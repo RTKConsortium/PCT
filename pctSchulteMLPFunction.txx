@@ -71,7 +71,7 @@ SchulteMLPFunction
   m_Sigma1(0,0) = u1 * ( 2*m_Sigma1(0,1) - u1*m_Sigma1(1,1) ) + intForSigmaSqT1/* - m_IntForSigmaSqT0*/;
   if(u1 == m_u0)
     m_Sigma1 *= 0;
-  else  
+  else
     m_Sigma1 *= Functor::SchulteMLP::ConstantPartOfIntegrals::GetValue(m_u0,u1);
 
   // Construct Sigma2 (equations 15-18)
@@ -81,7 +81,7 @@ SchulteMLPFunction
   m_Sigma2(0,0) = m_u2 * ( 2*m_Sigma2(0,1) - m_u2*m_Sigma2(1,1) ) + m_IntForSigmaSqT2 - intForSigmaSqT1;
   if(u1 == m_u2)
     m_Sigma2 *=0;
-  else  
+  else
     m_Sigma2 *= Functor::SchulteMLP::ConstantPartOfIntegrals::GetValue(u1,m_u2);
 
 #ifdef MLP_TIMING
@@ -115,6 +115,7 @@ SchulteMLPFunction
 #endif
 }
 
+
 void
 SchulteMLPFunction
 ::EvaluateError( const double u, itk::Matrix<double, 2, 2> &error )
@@ -131,6 +132,8 @@ SchulteMLPFunction
     InverseMatrix(m_R1);
     error = m_Sigma1 * part * m_Sigma2 * m_R1.GetTranspose();
     }
+  else
+    error = m_Sigma1 * 0;
 }
 
 #ifdef MLP_TIMING
@@ -170,7 +173,7 @@ SchulteMLPFunction
 
 void
 SchulteMLPFunction
-::EvaluateErrorWithTrackerUncertainty(const double u, const double eIn, const double eOut, itk::Matrix<double, 2, 2> &error)
+::EvaluateErrorWithTrackerUncertainty(const double u, const double eIn, const double eOut, itk::Matrix<double, 2, 2> &error,double &xt, double&yt, double &dxt, double &dyt)
 {
   double u1 = u - m_uOrigin;
   itk::Matrix<double, 2, 2> SD;
@@ -184,7 +187,7 @@ SchulteMLPFunction
     SD(0,1) = std::abs(u1 - m_u2);
     u1 = m_u2;
     }
-  else if(u1 < m_u0) 
+  else if(u1 < m_u0)
     {
     SD(0,1) = std::abs(m_u0 - u1);
     u1 = m_u0;
@@ -202,8 +205,9 @@ SchulteMLPFunction
   double betapIn = (eIn + 2*proton_mass_c2)* eIn / (eIn + proton_mass_c2);
   double betapOut = (eOut + 2*proton_mass_c2)* eOut / (eOut + proton_mass_c2);
 
-  double sigmascIn = 13.6*CLHEP::MeV / betapIn * std::sqrt(m_xOverX0) * (1 + 0.038 * std::log(m_xOverX0)); 
-  double sigmascOut = 13.6*CLHEP::MeV / betapOut * std::sqrt(m_xOverX0) * (1 + 0.038 * std::log(m_xOverX0)); 
+  double sigmascIn = 13.6*CLHEP::MeV / betapIn * std::sqrt(m_xOverX0) * (1 + 0.038 * std::log(m_xOverX0));
+  double sigmascOut = 13.6*CLHEP::MeV / betapOut * std::sqrt(m_xOverX0) * (1 + 0.038 * std::log(m_xOverX0));
+
   Sin(0,0) = 1;
   Sin(1,1) = 1;
   Sin(1,0) = 0;
@@ -218,7 +222,7 @@ SchulteMLPFunction
   SigmaOut(0,0) = 1;
   SigmaOut(0,1) = 0;
   SigmaIn = SigmaIn * SigmaIn.GetTranspose() * m_sigmap * m_sigmap;
-  SigmaIn(1,1) += sigmascIn * sigmascIn;  
+  SigmaIn(1,1) += sigmascIn * sigmascIn;
   SigmaOut = SigmaOut * SigmaOut.GetTranspose() * m_sigmap * m_sigmap;
   SigmaOut(1,1) += sigmascOut * sigmascOut;
 
@@ -233,11 +237,21 @@ SchulteMLPFunction
     {
     error = SD * error * SD.GetTranspose();
     }
-  else if(u - m_uOrigin < m_u0) 
+  else if(u - m_uOrigin < m_u0)
     {
     InverseMatrix(SD);
     error = SD * error * SD.GetTranspose();
     }
+    // x
+  itk::Vector<double, 2> xMLP;
+  xMLP = C2 * C1C2 * m_R0 * m_x0 + C1 * C1C2 * m_R1 * m_x2;
+  xt = xMLP[0];
+  dxt = xMLP[1];
+    // y
+  itk::Vector<double, 2> yMLP;
+  yMLP = C2 * C1C2 * m_R0 * m_y0 + C1 * C1C2 * m_R1 * m_y2;
+  yt = yMLP[0];
+  dyt= yMLP[1];
 
 }
 

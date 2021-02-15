@@ -26,7 +26,7 @@ public:
   typedef itk::Image<ProtonPairsPixelType,2>                ProtonPairsImageType;
   typedef ProtonPairsImageType::Pointer                     ProtonPairsImagePointer;
 
-  typedef itk::Image<double, 3>                       CountImageType;
+  typedef itk::Image<float, 3>                       CountImageType;
   typedef CountImageType::Pointer                           CountImagePointer;
 
   typedef itk::Image<float, 3>                              AngleImageType;
@@ -37,7 +37,8 @@ public:
   typedef typename OutputImageType::RegionType              OutputImageRegionType;
 
   typedef rtk::QuadricShape                                 RQIType;
-
+  typedef rtk::ThreeDCircularProjectionGeometry     GeometryType;
+  typedef typename GeometryType::Pointer            GeometryPointer;
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
@@ -96,6 +97,17 @@ public:
   itkGetMacro(SigmaMap, bool);
   itkSetMacro(SigmaMap, bool);
   itkBooleanMacro(SigmaMap);
+
+  itkGetMacro(Geometry, GeometryPointer);
+  itkSetMacro(Geometry, GeometryPointer);
+
+  itkGetMacro(Index, int);
+  itkSetMacro(Index, int);
+
+  /** Get / Set the boolean to use MLP Krah. Default is off. */
+  itkGetMacro(MLPKrah, bool);
+  itkSetMacro(MLPKrah, bool);
+  itkBooleanMacro(MLPKrah);
 
 protected:
   ProtonPairsToDistanceDrivenProjection();
@@ -156,6 +168,15 @@ private:
 
   /** Output sigma map */
   bool m_SigmaMap;
+
+  /** RTK geometry object */
+  GeometryPointer m_Geometry;
+
+  /** Index of the projection in the geometry object */
+  int m_Index;
+
+  /** Use MLP of Krah */
+  bool m_MLPKrah;
 };
 
 } // end namespace pct

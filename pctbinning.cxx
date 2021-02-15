@@ -3,6 +3,7 @@
 #include <rtkMacro.h>
 #include <rtkGgoFunctions.h>
 #include <rtkConstantImageSource.h>
+#include <rtkThreeDCircularProjectionGeometryXMLFile.h>
 
 #include "pctProtonPairsToDistanceDrivenProjection.h"
 #include "SmallHoleFiller.h"
@@ -46,6 +47,14 @@ int main(int argc, char * argv[])
   projection->SetComputeScattering( args_info.scatwepl_given );
   projection->SetWeightsCF( args_info.weightsCF_flag );
   projection->SetSigmaMap( args_info.SigmaMap_given );
+  projection->SetIndex( args_info.Index_arg );
+  projection->SetMLPKrah( args_info.krah_flag );
+
+  rtk::ThreeDCircularProjectionGeometryXMLFileReader::Pointer geometryReader;
+  geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
+  geometryReader->SetFilename(args_info.geometry_arg);
+  TRY_AND_EXIT_ON_ITK_EXCEPTION( geometryReader->GenerateOutputInformation() )
+  projection->SetGeometry( geometryReader->GetOutputObject() );
 
   if(args_info.quadricIn_given)
     {

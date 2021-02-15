@@ -55,7 +55,11 @@ public:
     // Constant out of integral, use [Schulte, 2008] and not [Williams, 2004]
     static const double c = 13.6*CLHEP::MeV * 13.6*CLHEP::MeV / (36.1*CLHEP::cm);
     static const double invX0 = 1./(36.1*CLHEP::cm);
-    double v = 1.+0.038*std::log((uy-ux)*invX0);
+    double v;
+    if((uy-ux)<1e-3)
+      v = 1.+0.038*std::log(1e-3*invX0);
+    else
+      v = 1.+0.038*std::log((uy-ux)*invX0);
     return c*v*v;
     }
 };
@@ -152,7 +156,7 @@ public:
   void SetTrackerInfo(const double dentry, const double dexit, const double dT, const double sigmap, const double xOverX0 );
 
   /** Evaluate error including tracker uncertainties. */
-  void EvaluateErrorWithTrackerUncertainty(const double u1, const double eIn, const double eOut, itk::Matrix<double, 2, 2> &error);
+  void EvaluateErrorWithTrackerUncertainty(const double u1, const double eIn, const double eOut, itk::Matrix<double, 2, 2> &error,double &x, double&y, double &dxt, double &dyt);
 
 
 #ifdef MLP_TIMING

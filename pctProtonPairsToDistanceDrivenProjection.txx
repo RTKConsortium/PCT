@@ -115,7 +115,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
   const unsigned long npixelsPerSlice = imgSize[0] * imgSize[1];
 
   typename OutputImageType::PixelType *imgData = m_Outputs[threadId]->GetBufferPointer();
-  double *imgCountData = m_Counts[threadId]->GetBufferPointer();
+  float *imgCountData = m_Counts[threadId]->GetBufferPointer();
   float *imgAngleData = NULL, *imgAngleSqData = NULL;
   float *imgSigmaData = NULL;
   if(m_ComputeScattering && !m_Robust)
@@ -148,9 +148,12 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
     zmag[i] = (m_SourceDistance==0.)?1:(zPlaneOutInMM-m_SourceDistance)/(zmm[i]-m_SourceDistance);
     }
 
-  // Process pairs
-  while(!it.IsAtEnd())
-  {
+  GeometryType::ThreeDHomogeneousMatrixType rotMat;
+  rotMat = m_Geometry->GetRotationMatrices()[m_Index].GetInverse();
+
+// Process pairs
+  while(!it.IsAtEnd() ) //
+    {
     if(threadId==0 && it.GetIndex()[1]%10000==0)
       {
       std::cout << '\r'
@@ -158,7 +161,6 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
                 << 100*it.GetIndex()[1]/region.GetSize(1) << "%) in thread 1"
                 << std::flush;
       }
-
     VectorType pIn = it.Get();
     ++it;
     VectorType pOut = it.Get();
@@ -198,6 +200,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
 
     const double eIn = it.Get()[0];
     const double eOut = it.Get()[1];
+
     double value = 0.;
     if(eIn==0.)
       value = eOut; // Directly read WEPL
@@ -213,28 +216,53 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
       nucInfo = it.Get();
       ++it;
       }
+    std::vector<typename OutputImageType::OffsetValueType> offsets;
+    
+    VectorType pRotIn (0.);
+    VectorType dRotIn (0.);
+    VectorType pRotOut(0.);
+    VectorType dRotOut (0.);
+    for(unsigned int i=0; i<3; i++)
+      {
+      for(unsigned int j=0; j<3; j++)
+        {
+        pRotIn[i] += rotMat[i][j] * pIn[j];
+        dRotIn[i] += rotMat[i][j] * dIn[j];
+        pRotOut[i] += rotMat[i][j] * pOut[j];
+        dRotOut[i] += rotMat[i][j] * dOut[j];
+        }
+      }
 
     // Move straight to entrance and exit shapes
     VectorType pSIn  = pIn;
     VectorType pSOut = pOut;
     double nearDistIn, nearDistOut, farDistIn, farDistOut;
+    double dHullIn, dHullOut;
+    bool SLP=0;
     if(m_QuadricIn.GetPointer()!=NULL)
       {
-      if(m_QuadricIn->IsIntersectedByRay(pIn,dIn,nearDistIn,farDistIn) &&
-         m_QuadricOut->IsIntersectedByRay(pOut,dOut,nearDistOut,farDistOut))
+      if(m_QuadricIn->IsIntersectedByRay(pRotIn,dRotIn,nearDistIn,farDistIn) &&
+         m_QuadricOut->IsIntersectedByRay(pRotOut,dRotOut,nearDistOut,farDistOut))
         {
         pSIn  = pIn  + dIn  * nearDistIn;
+        dHullIn=std::abs(nearDistIn);
         if(pSIn[2]<pIn[2]  || pSIn[2]>pOut[2])
+        {
           pSIn  = pIn  + dIn  * farDistIn;
+          dHullIn=std::abs(farDistIn);
+        }
         pSOut = pOut + dOut * nearDistOut;
+        dHullOut=std::abs(nearDistOut);
         if(pSOut[2]<pIn[2] || pSOut[2]>pOut[2])
+        {
           pSOut = pOut + dOut * farDistOut;
+          dHullOut=std::abs(farDistOut);
+        }
+
         }
       else
         {
-        pSOut = pOut - dOut * pOut[2];
-	pSIn[2] = 0;
-        pSOut[2] = 0;
+        SLP = 1;
         }
       }
 
@@ -249,37 +277,80 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
     itk::Matrix<double, 2, 2> mlp_error;
     mlp_error.Fill(0);
     // Init MLP before mm to voxel conversion
+
+    double xSIn = pSIn[0];
+    double ySIn = pSIn[1];
+    double xSOut = pSOut[0];
+    double ySOut = pSOut[1];
+    double dxSIn, dySIn, dxSOut, dySOut;
+    VectorType dSIn = dIn;
+    VectorType dSOut = dOut;
     mlp->Init(pSIn, pSOut, dIn, dOut);
-    if(m_SigmaMap)
-      mlp->SetTrackerInfo(200,200,10,0.15,0.005);
-    std::vector<typename OutputImageType::OffsetValueType> offsets;
+    if(m_MLPKrah && !SLP)
+      {
+      mlp->SetTrackerInfo(std::abs(dHullIn),std::abs(dHullOut),10,0.065817931,0.005);
+      mlp->EvaluateErrorWithTrackerUncertainty(pSIn[2],eIn, eOut, mlp_error,xSIn,ySIn, dxSIn, dySIn);
+      mlp->EvaluateErrorWithTrackerUncertainty(pSOut[2],eIn, eOut, mlp_error,xSOut,ySOut,dxSOut,dySOut);
+      dSIn[0] = std::tan(dxSIn);
+      dSIn[1] = std::tan(dySIn);
+      dSOut[0] = std::tan(dxSOut);
+      dSOut[1] = std::tan(dySOut);
+      pSIn[0] = xSIn;
+      pSIn[1] = ySIn;
+      pSOut[0] = xSOut;
+      pSOut[1] = ySOut;
+      }
 
     for(unsigned int k=0; k<imgSize[2]; k++)
       {
       double std_error = 0;
       double xx, yy;
+      double dummy_xx, dummy_yy, dummy_dxx, dummy_dyy;
       const double dk = zmm[k];
-      if(dk<=pSIn[2]) //before entrance
+      if(SLP)
         {
         const double z = (dk-pIn[2]);
         xx = pIn[0]+z*dIn[0];
         yy = pIn[1]+z*dIn[1];
         }
+      else{
+      if(dk<=pSIn[2]) //before entrance
+        {
+        const double z = (dk-pSIn[2]);
+        xx = pSIn[0]+z*dSIn[0];
+        yy = pSIn[1]+z*dSIn[1];
+        if(m_MLPKrah)
+          {
+          mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error,dummy_xx,dummy_yy, dummy_dxx, dummy_dyy);
+          std_error=mlp_error(0,0)*zmag[k]*zmag[k];
+          }
+        }
       else if(dk>=pSOut[2]) //after exit
         {
         const double z = (dk-pSOut[2]);
-        xx = pSOut[0]+z*dOut[0];
-        yy = pSOut[1]+z*dOut[1];
+        xx = pSOut[0]+z*dSOut[0];
+        yy = pSOut[1]+z*dSOut[1];
+        if(m_MLPKrah)
+          {
+          mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error,dummy_xx,dummy_yy, dummy_dxx, dummy_dyy);
+          std_error=mlp_error(0,0)*zmag[k]*zmag[k];
+          }
         }
       else //MLP
         {
-        mlp->Evaluate(zmm[k], xx, yy);
+        if(m_MLPKrah)
+          {
+          mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error,xx,yy, dummy_dxx, dummy_dyy);
+          std_error=mlp_error(0,0)*zmag[k]*zmag[k];
+          }
+        else
+          {
+          mlp->Evaluate(zmm[k], xx, yy);
+          mlp->EvaluateError(zmm[k],mlp_error);
+          std_error=mlp_error(0,0)*zmag[k]*zmag[k];
+          }
         }
-      if(m_SigmaMap)
-        {
-        mlp->EvaluateErrorWithTrackerUncertainty(zmm[k],eIn, eOut, mlp_error);
-        std_error=mlp_error(0,0); 
-        }
+      }
 
       // Source at (0,0,args_info.source_arg), mag then to voxel
       xx = (xx*zmag[k] - imgOrigin[0]) * imgSpacingInv[0];
@@ -327,6 +398,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>
           }
         }
       }
+
     if(m_WeightsCF)
       {
       std::vector<typename OutputImageType::OffsetValueType> channels(offsets);

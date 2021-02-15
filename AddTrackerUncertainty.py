@@ -64,9 +64,8 @@ def AddTrackerUncertainty(xOverX0, sp, dt, input, output, entryTranslation, exit
     pairs[:,2,0:2] += dYuncertEntry[:,1,:] # Entrance direction X/Y
     pairs[:,1,0:2] += dYuncertExit[:,0,:] # Exit position X/Y
     pairs[:,3,0:2] += dYuncertExit[:,1,:] # Exit direction X/Y
-    
+
     itk.imwrite(itk.GetImageFromArray(pairs, is_vector=True), output)
 
 if __name__ == '__main__':
     AddTrackerUncertainty()
-
