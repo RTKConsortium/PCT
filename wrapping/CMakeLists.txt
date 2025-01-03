@@ -5,7 +5,7 @@ itk_end_wrap_module()
 list(APPEND PCT_PYTHON_APP
   ${PCT_SOURCE_DIR}/applications/pctfdktwodweights/pctfdktwodweights.py
   ${PCT_SOURCE_DIR}/applications/pctpairprotons/pctpairprotons.py
-  ${PCT_SOURCE_DIR}/applications/pcttoftowepl/pcttoftowepl.py
+  ${PCT_SOURCE_DIR}/applications/pctweplfit/pctweplfit.py
   ${PCT_SOURCE_DIR}/gate/protonct.py
 )
 
