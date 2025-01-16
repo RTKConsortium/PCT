@@ -9,8 +9,8 @@ import uproot
 import numpy as np
 
 
-def tof_to_wepl_mc(
-    output='pcttoftowepl',
+def tof_fit_mc(
+    output='pcttoffit',
     number_of_particles=1e4,
     visu=False,
     verbose=False
@@ -90,7 +90,8 @@ def tof_to_wepl_mc(
             'EventID',
             'TrackID',
             'Position',
-            'PreGlobalTime'
+            'PreGlobalTime',
+            'KineticEnergy'
         ]
         particle_filter = sim.add_filter('ParticleFilter', 'Filter' + name)
         particle_filter.particle = 'proton'
@@ -107,8 +108,8 @@ def tof_to_wepl_mc(
     sim.run()
 
 
-def tof_to_wepl_fit(
-    output='pcttoftowepl',
+def tof_fit(
+    output='pcttoffit',
     poly_deg=2,
     path_type='simple',
     display=False,
@@ -138,6 +139,7 @@ def tof_to_wepl_fit(
 
     tofs = []
     wepls = []
+    energy_losses = []
 
     for n in np.unique(data['EventID']):
         event_mask = data['EventID'] == n
@@ -148,6 +150,7 @@ def tof_to_wepl_fit(
         vs = data['Position_Z'][event_mask]
         ws = data['Position_X'][event_mask]
         times = data['PreGlobalTime'][event_mask]
+        energies = data['KineticEnergy'][event_mask]
 
         tofs_event = [times[k] - times[0] for k in range(len(times))]
 
@@ -169,36 +172,63 @@ def tof_to_wepl_fit(
         else:
             sys.exit(f"Invalid path time {path_type}!")
 
+        energy_losses_event = [
+            energies[0] - energies[k]
+            for k in range(len(energies))
+        ]
+
         tofs.extend(tofs_event)
         wepls.extend(wepls_event)
+        energy_losses.extend(energy_losses_event)
 
-    p = np.polyfit(tofs, wepls, deg=poly_deg)
-    print_verbose("Fitted coefficients:", p)
+    p_wepl = np.polyfit(tofs, wepls, deg=poly_deg)
+    print_verbose("Fitted coefficients for WEPL:", p_wepl)
+
+    p_energy_loss = np.polyfit(tofs, energy_losses, deg=poly_deg)
+    print_verbose("Fitted coefficients for energy loss:", p_energy_loss)
 
     if display or savefig:
-        tof_fit = np.linspace(0, np.max(tofs), 100)
-        wepl_fit = np.polyval(p, tof_fit)
+        tof_samples = np.linspace(0, np.max(tofs), 100)
+
+        wepl_fit = np.polyval(p_wepl, tof_samples)
 
         plt.figure()
         plt.plot(tofs, wepls, '+', label="Detected events")
-        plt.plot(tof_fit, wepl_fit, label=f"Polynomial fit (degree {poly_deg})")
-        plt.xlabel("TOF")
+        plt.plot(tof_samples, wepl_fit, label=f"Polynomial fit (degree {poly_deg})")
+        plt.xlabel("TOF [ns]")
         plt.ylabel("WEPL [mm]")
         plt.legend()
 
         if savefig:
-            plt.savefig(f'{output}/tof_to_wepl_fit.pdf')
+            plt.savefig(f'{output}/tof_wepl_fit.pdf')
         if display:
             plt.show()
 
-    with open(f'{output}/tof_to_wepl_fit.json', 'w', encoding='utf-8') as f:
-        json.dump(list(p), f)
+        eloss_fit = np.polyval(p_energy_loss, tof_samples)
 
-    return p
+        plt.figure()
+        plt.plot(tofs, energy_losses, '+', label="Detected events")
+        plt.plot(tof_samples, eloss_fit, label=f"Polynomial fit (degree {poly_deg})")
+        plt.xlabel("TOF [ns]")
+        plt.ylabel("Energy loss [MeV]")
+        plt.legend()
+
+        if savefig:
+            plt.savefig(f'{output}/tof_eloss_fit.pdf')
+        if display:
+            plt.show()
+
+    with open(f'{output}/tof_wepl_fit.json', 'w', encoding='utf-8') as f:
+        json.dump(list(p_wepl), f)
+
+    with open(f'{output}/tof_eloss_fit.json', 'w', encoding='utf-8') as f:
+        json.dump(list(p_energy_loss), f)
+
+    return p_wepl, p_energy_loss
 
 
-def pcttoftowepl(
-    output='pcttoftowepl',
+def pcttoffit(
+    output='pcttoffit',
     number_of_particles=1e4,
     poly_deg=2,
     path_type='simple',
@@ -207,25 +237,25 @@ def pcttoftowepl(
     savefig=False,
     verbose=False
 ):
-    tof_to_wepl_mc(output, number_of_particles, visu, verbose)
-    p = tof_to_wepl_fit(output, poly_deg, path_type, display, savefig, verbose)
-    return p
+    tof_fit_mc(output, number_of_particles, visu, verbose)
+    ps = tof_fit(output, poly_deg, path_type, display, savefig, verbose)
+    return ps
 
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Convert TOF to WEPL using a fit on Monte Carlo data')
-    parser.add_argument('--output', help="Path of outputs", default='pcttoftowepl')
+    parser = argparse.ArgumentParser(description='Convert TOF to WEPL and energy loss using a fit on Monte Carlo data')
+    parser.add_argument('--output', help="Path of outputs", default='pcttoffit')
     parser.add_argument('-n', '--number-of-particles', help="Number of generated particles", default=1e4, type=int)
     parser.add_argument('--poly-deg', help="Degrees of polynomial fit", default=2, type=int)
-    parser.add_argument('--path-type', help="How to compute proton path", choices=['simple', 'realistic'], default='simple')
+    parser.add_argument('--path-type', help="How to compute proton path for WEPL", choices=['simple', 'realistic'], default='simple')
     parser.add_argument('--visu', help="Visualize Monte Carlo simulation", default=False, action='store_true')
     parser.add_argument('--display', help="Display polynomial fit plot", default=False, action='store_true')
     parser.add_argument('--savefig', help="Write polynomial fit plot to disk", default=False, action='store_true')
     parser.add_argument('--verbose', '-v', help="Verbose execution", default=False, action='store_true')
     args_info = parser.parse_args()
 
-    pcttoftowepl(**vars(args_info))
+    pcttoffit(**vars(args_info))
 
 if __name__ == '__main__':
     main()

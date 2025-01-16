@@ -103,4 +103,4 @@ IF(PCT_WITH_GEANT4)
 ENDIF(PCT_WITH_GEANT4)
 
 CONFIGURE_FILE("pctpairprotons.py" "pctpairprotons.py" COPYONLY)
-CONFIGURE_FILE("pcttoftowepl.py" "pcttoftowepl.py" COPYONLY)
+CONFIGURE_FILE("pcttoffit.py" "pcttoffit.py" COPYONLY)
