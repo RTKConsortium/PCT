@@ -14,5 +14,4 @@ else()
 endif()
 include(${ITK_USE_FILE})
 
-add_executable(MyFilterApplicationWholePipeline MyFilterApplicationWholePipeline.cxx )
-target_link_libraries(MyFilterApplicationWholePipeline ${ITK_LIBRARIES})
+
