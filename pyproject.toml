@@ -6,7 +6,7 @@ build-backend = "scikit_build_core.build"
 name = "itk-pct"
 version = "0.1.0"
 description = "PCT (Proton Computed Tomography) is a toolkit used to process proton CT data and reconstruct proton stopping power maps."
-readme = "README.rst"
+readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
     { name = "RTK Consortium", email = "simon.rit@creatis.insa-lyon.fr" },
