@@ -1,8 +1,5 @@
 import argparse
 
-import sys
-sys.path.append(r"C:\ITK\ITK_BUILD\Wrapping\Generators\Python")
-
 from itk import PCT as pct
 from itk import RTK as rtk
 import itk
@@ -39,13 +36,13 @@ def main():
   if args.verbose: print(f"Reading geometry information from {args.geometry}...")
   geometryReader = rtk.ThreeDCircularProjectionGeometryXMLFileReader.New()
   geometryReader.SetFilename(args.geometry)
-#   geometryReader.GenerateOutputInformation()
+  geometryReader.GenerateOutputInformation()
   
   # Weight filter
   WeightType = pct.FDKDDWeightProjectionFilter[ProjectionImageType]
   wf = WeightType.New()
   wf.SetInput(reader.GetOutput())
-#   wf.SetGeometry(geometryReader.GetOutputObject())
+  wf.SetGeometry(geometryReader.GetOutputObject())
   wf.InPlaceOff()
 
   # Writer
