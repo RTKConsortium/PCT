@@ -10,12 +10,13 @@ jobs:
   cxx-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@v5.4.0
     with: 
-      itk-module-deps: RTK@96e7b8c
+      itk-module-deps: RTK@master
 
   python-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@v5.4.0
     with:
       cmake-options: '-DRTK_BUILD_APPLICATIONS:BOOL=OFF'
       python3-minor-versions: ${{ github.event_name == 'pull_request' && '["11"]' || '["9","10","11"]' }}
+      itk-module-deps: RTK@master
     secrets:
       pypi_password: ${{ secrets.pypi_password }}
