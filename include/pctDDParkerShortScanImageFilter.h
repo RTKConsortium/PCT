@@ -45,7 +45,7 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(DDParkerShortScanImageFilter, itk::ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(DDParkerShortScanImageFilter);
 
   /** Get / Set the object pointer to projection geometry */
   itkGetMacro(Geometry, GeometryPointer);

@@ -30,7 +30,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(FDKDDBackProjectionImageFilter, rtk::BackProjectionImageFilter);
+  itkOverrideGetNameOfClassMacro(FDKDDBackProjectionImageFilter);
 
   virtual ProjectionImagePointer GetDDProjection(const unsigned int iProj);
 

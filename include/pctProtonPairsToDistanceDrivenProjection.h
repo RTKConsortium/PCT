@@ -42,7 +42,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ProtonPairsToDistanceDrivenProjection, itk::InPlaceImageFilter);
+  itkOverrideGetNameOfClassMacro(ProtonPairsToDistanceDrivenProjection);
 
   /** Get/Set image of proton pairs. */
   itkGetMacro(ProtonPairsFileName, std::string);

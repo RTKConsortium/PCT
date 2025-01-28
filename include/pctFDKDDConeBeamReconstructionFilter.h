@@ -44,7 +44,7 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(FDKDDConeBeamReconstructionFilter, itk::ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(FDKDDConeBeamReconstructionFilter);
 
   /** Get / Set the object pointer to projection geometry */
   virtual rtk::ThreeDCircularProjectionGeometry::Pointer GetGeometry();

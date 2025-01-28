@@ -35,7 +35,7 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(ZengBackProjectionImageFilter, itk::ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(ZengBackProjectionImageFilter);
 
 protected:
   ZengBackProjectionImageFilter();

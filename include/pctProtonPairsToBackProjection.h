@@ -46,7 +46,7 @@ public:
   itkNewMacro(Self);
 
   /** Run-time type information (and related methods). */
-  itkTypeMacro(ProtonPairsToBackProjection, itk::InPlaceImageFilter);
+  itkOverrideGetNameOfClassMacro(ProtonPairsToBackProjection);
 
   /** Set the vector of strings that contains the file names. Files
    * are processed in sequential order. */

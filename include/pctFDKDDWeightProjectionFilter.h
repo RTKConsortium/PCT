@@ -40,7 +40,7 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkTypeMacro(FDKDDWeightProjectionFilter, itk::ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(FDKDDWeightProjectionFilter);
 
   /** Get/ Set geometry structure */
   itkGetMacro(Geometry, rtk::ThreeDCircularProjectionGeometry::Pointer);
