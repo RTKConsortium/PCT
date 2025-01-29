@@ -1,3 +1,21 @@
+/*=========================================================================
+ *
+ *  Copyright RTK Consortium
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *         https://www.apache.org/licenses/LICENSE-2.0.txt
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ *=========================================================================*/
+
 #include "pctSchulteMLPFunction.h"
 
 namespace pct
@@ -28,15 +46,9 @@ SchulteMLPFunction ::SchulteMLPFunction()
 
 // Initialize terms needed to include tracker uncertainties
 void
-SchulteMLPFunction ::InitUncertain(const VectorType posIn,
-                                   const VectorType posOut,
-                                   const VectorType dirIn,
-                                   const VectorType dirOut,
-                                   double           dEntry,
-                                   double           dExit,
-                                   double           TrackerResolution,
-                                   double           TrackerPairSpacing,
-                                   double           MaterialBudget)
+SchulteMLPFunction
+::InitUncertain(const VectorType posIn, const VectorType posOut, const VectorType dirIn, const VectorType dirOut,
+                double dEntry, double dExit, double TrackerResolution, double TrackerPairSpacing, double MaterialBudget)
 {
   m_considerTrackerUncertainties = true; // NK: maybe this should actually go into constructor
   m_u2 = posOut[2] - posIn[2];
