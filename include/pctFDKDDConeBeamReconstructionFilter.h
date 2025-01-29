@@ -10,7 +10,7 @@
 
 /** \class FDKDDConeBeamReconstructionFilter
  * TODO
- *
+ *  \ingroup PCT
  * \author Simon Rit
  */
 namespace pct

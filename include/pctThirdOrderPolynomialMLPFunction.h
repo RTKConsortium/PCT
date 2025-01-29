@@ -9,7 +9,7 @@ namespace pct
 /** \class ThirdOrderPolynomialMLPFunction
  * \brief Fit a third order polynomial given input and output direction and position.
  *
- * \ingroup Functions
+ * \ingroup Functions PCT
  */
 template <class TCoordRep = double>
 class ITK_EXPORT ThirdOrderPolynomialMLPFunction : public MostLikelyPathFunction<TCoordRep>

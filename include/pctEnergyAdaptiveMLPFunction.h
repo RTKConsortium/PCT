@@ -97,7 +97,7 @@ public:
 } // end namespace Functor
 
 /** \class EnergyAdaptiveMLPFunction
- *
+ * \ingroup PCT
  * \ingroup Functions
  */
 class ITK_EXPORT EnergyAdaptiveMLPFunction : public MostLikelyPathFunction<double>

@@ -6,7 +6,7 @@
 #include "rtkConfiguration.h"
 
 /** \class DDParkerShortScanImageFilter
- *
+ *  \ingroup PCT
  * Weighting of image projections to handle off-centered panels
  * in tomography reconstruction. Based on [Wang, Med Phys, 2002].
  *

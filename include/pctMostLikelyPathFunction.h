@@ -16,7 +16,7 @@ namespace pct
 /** \class MostLikelyPathFunction
  * \brief Base class for computing the most likely path of a proton.
  *
- * \ingroup Functions
+ * \ingroup Functions PCT
  */
 template <class TCoordRep = double>
 class ITK_EXPORT MostLikelyPathFunction : public itk::LightObject

@@ -135,7 +135,7 @@ public:
 /** \class SchulteMLPFunction
  * \brief See [Schulte, Med Phys, 2008].
  *
- * \ingroup Functions
+ * \ingroup Functions PCT
  */
 class ITK_EXPORT SchulteMLPFunction : public MostLikelyPathFunction<double>
 {

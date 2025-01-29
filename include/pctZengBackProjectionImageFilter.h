@@ -6,7 +6,7 @@
 #include "rtkConfiguration.h"
 
 /** \class ZengBackProjectionImageFilter
- *
+ * \ingroup PCT
  * From an input 4D image where the 4th dimension is the angle, computes
  * the weighted backprojection for DBP described in [Zeng, Med Phys, 2007].
  *

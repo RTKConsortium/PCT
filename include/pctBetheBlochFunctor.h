@@ -19,6 +19,7 @@ namespace pct
 {
 
 /** \class BetheBlochProtonStoppingPower
+ * \ingroup PCT
  * \brief Proton stopping power according to the Bethe-Bloch equation
  * The function corresponds to:
  *  - F in [Li, MIC-NSS, 2003].
@@ -84,6 +85,7 @@ private:
 };
 
 /** \class IntegratedBetheBlochProtonStoppingPowerInverse
+ * \ingroup PCT
  * \brief Numerical for integral used in proton CT.
  */
 template <class TInput, class TOutput>

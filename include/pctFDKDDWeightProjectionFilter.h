@@ -5,6 +5,7 @@
 #include <rtkThreeDCircularProjectionGeometry.h>
 
 /** \class FDKDDWeightProjectionFilter
+ *  \ingroup PCT
  * \brief Weighting of projections to correct for the divergence in
  * filtered backprojection reconstruction algorithms.
  * The weighting comprises:
