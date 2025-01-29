@@ -8,26 +8,27 @@
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
 
-int main(int argc, char * argv[])
+int
+main(int argc, char * argv[])
 {
   GGO(pctzengbackprojections, args_info);
 
-  typedef float InputPixelType;
+  using InputPixelType = float;
   const unsigned int Dimension = 4;
-  typedef itk::Image< InputPixelType, Dimension > InputImageType;
+  using InputImageType = itk::Image<InputPixelType, Dimension>;
 
   itk::ImageFileReader<InputImageType>::Pointer reader;
   reader = itk::ImageFileReader<InputImageType>::New();
   reader->SetFileName(args_info.input_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(reader->Update())
 
-  typedef pct::ZengBackProjectionImageFilter<InputImageType> ZengFilterType;
+  using ZengFilterType = pct::ZengBackProjectionImageFilter<InputImageType>;
   ZengFilterType::Pointer zeng;
   zeng = ZengFilterType::New();
-  zeng->SetInput( reader->GetOutput() );
+  zeng->SetInput(reader->GetOutput());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(zeng->Update())
 
-  typedef itk::ImageFileWriter< ZengFilterType::OutputImageType > WriterType;
+  using WriterType = itk::ImageFileWriter<ZengFilterType::OutputImageType>;
   WriterType::Pointer writer = WriterType::New();
   writer->SetInput(zeng->GetOutput(0));
   writer->SetFileName(args_info.outputc_arg);

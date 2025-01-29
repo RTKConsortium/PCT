@@ -60,8 +60,8 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>::BeforeThreadedGenerateDa
     {
       std::cout << std::endl << "Reading " << m_ProtonPairsFileNames[iProj] << "... " << std::flush;
       // Read pairs
-      typedef itk::ImageFileReader<ProtonPairsImageType> ReaderType;
-      ReaderType::Pointer                                reader = ReaderType::New();
+      using ReaderType = itk::ImageFileReader<ProtonPairsImageType>;
+      ReaderType::Pointer reader = ReaderType::New();
       reader->SetFileName(m_ProtonPairsFileNames[iProj]);
       reader->Update();
       m_ProtonPairs = reader->GetOutput();
@@ -127,7 +127,7 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>::BeforeThreadedGenerateDa
           }
 
           // Corrections
-          typedef itk::Vector<double, 3> VectorType;
+          using VectorType = itk::Vector<double, 3>;
 
           // Calculate corner positions and largest diagonal in axial plane
           typename TOutputImage::IndexType idxCorner1, idxCorner2;
@@ -316,11 +316,11 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>::BeforeThreadedGenerateDa
   template <class TInputImage, class TOutputImage>
   void ProtonPairsToBackProjection<TInputImage, TOutputImage>::AfterThreadedGenerateData()
   {
-    typedef typename itk::ImageRegionIterator<TOutputImage> ImageIteratorType;
+    using ImageIteratorType = typename itk::ImageRegionIterator<TOutputImage>;
     ImageIteratorType itOut(this->GetOutput(), this->GetOutput()->GetRequestedRegion());
 
-    typedef itk::ImageRegionIterator<CountImageType> ImageCountIteratorType;
-    ImageCountIteratorType                           itCOut(m_Counts, this->GetOutput()->GetRequestedRegion());
+    using ImageCountIteratorType = itk::ImageRegionIterator<CountImageType>;
+    ImageCountIteratorType itCOut(m_Counts, this->GetOutput()->GetRequestedRegion());
 
     // Set count image information
     m_Counts->SetSpacing(this->GetOutput()->GetSpacing());

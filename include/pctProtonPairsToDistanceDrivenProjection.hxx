@@ -44,8 +44,8 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::BeforeThreaded
     m_IonizationPotential, 600. * CLHEP::MeV, 0.1 * CLHEP::keV);
 
   // Read pairs
-  typedef itk::ImageFileReader<ProtonPairsImageType> ReaderType;
-  ReaderType::Pointer                                reader = ReaderType::New();
+  using ReaderType = itk::ImageFileReader<ProtonPairsImageType>;
+  ReaderType::Pointer reader = ReaderType::New();
   reader->SetFileName(m_ProtonPairsFileName);
   reader->Update();
   m_ProtonPairs = reader->GetOutput();
@@ -168,7 +168,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
     imgSpacingInv[i] = 1. / imgSpacing[i];
 
   // Corrections
-  typedef itk::Vector<double, 3> VectorType;
+  using VectorType = itk::Vector<double, 3>;
 
   // Create zmm and magnitude lut (look up table)
   itk::ImageRegionIterator<ProtonPairsImageType> it(m_ProtonPairs, region);
@@ -204,7 +204,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
     double anglex = 0., angley = 0.;
     if (m_ComputeScattering)
     {
-      typedef itk::Vector<double, 2> VectorTwoDType;
+      using VectorTwoDType = itk::Vector<double, 2>;
 
       VectorTwoDType dInX, dInY, dOutX, dOutY;
       dInX[0] = dIn[0];
@@ -468,11 +468,11 @@ template <class TInputImage, class TOutputImage>
 void
 ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::AfterThreadedGenerateData()
 {
-  typedef typename itk::ImageRegionIterator<TOutputImage> ImageIteratorType;
-  ImageIteratorType                                       itOut(m_Outputs[0], m_Outputs[0]->GetLargestPossibleRegion());
+  using ImageIteratorType = typename itk::ImageRegionIterator<TOutputImage>;
+  ImageIteratorType itOut(m_Outputs[0], m_Outputs[0]->GetLargestPossibleRegion());
 
-  typedef itk::ImageRegionIterator<CountImageType> ImageCountIteratorType;
-  ImageCountIteratorType                           itCOut(m_Counts[0], m_Outputs[0]->GetLargestPossibleRegion());
+  using ImageCountIteratorType = itk::ImageRegionIterator<CountImageType>;
+  ImageCountIteratorType itCOut(m_Counts[0], m_Outputs[0]->GetLargestPossibleRegion());
 
   // Merge the projection computed in each thread to the first one
   for (unsigned int i = 1; i < this->GetNumberOfWorkUnits(); i++)
@@ -549,10 +549,10 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::AfterThreadedG
 
   if (m_ComputeScattering)
   {
-    typedef itk::ImageRegionIterator<AngleImageType> ImageAngleIteratorType;
-    ImageAngleIteratorType                           itAngleOut(m_Angles[0], m_Outputs[0]->GetLargestPossibleRegion());
+    using ImageAngleIteratorType = itk::ImageRegionIterator<AngleImageType>;
+    ImageAngleIteratorType itAngleOut(m_Angles[0], m_Outputs[0]->GetLargestPossibleRegion());
 
-    typedef itk::ImageRegionIterator<AngleImageType> ImageAngleSqIteratorType;
+    using ImageAngleSqIteratorType = itk::ImageRegionIterator<AngleImageType>;
     ImageAngleSqIteratorType itAngleSqOut(m_AnglesSq[0], m_Outputs[0]->GetLargestPossibleRegion());
 
     if (!m_Robust)

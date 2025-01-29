@@ -104,16 +104,16 @@ class ITK_EXPORT EnergyAdaptiveMLPFunction : public MostLikelyPathFunction<doubl
 {
 public:
   /** Standard class typedefs. */
-  typedef EnergyAdaptiveMLPFunction      Self;
-  typedef MostLikelyPathFunction<double> Superclass;
-  typedef itk::SmartPointer<Self>        Pointer;
-  typedef itk::SmartPointer<const Self>  ConstPointer;
+  using Self = EnergyAdaptiveMLPFunction;
+  using Superclass = MostLikelyPathFunction<double>;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
   /** Useful defines. */
-  typedef Superclass::VectorType VectorType;
+  using VectorType = Superclass::VectorType;
 
   /* Initialize the MLP estimator */
   virtual void

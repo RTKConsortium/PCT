@@ -12,48 +12,50 @@
 #include <itkTimeProbe.h>
 #include <itkChangeInformationImageFilter.h>
 
-int main(int argc, char * argv[])
+int
+main(int argc, char * argv[])
 {
   GGO(pctbinning, args_info);
 
-  if(args_info.elosswepl_given && args_info.output_given)
-    {
+  if (args_info.elosswepl_given && args_info.output_given)
+  {
     std::cerr << "Only --output or --elosswepl should be provided" << std::endl;
     return EXIT_FAILURE;
-    }
+  }
 
-  typedef float OutputPixelType;
+  using OutputPixelType = float;
   const unsigned int Dimension = 3;
-  typedef itk::Image< OutputPixelType, Dimension > OutputImageType;
+  using OutputImageType = itk::Image<OutputPixelType, Dimension>;
 
-  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads( std::min<double>(8., itk::MultiThreaderBase::GetGlobalMaximumNumberOfThreads() ) );
+  itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads(
+    std::min<double>(8., itk::MultiThreaderBase::GetGlobalMaximumNumberOfThreads()));
 
   // Create a stack of empty projection images
-  typedef rtk::ConstantImageSource< OutputImageType > ConstantImageSourceType;
+  using ConstantImageSourceType = rtk::ConstantImageSource<OutputImageType>;
   ConstantImageSourceType::Pointer constantImageSource = ConstantImageSourceType::New();
   rtk::SetConstantImageSourceFromGgo<ConstantImageSourceType, args_info_pctbinning>(constantImageSource, args_info);
-  TRY_AND_EXIT_ON_ITK_EXCEPTION( constantImageSource->Update() );
+  TRY_AND_EXIT_ON_ITK_EXCEPTION(constantImageSource->Update());
 
   // Projection filter
-  typedef pct::ProtonPairsToDistanceDrivenProjection<OutputImageType, OutputImageType> ProjectionFilter;
+  using ProjectionFilter = pct::ProtonPairsToDistanceDrivenProjection<OutputImageType, OutputImageType>;
   ProjectionFilter::Pointer projection = ProjectionFilter::New();
-  projection->SetInput( constantImageSource->GetOutput() );
-  projection->SetProtonPairsFileName( args_info.input_arg );
-  projection->SetSourceDistance( args_info.source_arg );
-  projection->SetMostLikelyPathType( args_info.mlptype_arg );
-  projection->SetMostLikelyPathPolynomialDegree( args_info.mlppolydeg_arg );
-  projection->SetMostLikelyPathTrackerUncertainties( args_info.mlptrackeruncert_flag );
-  projection->SetTrackerResolution( args_info.trackerresolution_arg );
-  projection->SetTrackerPairSpacing( args_info.trackerspacing_arg );
-  projection->SetMaterialBudget( args_info.materialbudget_arg );
-  projection->SetIonizationPotential( args_info.ionpot_arg * CLHEP::eV );
-  projection->SetRobust( args_info.robust_flag );
-  projection->SetComputeScattering( args_info.scatwepl_given );
-  projection->SetComputeNoise( args_info.noise_given );
+  projection->SetInput(constantImageSource->GetOutput());
+  projection->SetProtonPairsFileName(args_info.input_arg);
+  projection->SetSourceDistance(args_info.source_arg);
+  projection->SetMostLikelyPathType(args_info.mlptype_arg);
+  projection->SetMostLikelyPathPolynomialDegree(args_info.mlppolydeg_arg);
+  projection->SetMostLikelyPathTrackerUncertainties(args_info.mlptrackeruncert_flag);
+  projection->SetTrackerResolution(args_info.trackerresolution_arg);
+  projection->SetTrackerPairSpacing(args_info.trackerspacing_arg);
+  projection->SetMaterialBudget(args_info.materialbudget_arg);
+  projection->SetIonizationPotential(args_info.ionpot_arg * CLHEP::eV);
+  projection->SetRobust(args_info.robust_flag);
+  projection->SetComputeScattering(args_info.scatwepl_given);
+  projection->SetComputeNoise(args_info.noise_given);
 
-  if(args_info.quadricIn_given)
-    {
-    //quadric = object surface
+  if (args_info.quadricIn_given)
+  {
+    // quadric = object surface
     ProjectionFilter::RQIType::Pointer qIn = ProjectionFilter::RQIType::New();
     qIn->SetA(args_info.quadricIn_arg[0]);
     qIn->SetB(args_info.quadricIn_arg[1]);
@@ -66,9 +68,9 @@ int main(int argc, char * argv[])
     qIn->SetI(args_info.quadricIn_arg[8]);
     qIn->SetJ(args_info.quadricIn_arg[9]);
     projection->SetQuadricIn(qIn);
-    }
-  if(args_info.quadricOut_given)
-    {
+  }
+  if (args_info.quadricOut_given)
+  {
     ProjectionFilter::RQIType::Pointer qOut = ProjectionFilter::RQIType::New();
     qOut->SetA(args_info.quadricOut_arg[0]);
     qOut->SetB(args_info.quadricOut_arg[1]);
@@ -81,73 +83,73 @@ int main(int argc, char * argv[])
     qOut->SetI(args_info.quadricOut_arg[8]);
     qOut->SetJ(args_info.quadricOut_arg[9]);
     projection->SetQuadricOut(qOut);
-    }
+  }
 
-  TRY_AND_EXIT_ON_ITK_EXCEPTION( projection->Update() );
+  TRY_AND_EXIT_ON_ITK_EXCEPTION(projection->Update());
 
-  SmallHoleFiller< OutputImageType > filler;
-  if(args_info.fill_flag)
-    {
-    filler.SetImage( projection->GetOutput() );
+  SmallHoleFiller<OutputImageType> filler;
+  if (args_info.fill_flag)
+  {
+    filler.SetImage(projection->GetOutput());
     filler.SetHolePixel(0.);
     filler.Fill();
-    }
+  }
 
-  typedef itk::ChangeInformationImageFilter< OutputImageType > CIIType;
+  using CIIType = itk::ChangeInformationImageFilter<OutputImageType>;
   CIIType::Pointer cii = CIIType::New();
-  if(args_info.fill_flag)
+  if (args_info.fill_flag)
     cii->SetInput(filler.GetOutput());
   else
     cii->SetInput(projection->GetOutput());
   cii->ChangeOriginOn();
   cii->ChangeDirectionOn();
   cii->ChangeSpacingOn();
-  cii->SetOutputDirection( projection->GetOutput()->GetDirection() );
-  cii->SetOutputOrigin(    projection->GetOutput()->GetOrigin() );
-  cii->SetOutputSpacing(   projection->GetOutput()->GetSpacing() );
+  cii->SetOutputDirection(projection->GetOutput()->GetDirection());
+  cii->SetOutputOrigin(projection->GetOutput()->GetOrigin());
+  cii->SetOutputSpacing(projection->GetOutput()->GetSpacing());
 
-  if(args_info.elosswepl_given || args_info.output_given)
-    {
+  if (args_info.elosswepl_given || args_info.output_given)
+  {
     // Write
-    typedef itk::ImageFileWriter<  OutputImageType > WriterType;
+    using WriterType = itk::ImageFileWriter<OutputImageType>;
     WriterType::Pointer writer = WriterType::New();
-    if(args_info.elosswepl_given)
-      writer->SetFileName( args_info.elosswepl_arg );
+    if (args_info.elosswepl_given)
+      writer->SetFileName(args_info.elosswepl_arg);
     else
-      writer->SetFileName( args_info.output_arg );
-    writer->SetInput( cii->GetOutput() );
-    TRY_AND_EXIT_ON_ITK_EXCEPTION( writer->Update() );
-    }
+      writer->SetFileName(args_info.output_arg);
+    writer->SetInput(cii->GetOutput());
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update());
+  }
 
-  if(args_info.count_given)
-    {
+  if (args_info.count_given)
+  {
     // Write
-    typedef itk::ImageFileWriter< ProjectionFilter::CountImageType > CountWriterType;
+    using CountWriterType = itk::ImageFileWriter<ProjectionFilter::CountImageType>;
     CountWriterType::Pointer cwriter = CountWriterType::New();
-    cwriter->SetFileName( args_info.count_arg );
-    cwriter->SetInput( projection->GetCount() );
-    TRY_AND_EXIT_ON_ITK_EXCEPTION( cwriter->Update() )
-    }
+    cwriter->SetFileName(args_info.count_arg);
+    cwriter->SetInput(projection->GetCount());
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(cwriter->Update())
+  }
 
-  if(args_info.scatwepl_given)
-    {
+  if (args_info.scatwepl_given)
+  {
     // Write
-    typedef itk::ImageFileWriter< ProjectionFilter::AngleImageType > AngleWriterType;
+    using AngleWriterType = itk::ImageFileWriter<ProjectionFilter::AngleImageType>;
     AngleWriterType::Pointer swriter = AngleWriterType::New();
-    swriter->SetFileName( args_info.scatwepl_arg );
-    swriter->SetInput( projection->GetAngle() );
-    TRY_AND_EXIT_ON_ITK_EXCEPTION( swriter->Update() )
-    }
+    swriter->SetFileName(args_info.scatwepl_arg);
+    swriter->SetInput(projection->GetAngle());
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(swriter->Update())
+  }
 
-  if(args_info.noise_given)
-    {
+  if (args_info.noise_given)
+  {
     // Write
-    typedef itk::ImageFileWriter<  OutputImageType > WriterType;
+    using WriterType = itk::ImageFileWriter<OutputImageType>;
     WriterType::Pointer nwriter = WriterType::New();
-    nwriter->SetFileName( args_info.noise_arg );
-    nwriter->SetInput( projection->GetSquaredOutput() );
-    TRY_AND_EXIT_ON_ITK_EXCEPTION( nwriter->Update() )
-    }
+    nwriter->SetFileName(args_info.noise_arg);
+    nwriter->SetInput(projection->GetSquaredOutput());
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(nwriter->Update())
+  }
 
   return EXIT_SUCCESS;
 }

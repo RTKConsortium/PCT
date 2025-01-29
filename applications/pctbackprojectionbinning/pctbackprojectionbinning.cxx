@@ -14,14 +14,15 @@
 #include <itkTimeProbe.h>
 #include <itkChangeInformationImageFilter.h>
 
-int main(int argc, char * argv[])
+int
+main(int argc, char * argv[])
 {
   GGO(pctbackprojectionbinning, args_info);
 
-  typedef float OutputPixelType;
+  using OutputPixelType = float;
   const unsigned int Dimension = 4;
-  typedef itk::Image< OutputPixelType, Dimension > OutputImageType;
-  typedef pct::ProtonPairsToBackProjection<OutputImageType, OutputImageType> ProjectionFilter;
+  using OutputImageType = itk::Image<OutputPixelType, Dimension>;
+  using ProjectionFilter = pct::ProtonPairsToBackProjection<OutputImageType, OutputImageType>;
 
   // Generate file names
   itk::RegularExpressionSeriesFileNames::Pointer names = itk::RegularExpressionSeriesFileNames::New();
@@ -30,23 +31,16 @@ int main(int argc, char * argv[])
   names->SetRegularExpression(args_info.regexp_arg);
   names->SetSubMatch(0);
 
-  if(args_info.verbose_flag)
-    std::cout << "Regular expression matches "
-              << names->GetFileNames().size()
-              << " file(s)..."
-              << std::endl;
+  if (args_info.verbose_flag)
+    std::cout << "Regular expression matches " << names->GetFileNames().size() << " file(s)..." << std::endl;
 
   // Read or create bp images
-  OutputImageType::Pointer inBp;
+  OutputImageType::Pointer            inBp;
   ProjectionFilter::CountImagePointer inCount;
-  if(args_info.bpVal_given)
-    {
-    if(args_info.verbose_flag)
-      std::cout << "Reading input files "
-                << args_info.bpVal_arg
-                << " and "
-                << args_info.bpCount_arg
-                << "..."
+  if (args_info.bpVal_given)
+  {
+    if (args_info.verbose_flag)
+      std::cout << "Reading input files " << args_info.bpVal_arg << " and " << args_info.bpCount_arg << "..."
                 << std::endl;
 
     itk::ImageFileReader<OutputImageType>::Pointer readBPVal = itk::ImageFileReader<OutputImageType>::New();
@@ -54,51 +48,52 @@ int main(int argc, char * argv[])
     TRY_AND_EXIT_ON_ITK_EXCEPTION(readBPVal->Update());
     inBp = readBPVal->GetOutput();
 
-    itk::ImageFileReader<ProjectionFilter::CountImageType>::Pointer readBPCount = itk::ImageFileReader<ProjectionFilter::CountImageType>::New();
+    itk::ImageFileReader<ProjectionFilter::CountImageType>::Pointer readBPCount =
+      itk::ImageFileReader<ProjectionFilter::CountImageType>::New();
     readBPCount->SetFileName(args_info.bpCount_arg);
     TRY_AND_EXIT_ON_ITK_EXCEPTION(readBPCount->Update());
     inCount = readBPCount->GetOutput();
-    }
+  }
   else
-    {
-    if(args_info.verbose_flag)
-      std::cout << "Starting from empty images..."
-                << std::endl;
-    rtk::ConstantImageSource< OutputImageType >::Pointer constantImageSource = rtk::ConstantImageSource< OutputImageType >::New();
-    rtk::SetConstantImageSourceFromGgo<rtk::ConstantImageSource< OutputImageType >, args_info_pctbackprojectionbinning>(constantImageSource, args_info);
-    TRY_AND_EXIT_ON_ITK_EXCEPTION( constantImageSource->Update() );
+  {
+    if (args_info.verbose_flag)
+      std::cout << "Starting from empty images..." << std::endl;
+    rtk::ConstantImageSource<OutputImageType>::Pointer constantImageSource =
+      rtk::ConstantImageSource<OutputImageType>::New();
+    rtk::SetConstantImageSourceFromGgo<rtk::ConstantImageSource<OutputImageType>, args_info_pctbackprojectionbinning>(
+      constantImageSource, args_info);
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(constantImageSource->Update());
     inBp = constantImageSource->GetOutput();
 
-    rtk::ConstantImageSource< ProjectionFilter::CountImageType >::Pointer countSource = rtk::ConstantImageSource< ProjectionFilter::CountImageType >::New();
-    rtk::SetConstantImageSourceFromGgo<rtk::ConstantImageSource< ProjectionFilter::CountImageType >, args_info_pctbackprojectionbinning>(countSource, args_info);
-    TRY_AND_EXIT_ON_ITK_EXCEPTION( countSource->Update() );
+    rtk::ConstantImageSource<ProjectionFilter::CountImageType>::Pointer countSource =
+      rtk::ConstantImageSource<ProjectionFilter::CountImageType>::New();
+    rtk::SetConstantImageSourceFromGgo<rtk::ConstantImageSource<ProjectionFilter::CountImageType>,
+                                       args_info_pctbackprojectionbinning>(countSource, args_info);
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(countSource->Update());
     inCount = countSource->GetOutput();
-    }
+  }
 
   // Projection filter
   ProjectionFilter::Pointer projection = ProjectionFilter::New();
-  projection->SetInput( inBp );
-  projection->SetCounts( inCount );
-  projection->SetProtonPairsFileNames( names->GetFileNames() );
-  projection->SetMostLikelyPathType( args_info.mlptype_arg );
-  projection->SetIonizationPotential( args_info.ionpot_arg * CLHEP::eV );
-  projection->SetDisableRotation( args_info.norotation_flag );
+  projection->SetInput(inBp);
+  projection->SetCounts(inCount);
+  projection->SetProtonPairsFileNames(names->GetFileNames());
+  projection->SetMostLikelyPathType(args_info.mlptype_arg);
+  projection->SetIonizationPotential(args_info.ionpot_arg * CLHEP::eV);
+  projection->SetDisableRotation(args_info.norotation_flag);
 
   // Geometry
-  if(args_info.verbose_flag)
-    std::cout << "Reading geometry information from "
-              << args_info.geometry_arg
-              << "..."
-              << std::endl;
+  if (args_info.verbose_flag)
+    std::cout << "Reading geometry information from " << args_info.geometry_arg << "..." << std::endl;
   rtk::ThreeDCircularProjectionGeometryXMLFileReader::Pointer geometryReader;
   geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
   geometryReader->SetFilename(args_info.geometry_arg);
-  TRY_AND_EXIT_ON_ITK_EXCEPTION( geometryReader->GenerateOutputInformation() )
-  projection->SetGeometry( geometryReader->GetOutputObject() );
+  TRY_AND_EXIT_ON_ITK_EXCEPTION(geometryReader->GenerateOutputInformation())
+  projection->SetGeometry(geometryReader->GetOutputObject());
 
-  if(args_info.quadricIn_given)
-    {
-    //quadric = object surface
+  if (args_info.quadricIn_given)
+  {
+    // quadric = object surface
     ProjectionFilter::RQIType::Pointer qIn = ProjectionFilter::RQIType::New();
     qIn->SetA(args_info.quadricIn_arg[0]);
     qIn->SetB(args_info.quadricIn_arg[1]);
@@ -111,9 +106,9 @@ int main(int argc, char * argv[])
     qIn->SetI(args_info.quadricIn_arg[8]);
     qIn->SetJ(args_info.quadricIn_arg[9]);
     projection->SetQuadricIn(qIn);
-    }
-  if(args_info.quadricOut_given)
-    {
+  }
+  if (args_info.quadricOut_given)
+  {
     ProjectionFilter::RQIType::Pointer qOut = ProjectionFilter::RQIType::New();
     qOut->SetA(args_info.quadricOut_arg[0]);
     qOut->SetB(args_info.quadricOut_arg[1]);
@@ -126,47 +121,47 @@ int main(int argc, char * argv[])
     qOut->SetI(args_info.quadricOut_arg[8]);
     qOut->SetJ(args_info.quadricOut_arg[9]);
     projection->SetQuadricOut(qOut);
-    }
+  }
 
-  TRY_AND_EXIT_ON_ITK_EXCEPTION( projection->Update() );
+  TRY_AND_EXIT_ON_ITK_EXCEPTION(projection->Update());
 
-  SmallHoleFiller< OutputImageType > filler;
-  if(args_info.fill_flag)
-    {
-    filler.SetImage( projection->GetOutput() );
+  SmallHoleFiller<OutputImageType> filler;
+  if (args_info.fill_flag)
+  {
+    filler.SetImage(projection->GetOutput());
     filler.SetHolePixel(0.);
     filler.Fill();
-    }
+  }
 
-  typedef itk::ChangeInformationImageFilter< OutputImageType > CIIType;
+  using CIIType = itk::ChangeInformationImageFilter<OutputImageType>;
   CIIType::Pointer cii = CIIType::New();
-  if(args_info.fill_flag)
+  if (args_info.fill_flag)
     cii->SetInput(filler.GetOutput());
   else
     cii->SetInput(projection->GetOutput());
   cii->ChangeOriginOn();
   cii->ChangeDirectionOn();
   cii->ChangeSpacingOn();
-  cii->SetOutputDirection( projection->GetOutput()->GetDirection() );
-  cii->SetOutputOrigin(    projection->GetOutput()->GetOrigin() );
-  cii->SetOutputSpacing(   projection->GetOutput()->GetSpacing() );
+  cii->SetOutputDirection(projection->GetOutput()->GetDirection());
+  cii->SetOutputOrigin(projection->GetOutput()->GetOrigin());
+  cii->SetOutputSpacing(projection->GetOutput()->GetSpacing());
 
   // Write
-  typedef itk::ImageFileWriter<  OutputImageType > WriterType;
+  using WriterType = itk::ImageFileWriter<OutputImageType>;
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( args_info.output_arg );
-  writer->SetInput( cii->GetOutput() );
-  TRY_AND_EXIT_ON_ITK_EXCEPTION( writer->Update() );
+  writer->SetFileName(args_info.output_arg);
+  writer->SetInput(cii->GetOutput());
+  TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update());
 
-  if(args_info.count_given)
-    {
+  if (args_info.count_given)
+  {
     // Write
-    typedef itk::ImageFileWriter< ProjectionFilter::CountImageType > CountWriterType;
+    using CountWriterType = itk::ImageFileWriter<ProjectionFilter::CountImageType>;
     CountWriterType::Pointer cwriter = CountWriterType::New();
-    cwriter->SetFileName( args_info.count_arg );
-    cwriter->SetInput( projection->GetCounts() );
-    TRY_AND_EXIT_ON_ITK_EXCEPTION( cwriter->Update() )
-    }
+    cwriter->SetFileName(args_info.count_arg);
+    cwriter->SetInput(projection->GetCounts());
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(cwriter->Update())
+  }
 
   return EXIT_SUCCESS;
 }

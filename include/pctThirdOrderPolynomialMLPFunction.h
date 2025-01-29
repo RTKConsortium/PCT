@@ -16,16 +16,16 @@ class ITK_EXPORT ThirdOrderPolynomialMLPFunction : public MostLikelyPathFunction
 {
 public:
   /** Standard class typedefs. */
-  typedef ThirdOrderPolynomialMLPFunction   Self;
-  typedef MostLikelyPathFunction<TCoordRep> Superclass;
-  typedef itk::SmartPointer<Self>           Pointer;
-  typedef itk::SmartPointer<const Self>     ConstPointer;
+  using Self = ThirdOrderPolynomialMLPFunction;
+  using Superclass = MostLikelyPathFunction<TCoordRep>;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
   /** Useful defines. */
-  typedef typename Superclass::VectorType VectorType;
+  using VectorType = typename Superclass::VectorType;
 
   /** Init the mlp parameters from the input and output directions and positions. */
   virtual void

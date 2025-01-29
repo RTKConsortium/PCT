@@ -12,18 +12,18 @@ class ITK_EXPORT FDKDDBackProjectionImageFilter : public rtk::BackProjectionImag
 {
 public:
   /** Standard class typedefs. */
-  typedef FDKDDBackProjectionImageFilter                            Self;
-  typedef rtk::BackProjectionImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef itk::SmartPointer<Self>                                   Pointer;
-  typedef itk::SmartPointer<const Self>                             ConstPointer;
+  using Self = FDKDDBackProjectionImageFilter;
+  using Superclass = rtk::BackProjectionImageFilter<TInputImage, TOutputImage>;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  typedef typename Superclass::ProjectionMatrixType ProjectionMatrixType;
-  typedef typename TOutputImage::RegionType         OutputImageRegionType;
-  typedef TInputImage                               ProjectionImageType;
-  typedef typename ProjectionImageType::Pointer     ProjectionImagePointer;
-  typedef typename ProjectionImageType::PixelType   ProjectionPixelType;
-  typedef itk::Image<float, 4>                      ProjectionStackType;
-  typedef ProjectionStackType::Pointer              ProjectionStackPointer;
+  using ProjectionMatrixType = typename Superclass::ProjectionMatrixType;
+  using OutputImageRegionType = typename TOutputImage::RegionType;
+  using ProjectionImageType = TInputImage;
+  using ProjectionImagePointer = typename ProjectionImageType::Pointer;
+  using ProjectionPixelType = typename ProjectionImageType::PixelType;
+  using ProjectionStackType = itk::Image<float, 4>;
+  using ProjectionStackPointer = ProjectionStackType::Pointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

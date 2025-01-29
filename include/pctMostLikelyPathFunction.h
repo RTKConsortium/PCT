@@ -23,13 +23,13 @@ class ITK_EXPORT MostLikelyPathFunction : public itk::LightObject
 {
 public:
   /** Standard class typedefs. */
-  typedef MostLikelyPathFunction        Self;
-  typedef itk::LightObject              Superclass;
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
+  using Self = MostLikelyPathFunction;
+  using Superclass = itk::LightObject;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Useful defines. */
-  typedef itk::Vector<TCoordRep, 3> VectorType;
+  using VectorType = itk::Vector<TCoordRep, 3>;
 
   /** Init the mlp parameters from the input and output directions and positions. */
   virtual void

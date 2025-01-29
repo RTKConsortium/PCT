@@ -25,15 +25,15 @@ class ITK_EXPORT FDKDDWeightProjectionFilter : public itk::InPlaceImageFilter<TI
 {
 public:
   /** Standard class typedefs. */
-  typedef FDKDDWeightProjectionFilter                        Self;
-  typedef itk::ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef itk::SmartPointer<Self>                            Pointer;
-  typedef itk::SmartPointer<const Self>                      ConstPointer;
+  using Self = FDKDDWeightProjectionFilter;
+  using Superclass = itk::ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Some convenient typedefs. */
-  typedef TInputImage                          InputImageType;
-  typedef TOutputImage                         OutputImageType;
-  typedef typename OutputImageType::RegionType OutputImageRegionType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using OutputImageRegionType = typename OutputImageType::RegionType;
 
   /** Standard New method. */
   itkNewMacro(Self);

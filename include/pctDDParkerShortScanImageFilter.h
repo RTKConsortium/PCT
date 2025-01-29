@@ -24,21 +24,21 @@ class ITK_EXPORT DDParkerShortScanImageFilter : public itk::InPlaceImageFilter<T
 {
 public:
   /** Standard class typedefs. */
-  typedef DDParkerShortScanImageFilter Self;
+  using Self = DDParkerShortScanImageFilter;
 
-  typedef itk::ImageToImageFilter<TInputImage, TOutputImage> Superclass;
+  using Superclass = itk::ImageToImageFilter<TInputImage, TOutputImage>;
 
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Some convenient typedefs. */
-  typedef TInputImage                                     InputImageType;
-  typedef TOutputImage                                    OutputImageType;
-  typedef typename OutputImageType::RegionType            OutputImageRegionType;
-  typedef itk::Image<typename TOutputImage::PixelType, 1> WeightImageType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using OutputImageRegionType = typename OutputImageType::RegionType;
+  using WeightImageType = itk::Image<typename TOutputImage::PixelType, 1>;
 
-  typedef rtk::ThreeDCircularProjectionGeometry GeometryType;
-  typedef GeometryType::Pointer                 GeometryPointer;
+  using GeometryType = rtk::ThreeDCircularProjectionGeometry;
+  using GeometryPointer = GeometryType::Pointer;
 
   /** Standard New method. */
   itkNewMacro(Self);

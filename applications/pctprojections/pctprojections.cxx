@@ -7,13 +7,14 @@
 #include <itkRegularExpressionSeriesFileNames.h>
 #include <itkTimeProbe.h>
 
-int main(int argc, char * argv[])
+int
+main(int argc, char * argv[])
 {
   GGO(pctprojections, args_info);
 
-  typedef float OutputPixelType;
+  using OutputPixelType = float;
   const unsigned int Dimension = 4;
-  typedef itk::Image< OutputPixelType, Dimension > OutputImageType;
+  using OutputImageType = itk::Image<OutputPixelType, Dimension>;
 
   // Generate file names
   itk::RegularExpressionSeriesFileNames::Pointer names = itk::RegularExpressionSeriesFileNames::New();
@@ -23,25 +24,26 @@ int main(int argc, char * argv[])
   names->SetSubMatch(0);
 
   // Projections reader
-  typedef rtk::ProjectionsReader< OutputImageType > ReaderType;
+  using ReaderType = rtk::ProjectionsReader<OutputImageType>;
   ReaderType::Pointer reader = ReaderType::New();
-  reader->SetFileNames( names->GetFileNames() );
-  if(args_info.wpc_given)
-    {
+  reader->SetFileNames(names->GetFileNames());
+  if (args_info.wpc_given)
+  {
     std::vector<double> coeffs;
-    coeffs.assign(args_info.wpc_arg, args_info.wpc_arg+args_info.wpc_given);
+    coeffs.assign(args_info.wpc_arg, args_info.wpc_arg + args_info.wpc_given);
     reader->SetWaterPrecorrectionCoefficients(coeffs);
-    }
+  }
 
   // Write
-  typedef itk::ImageFileWriter<  OutputImageType > WriterType;
+  using WriterType = itk::ImageFileWriter<OutputImageType>;
   WriterType::Pointer writer = WriterType::New();
-  writer->SetFileName( args_info.output_arg );
-  writer->SetInput( reader->GetOutput() );
-  TRY_AND_EXIT_ON_ITK_EXCEPTION( writer->UpdateOutputInformation() )
-  writer->SetNumberOfStreamDivisions( 1 + reader->GetOutput()->GetLargestPossibleRegion().GetNumberOfPixels() / (1024*1024*4) );
+  writer->SetFileName(args_info.output_arg);
+  writer->SetInput(reader->GetOutput());
+  TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->UpdateOutputInformation())
+  writer->SetNumberOfStreamDivisions(1 + reader->GetOutput()->GetLargestPossibleRegion().GetNumberOfPixels() /
+                                           (1024 * 1024 * 4));
 
-  TRY_AND_EXIT_ON_ITK_EXCEPTION( writer->Update() )
+  TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update())
 
   return EXIT_SUCCESS;
 }

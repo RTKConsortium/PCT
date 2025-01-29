@@ -21,15 +21,15 @@ class ITK_EXPORT ZengBackProjectionImageFilter : public itk::ImageToImageFilter<
 {
 public:
   /** Standard class typedefs. */
-  typedef ZengBackProjectionImageFilter                      Self;
-  typedef itk::ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef itk::SmartPointer<Self>                            Pointer;
-  typedef itk::SmartPointer<const Self>                      ConstPointer;
+  using Self = ZengBackProjectionImageFilter;
+  using Superclass = itk::ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Some convenient typedefs. */
-  typedef TInputImage                       InputImageType;
-  typedef TOutputImage                      OutputImageType;
-  typedef typename TOutputImage::RegionType OutputImageRegionType;
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using OutputImageRegionType = typename TOutputImage::RegionType;
 
   /** Standard New method. */
   itkNewMacro(Self);

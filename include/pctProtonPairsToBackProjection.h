@@ -17,28 +17,28 @@ class ITK_EXPORT ProtonPairsToBackProjection : public itk::InPlaceImageFilter<TI
 {
 public:
   /** Standard class typedefs. */
-  typedef ProtonPairsToBackProjection                        Self;
-  typedef itk::InPlaceImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef itk::SmartPointer<Self>                            Pointer;
-  typedef itk::SmartPointer<const Self>                      ConstPointer;
+  using Self = ProtonPairsToBackProjection;
+  using Superclass = itk::InPlaceImageFilter<TInputImage, TOutputImage>;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  typedef std::vector<std::string> FileNamesContainer;
+  using FileNamesContainer = std::vector<std::string>;
 
-  typedef itk::Vector<float, 3>               ProtonPairsPixelType;
-  typedef itk::Image<ProtonPairsPixelType, 2> ProtonPairsImageType;
-  typedef ProtonPairsImageType::Pointer       ProtonPairsImagePointer;
+  using ProtonPairsPixelType = itk::Vector<float, 3>;
+  using ProtonPairsImageType = itk::Image<ProtonPairsPixelType, 2>;
+  using ProtonPairsImagePointer = ProtonPairsImageType::Pointer;
 
-  typedef typename itk::Image<unsigned int, TInputImage::ImageDimension> CountImageType;
-  typedef typename CountImageType::Pointer                               CountImagePointer;
+  using CountImageType = typename itk::Image<unsigned int, TInputImage::ImageDimension>;
+  using CountImagePointer = typename CountImageType::Pointer;
 
-  typedef TOutputImage                         OutputImageType;
-  typedef typename OutputImageType::Pointer    OutputImagePointer;
-  typedef typename OutputImageType::RegionType OutputImageRegionType;
+  using OutputImageType = TOutputImage;
+  using OutputImagePointer = typename OutputImageType::Pointer;
+  using OutputImageRegionType = typename OutputImageType::RegionType;
 
-  typedef rtk::QuadricShape RQIType;
+  using RQIType = rtk::QuadricShape;
 
-  typedef rtk::ThreeDCircularProjectionGeometry GeometryType;
-  typedef typename GeometryType::Pointer        GeometryPointer;
+  using GeometryType = rtk::ThreeDCircularProjectionGeometry;
+  using GeometryPointer = typename GeometryType::Pointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);

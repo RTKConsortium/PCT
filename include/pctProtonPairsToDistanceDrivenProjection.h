@@ -16,26 +16,26 @@ class ITK_EXPORT ProtonPairsToDistanceDrivenProjection : public itk::InPlaceImag
 {
 public:
   /** Standard class typedefs. */
-  typedef ProtonPairsToDistanceDrivenProjection              Self;
-  typedef itk::InPlaceImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef itk::SmartPointer<Self>                            Pointer;
-  typedef itk::SmartPointer<const Self>                      ConstPointer;
+  using Self = ProtonPairsToDistanceDrivenProjection;
+  using Superclass = itk::InPlaceImageFilter<TInputImage, TOutputImage>;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  typedef itk::Vector<float, 3>               ProtonPairsPixelType;
-  typedef itk::Image<ProtonPairsPixelType, 2> ProtonPairsImageType;
-  typedef ProtonPairsImageType::Pointer       ProtonPairsImagePointer;
+  using ProtonPairsPixelType = itk::Vector<float, 3>;
+  using ProtonPairsImageType = itk::Image<ProtonPairsPixelType, 2>;
+  using ProtonPairsImagePointer = ProtonPairsImageType::Pointer;
 
-  typedef itk::Image<unsigned int, 3> CountImageType;
-  typedef CountImageType::Pointer     CountImagePointer;
+  using CountImageType = itk::Image<unsigned int, 3>;
+  using CountImagePointer = CountImageType::Pointer;
 
-  typedef itk::Image<float, 3>    AngleImageType;
-  typedef AngleImageType::Pointer AngleImagePointer;
+  using AngleImageType = itk::Image<float, 3>;
+  using AngleImagePointer = AngleImageType::Pointer;
 
-  typedef TOutputImage                         OutputImageType;
-  typedef typename OutputImageType::Pointer    OutputImagePointer;
-  typedef typename OutputImageType::RegionType OutputImageRegionType;
+  using OutputImageType = TOutputImage;
+  using OutputImagePointer = typename OutputImageType::Pointer;
+  using OutputImageRegionType = typename OutputImageType::RegionType;
 
-  typedef rtk::QuadricShape RQIType;
+  using RQIType = rtk::QuadricShape;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
