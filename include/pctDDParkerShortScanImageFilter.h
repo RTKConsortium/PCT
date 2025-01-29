@@ -19,9 +19,8 @@
 namespace pct
 {
 
-template<class TInputImage, class TOutputImage=TInputImage>
-class ITK_EXPORT DDParkerShortScanImageFilter :
-  public itk::InPlaceImageFilter<TInputImage, TOutputImage>
+template <class TInputImage, class TOutputImage = TInputImage>
+class ITK_EXPORT DDParkerShortScanImageFilter : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
@@ -52,14 +51,16 @@ public:
   itkSetMacro(Geometry, GeometryPointer);
 
 protected:
-  DDParkerShortScanImageFilter(){ this->SetInPlace(true); }
-  ~DDParkerShortScanImageFilter(){}
+  DDParkerShortScanImageFilter() { this->SetInPlace(true); }
+  ~DDParkerShortScanImageFilter() {}
 
-  virtual void DynamicThreadedGenerateData(const OutputImageRegionType& outputRegionForThread) override;
+  virtual void
+  DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
 
 private:
-  DDParkerShortScanImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&);             //purposely not implemented
+  DDParkerShortScanImageFilter(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   /** RTK geometry object */
   GeometryPointer m_Geometry;
@@ -74,7 +75,7 @@ private:
 } // end namespace pct
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "pctDDParkerShortScanImageFilter.hxx"
+#  include "pctDDParkerShortScanImageFilter.hxx"
 #endif
 
 #endif

@@ -12,31 +12,30 @@ namespace pct
 {
 
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT ProtonPairsToDistanceDrivenProjection :
-  public itk::InPlaceImageFilter<TInputImage,TOutputImage>
+class ITK_EXPORT ProtonPairsToDistanceDrivenProjection : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef ProtonPairsToDistanceDrivenProjection             Self;
-  typedef itk::InPlaceImageFilter<TInputImage,TOutputImage> Superclass;
-  typedef itk::SmartPointer<Self>                           Pointer;
-  typedef itk::SmartPointer<const Self>                     ConstPointer;
+  typedef ProtonPairsToDistanceDrivenProjection              Self;
+  typedef itk::InPlaceImageFilter<TInputImage, TOutputImage> Superclass;
+  typedef itk::SmartPointer<Self>                            Pointer;
+  typedef itk::SmartPointer<const Self>                      ConstPointer;
 
-  typedef itk::Vector<float, 3>                             ProtonPairsPixelType;
-  typedef itk::Image<ProtonPairsPixelType,2>                ProtonPairsImageType;
-  typedef ProtonPairsImageType::Pointer                     ProtonPairsImagePointer;
+  typedef itk::Vector<float, 3>               ProtonPairsPixelType;
+  typedef itk::Image<ProtonPairsPixelType, 2> ProtonPairsImageType;
+  typedef ProtonPairsImageType::Pointer       ProtonPairsImagePointer;
 
-  typedef itk::Image<unsigned int, 3>                       CountImageType;
-  typedef CountImageType::Pointer                           CountImagePointer;
+  typedef itk::Image<unsigned int, 3> CountImageType;
+  typedef CountImageType::Pointer     CountImagePointer;
 
-  typedef itk::Image<float, 3>                              AngleImageType;
-  typedef AngleImageType::Pointer                           AngleImagePointer;
+  typedef itk::Image<float, 3>    AngleImageType;
+  typedef AngleImageType::Pointer AngleImagePointer;
 
-  typedef TOutputImage                                      OutputImageType;
-  typedef typename OutputImageType::Pointer                 OutputImagePointer;
-  typedef typename OutputImageType::RegionType              OutputImageRegionType;
+  typedef TOutputImage                         OutputImageType;
+  typedef typename OutputImageType::Pointer    OutputImagePointer;
+  typedef typename OutputImageType::RegionType OutputImageRegionType;
 
-  typedef rtk::QuadricShape                                 RQIType;
+  typedef rtk::QuadricShape RQIType;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -78,10 +77,10 @@ public:
   /** Get/Set the count of proton pairs per pixel. */
   itkGetMacro(Count, CountImagePointer);
 
- /** Get/Set the angle of proton pairs per pixel. */
+  /** Get/Set the angle of proton pairs per pixel. */
   itkGetMacro(Angle, AngleImagePointer);
 
- /** Get/Set the angle of proton pairs per pixel. */
+  /** Get/Set the angle of proton pairs per pixel. */
   itkGetMacro(SquaredOutput, OutputImagePointer);
 
   /** Get/Set the ionization potential used in the Bethe-Bloch equation. */
@@ -128,43 +127,45 @@ protected:
   {}
 
 private:
-  ProtonPairsToDistanceDrivenProjection(const Self&); //purposely not implemented
-  void operator=(const Self&);            //purposely not implemented
+  ProtonPairsToDistanceDrivenProjection(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   std::string m_ProtonPairsFileName;
-  double m_SourceDistance;
+  double      m_SourceDistance;
   std::string m_MostLikelyPathType;
-  int m_MostLikelyPathPolynomialDegree;
+  int         m_MostLikelyPathPolynomialDegree;
 
   double m_BeamEnergy;
-  bool m_VariableBeamEnergy=false;
+  bool   m_VariableBeamEnergy = false;
 
   // MLP considering tracker uncertainties
-  bool m_MostLikelyPathTrackerUncertainties;
+  bool   m_MostLikelyPathTrackerUncertainties;
   double m_TrackerResolution;
   double m_TrackerPairSpacing;
   double m_MaterialBudget;
 
   /** Count event in each thread */
-  CountImagePointer m_Count;
+  CountImagePointer              m_Count;
   std::vector<CountImagePointer> m_Counts;
 
-  AngleImagePointer                 m_Angle;
-  std::vector<AngleImagePointer>    m_Angles;
-  std::vector< std::vector<float> > m_AnglesVectors;
-  std::mutex                        m_AnglesVectorsMutex;
+  AngleImagePointer               m_Angle;
+  std::vector<AngleImagePointer>  m_Angles;
+  std::vector<std::vector<float>> m_AnglesVectors;
+  std::mutex                      m_AnglesVectorsMutex;
 
-  AngleImagePointer m_AngleSq;
+  AngleImagePointer              m_AngleSq;
   std::vector<AngleImagePointer> m_AnglesSq;
 
-  OutputImagePointer m_SquaredOutput;
+  OutputImagePointer              m_SquaredOutput;
   std::vector<OutputImagePointer> m_SquaredOutputs; // NK: squared WEPL for noise projections
 
 
   /** Create one output per thread */
   std::vector<OutputImagePointer> m_Outputs;
-  // std::vector<OutputImagePointer> m_AngleOutputs; // Note NK: check these declarations. Are these members really used?
-  // std::vector<OutputImagePointer> m_AngleSqOutputs; // ... probably only m_Angles and m_AngleSq, declared above, are used.
+  // std::vector<OutputImagePointer> m_AngleOutputs; // Note NK: check these declarations. Are these members really
+  // used? std::vector<OutputImagePointer> m_AngleSqOutputs; // ... probably only m_Angles and m_AngleSq, declared
+  // above, are used.
 
   /** The two quadric functions defining the object support. */
   RQIType::Pointer m_QuadricIn;
@@ -174,7 +175,7 @@ private:
   double m_IonizationPotential;
 
   /** The functor to convert energy loss to attenuation */
-  Functor::IntegratedBetheBlochProtonStoppingPowerInverse<float, double> *m_ConvFunc;
+  Functor::IntegratedBetheBlochProtonStoppingPowerInverse<float, double> * m_ConvFunc;
 
   ProtonPairsImageType::Pointer m_ProtonPairs;
   bool                          m_Robust;
@@ -185,7 +186,7 @@ private:
 } // end namespace pct
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "pctProtonPairsToDistanceDrivenProjection.hxx"
+#  include "pctProtonPairsToDistanceDrivenProjection.hxx"
 #endif
 
 #endif

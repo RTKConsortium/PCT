@@ -12,15 +12,14 @@ namespace pct
  * \ingroup Functions
  */
 template <class TCoordRep = double>
-class ITK_EXPORT ThirdOrderPolynomialMLPFunction :
-    public MostLikelyPathFunction<TCoordRep>
+class ITK_EXPORT ThirdOrderPolynomialMLPFunction : public MostLikelyPathFunction<TCoordRep>
 {
 public:
   /** Standard class typedefs. */
-  typedef ThirdOrderPolynomialMLPFunction                       Self;
-  typedef MostLikelyPathFunction<TCoordRep>                     Superclass;
-  typedef itk::SmartPointer<Self>                               Pointer;
-  typedef itk::SmartPointer<const Self>                         ConstPointer;
+  typedef ThirdOrderPolynomialMLPFunction   Self;
+  typedef MostLikelyPathFunction<TCoordRep> Superclass;
+  typedef itk::SmartPointer<Self>           Pointer;
+  typedef itk::SmartPointer<const Self>     ConstPointer;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -29,22 +28,24 @@ public:
   typedef typename Superclass::VectorType VectorType;
 
   /** Init the mlp parameters from the input and output directions and positions. */
-  virtual void Init(const VectorType posIn, const VectorType posOut, const VectorType dirIn, const VectorType dirOut) override;
+  virtual void
+  Init(const VectorType posIn, const VectorType posOut, const VectorType dirIn, const VectorType dirOut) override;
 
   /** Evaluate the coordinates (x,y) at depth z. */
-  virtual void Evaluate( const TCoordRep z, TCoordRep &x, TCoordRep&y, TCoordRep &dx, TCoordRep&dy ) override;
+  virtual void
+  Evaluate(const TCoordRep z, TCoordRep & x, TCoordRep & y, TCoordRep & dx, TCoordRep & dy) override;
 
 protected:
-
   /// Constructor
-  ThirdOrderPolynomialMLPFunction(){}
+  ThirdOrderPolynomialMLPFunction() {}
 
   /// Destructor
-  ~ThirdOrderPolynomialMLPFunction(){}
+  ~ThirdOrderPolynomialMLPFunction() {}
 
 private:
-  ThirdOrderPolynomialMLPFunction( const Self& ); //purposely not implemented
-  void operator=( const Self& ); //purposely not implemented
+  ThirdOrderPolynomialMLPFunction(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   // Polynomial parameters in each direction
   TCoordRep ax, bx, cx, dx;

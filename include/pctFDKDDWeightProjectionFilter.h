@@ -20,16 +20,15 @@
 namespace pct
 {
 
-template<class TInputImage, class TOutputImage=TInputImage>
-class ITK_EXPORT FDKDDWeightProjectionFilter :
-  public itk::InPlaceImageFilter<TInputImage, TOutputImage>
+template <class TInputImage, class TOutputImage = TInputImage>
+class ITK_EXPORT FDKDDWeightProjectionFilter : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  typedef FDKDDWeightProjectionFilter Self;
+  typedef FDKDDWeightProjectionFilter                        Self;
   typedef itk::ImageToImageFilter<TInputImage, TOutputImage> Superclass;
-  typedef itk::SmartPointer<Self>       Pointer;
-  typedef itk::SmartPointer<const Self> ConstPointer;
+  typedef itk::SmartPointer<Self>                            Pointer;
+  typedef itk::SmartPointer<const Self>                      ConstPointer;
 
   /** Some convenient typedefs. */
   typedef TInputImage                          InputImageType;
@@ -47,7 +46,7 @@ public:
   itkSetMacro(Geometry, rtk::ThreeDCircularProjectionGeometry::Pointer);
 
 protected:
-  FDKDDWeightProjectionFilter()  {}
+  FDKDDWeightProjectionFilter() {}
   ~FDKDDWeightProjectionFilter() {}
 
   virtual void
@@ -56,8 +55,9 @@ protected:
   DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
 
 private:
-  FDKDDWeightProjectionFilter(const Self&); //purposely not implemented
-  void operator=(const Self&);            //purposely not implemented
+  FDKDDWeightProjectionFilter(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 
   /** Angular weights for each projection */
   std::vector<double> m_AngularWeightsAndRampFactor;
@@ -69,7 +69,7 @@ private:
 } // end namespace pct
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "pctFDKDDWeightProjectionFilter.hxx"
+#  include "pctFDKDDWeightProjectionFilter.hxx"
 #endif
 
 #endif

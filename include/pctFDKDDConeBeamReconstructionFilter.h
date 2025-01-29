@@ -16,9 +16,8 @@
 namespace pct
 {
 
-template<class TInputImage, class TOutputImage=TInputImage, class TFFTPrecision=double>
-class ITK_EXPORT FDKDDConeBeamReconstructionFilter :
-  public itk::ImageToImageFilter<TInputImage, TOutputImage>
+template <class TInputImage, class TOutputImage = TInputImage, class TFFTPrecision = double>
+class ITK_EXPORT FDKDDConeBeamReconstructionFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
@@ -31,14 +30,14 @@ public:
   typedef TInputImage  InputImageType;
   typedef TOutputImage OutputImageType;
 
-  typedef itk::Image<float, 4>                               ProjectionStackType;
-  typedef ProjectionStackType::Pointer                       ProjectionStackPointer;
+  typedef itk::Image<float, 4>         ProjectionStackType;
+  typedef ProjectionStackType::Pointer ProjectionStackPointer;
 
   /** Typedefs of each subfilter of this composite filter */
-  typedef itk::ExtractImageFilter< ProjectionStackType, ProjectionStackType >                ExtractFilterType;
-  typedef pct::FDKDDWeightProjectionFilter< ProjectionStackType, ProjectionStackType >       WeightFilterType;
-  typedef rtk::FFTRampImageFilter< ProjectionStackType, ProjectionStackType, TFFTPrecision > RampFilterType;
-  typedef pct::FDKDDBackProjectionImageFilter< OutputImageType, OutputImageType >            BackProjectionFilterType;
+  typedef itk::ExtractImageFilter<ProjectionStackType, ProjectionStackType>                ExtractFilterType;
+  typedef pct::FDKDDWeightProjectionFilter<ProjectionStackType, ProjectionStackType>       WeightFilterType;
+  typedef rtk::FFTRampImageFilter<ProjectionStackType, ProjectionStackType, TFFTPrecision> RampFilterType;
+  typedef pct::FDKDDBackProjectionImageFilter<OutputImageType, OutputImageType>            BackProjectionFilterType;
 
   /** Standard New method. */
   itkNewMacro(Self);
@@ -47,13 +46,20 @@ public:
   itkOverrideGetNameOfClassMacro(FDKDDConeBeamReconstructionFilter);
 
   /** Get / Set the object pointer to projection geometry */
-  virtual rtk::ThreeDCircularProjectionGeometry::Pointer GetGeometry();
-  virtual void SetGeometry(const rtk::ThreeDCircularProjectionGeometry::Pointer _arg);
+  virtual rtk::ThreeDCircularProjectionGeometry::Pointer
+  GetGeometry();
+  virtual void
+  SetGeometry(const rtk::ThreeDCircularProjectionGeometry::Pointer _arg);
 
   /** Get pointer to the ramp filter used by the feldkamp reconstruction */
-  typename RampFilterType::Pointer GetRampFilter() { return m_RampFilter; }
+  typename RampFilterType::Pointer
+  GetRampFilter()
+  {
+    return m_RampFilter;
+  }
 
-  void PrintTiming(std::ostream& os) const;
+  void
+  PrintTiming(std::ostream & os) const;
 
   /** Get / Set the stack of projection images */
   itkGetMacro(ProjectionStack, ProjectionStackPointer);
@@ -61,7 +67,7 @@ public:
 
 protected:
   FDKDDConeBeamReconstructionFilter();
-  ~FDKDDConeBeamReconstructionFilter(){}
+  ~FDKDDConeBeamReconstructionFilter() {}
 
   virtual void
   GenerateInputRequestedRegion() override;
@@ -79,15 +85,16 @@ protected:
   {}
 
   /** Pointers to each subfilter of this composite filter */
-  typename ExtractFilterType::Pointer m_ExtractFilter;
-  typename WeightFilterType::Pointer m_WeightFilter;
-  typename RampFilterType::Pointer m_RampFilter;
+  typename ExtractFilterType::Pointer        m_ExtractFilter;
+  typename WeightFilterType::Pointer         m_WeightFilter;
+  typename RampFilterType::Pointer           m_RampFilter;
   typename BackProjectionFilterType::Pointer m_BackProjectionFilter;
 
 private:
-  //purposely not implemented
-  FDKDDConeBeamReconstructionFilter(const Self&);
-  void operator=(const Self&);
+  // purposely not implemented
+  FDKDDConeBeamReconstructionFilter(const Self &);
+  void
+  operator=(const Self &);
 
   /** Probes to time reconstruction */
   itk::TimeProbe m_PreFilterProbe;
@@ -100,7 +107,7 @@ private:
 } // end namespace pct
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "pctFDKDDConeBeamReconstructionFilter.hxx"
+#  include "pctFDKDDConeBeamReconstructionFilter.hxx"
 #endif
 
 #endif

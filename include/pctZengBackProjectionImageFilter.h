@@ -15,9 +15,9 @@
 namespace pct
 {
 
-template<class TInputImage, class TOutputImage=itk::Image<typename TInputImage::PixelType, TInputImage::ImageDimension-1> >
-class ITK_EXPORT ZengBackProjectionImageFilter:
-  public itk::ImageToImageFilter<TInputImage, TOutputImage>
+template <class TInputImage,
+          class TOutputImage = itk::Image<typename TInputImage::PixelType, TInputImage::ImageDimension - 1>>
+class ITK_EXPORT ZengBackProjectionImageFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
@@ -27,9 +27,9 @@ public:
   typedef itk::SmartPointer<const Self>                      ConstPointer;
 
   /** Some convenient typedefs. */
-  typedef TInputImage                                     InputImageType;
-  typedef TOutputImage                                    OutputImageType;
-  typedef typename TOutputImage::RegionType               OutputImageRegionType;
+  typedef TInputImage                       InputImageType;
+  typedef TOutputImage                      OutputImageType;
+  typedef typename TOutputImage::RegionType OutputImageRegionType;
 
   /** Standard New method. */
   itkNewMacro(Self);
@@ -39,7 +39,7 @@ public:
 
 protected:
   ZengBackProjectionImageFilter();
-  ~ZengBackProjectionImageFilter(){}
+  ~ZengBackProjectionImageFilter() {}
 
   virtual void
   GenerateOutputInformation() override;
@@ -51,14 +51,15 @@ protected:
   MakeOutput(itk::ProcessObject::DataObjectPointerArraySizeType idx) override;
 
 private:
-  ZengBackProjectionImageFilter(const Self&); //purposely not implemented
-  void operator=(const Self&);                //purposely not implemented
+  ZengBackProjectionImageFilter(const Self &); // purposely not implemented
+  void
+  operator=(const Self &); // purposely not implemented
 }; // end of class
 
 } // end namespace pct
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#include "pctZengBackProjectionImageFilter.hxx"
+#  include "pctZengBackProjectionImageFilter.hxx"
 #endif
 
 #endif
