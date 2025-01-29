@@ -85,8 +85,8 @@ main(int argc, char * argv[])
 
   // Image information constants
   const ProjectionImageType::SizeType imgSize =
-    sumEnergy->GetOutput()->GetBufferedRegion().GetSize();                              // pixels number (vector)
-  const ProjectionImageType::PointType imgOrigin = sumEnergy->GetOutput()->GetOrigin(); // center position pixel (0,0)
+    sumEnergy->GetOutput()->GetBufferedRegion().GetSize();                                // pixels number (vector)
+  const ProjectionImageType::PointType   imgOrigin = sumEnergy->GetOutput()->GetOrigin(); // center position pixel (0,0)
   const ProjectionImageType::SpacingType imgSpacing = sumEnergy->GetOutput()->GetSpacing(); // space between pixels
   itk::Vector<float, 2>                  imgSpacingInv;
   for (unsigned int i = 0; i < 2; i++)
@@ -134,7 +134,7 @@ main(int argc, char * argv[])
         (args_info.source_arg == 0.) ? 1. : (args_info.source_arg - pOut[2]) / (args_info.source_arg - pIn[2]);
 
       const double xx = (pIn[0] * mag - imgOrigin[0]) * imgSpacingInv[0]; // x corrected (mag), converted in pixel units
-      const int i = itk::Math::Round<int, double>(xx);
+      const int    i = itk::Math::Round<int, double>(xx);
       if (i < 0 || i >= (int)imgSize[0])
         continue;
 
