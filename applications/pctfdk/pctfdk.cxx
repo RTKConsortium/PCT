@@ -17,7 +17,7 @@ main(int argc, char * argv[])
   using OutputPixelType = float;
   const unsigned int Dimension = 3;
 
-  using = OutputImageType itk::Image<OutputPixelType, Dimension>;
+  using OutputImageType = itk::Image<OutputPixelType, Dimension>;
 
   itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads(
     std::min<double>(8, itk::MultiThreaderBase::GetGlobalMaximumNumberOfThreads()));

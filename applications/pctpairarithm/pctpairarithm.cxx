@@ -41,7 +41,8 @@ main(int argc, char * argv[])
   }
 
   // Write
-  WriterType WriterType::Pointer writer = WriterType::New();
+  using WriterType = itk::ImageFileWriter<PairsImageType>;
+  WriterType::Pointer writer = WriterType::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(reader->GetOutput());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update());
