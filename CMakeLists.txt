@@ -34,7 +34,9 @@ else()
   set(PCT_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
 endif()
 
-option(PCT_BUILD_APPLICATIONS "Build PCT applications" ON)
+# --------------------------------------------------------
+# Build applications
+option(PCT_BUILD_APPLICATIONS "Build PCT applications" ${RTK_BUILD_APPLICATIONS})
 if(PCT_BUILD_APPLICATIONS)
   add_subdirectory(applications)
 endif()
