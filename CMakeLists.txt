@@ -26,6 +26,14 @@ if(NOT PCT_INSTALL_ARCHIVE_DIR)
   set(PCT_INSTALL_ARCHIVE_DIR ${CMAKE_INSTALL_LIBDIR})
 endif()
 
+# --------------------------------------------------------
+# Shared libraries option
+if(NOT ITK_SOURCE_DIR)
+  set(PCT_BUILD_SHARED_LIBS ${ITK_BUILD_SHARED})
+else()
+  set(PCT_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
+endif()
+
 option(PCT_BUILD_APPLICATIONS "Build PCT applications" ON)
 if(PCT_BUILD_APPLICATIONS)
   add_subdirectory(applications)
