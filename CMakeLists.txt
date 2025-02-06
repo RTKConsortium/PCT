@@ -27,14 +27,6 @@ if(NOT PCT_INSTALL_ARCHIVE_DIR)
 endif()
 
 # --------------------------------------------------------
-# Shared libraries option
-if(NOT ITK_SOURCE_DIR)
-  set(PCT_BUILD_SHARED_LIBS ${ITK_BUILD_SHARED})
-else()
-  set(PCT_BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS})
-endif()
-
-# --------------------------------------------------------
 # Build applications
 option(PCT_BUILD_APPLICATIONS "Build PCT applications" ${RTK_BUILD_APPLICATIONS})
 if(PCT_BUILD_APPLICATIONS)
