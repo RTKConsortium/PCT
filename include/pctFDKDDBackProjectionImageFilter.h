@@ -8,7 +8,7 @@ namespace pct
 {
 
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT FDKDDBackProjectionImageFilter : public rtk::BackProjectionImageFilter<TInputImage, TOutputImage>
+class ITK_TEMPLATE_EXPORT FDKDDBackProjectionImageFilter : public rtk::BackProjectionImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */

@@ -19,7 +19,7 @@ namespace pct
  * \ingroup Functions PCT
  */
 template <class TCoordRep = double>
-class ITK_EXPORT MostLikelyPathFunction : public itk::LightObject
+class ITK_TEMPLATE_EXPORT MostLikelyPathFunction : public itk::LightObject
 {
 public:
   /** Standard class typedefs. */

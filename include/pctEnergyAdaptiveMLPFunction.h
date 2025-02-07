@@ -4,6 +4,7 @@
 #include "CLHEP/Units/PhysicalConstants.h"
 
 #include "pctMostLikelyPathFunction.h"
+#include "PCTExport.h"
 
 // #include <cmath>
 
@@ -100,7 +101,7 @@ public:
  * \ingroup PCT
  * \ingroup Functions
  */
-class ITK_EXPORT EnergyAdaptiveMLPFunction : public MostLikelyPathFunction<double>
+class PCT_EXPORT EnergyAdaptiveMLPFunction : public MostLikelyPathFunction<double>
 {
 public:
   /** Standard class typedefs. */

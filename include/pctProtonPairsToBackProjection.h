@@ -13,7 +13,7 @@ namespace pct
 {
 
 template <class TInputImage, class TOutputImage>
-class ITK_EXPORT ProtonPairsToBackProjection : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
+class ITK_TEMPLATE_EXPORT ProtonPairsToBackProjection : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */

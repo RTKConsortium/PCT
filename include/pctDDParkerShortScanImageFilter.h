@@ -20,7 +20,7 @@ namespace pct
 {
 
 template <class TInputImage, class TOutputImage = TInputImage>
-class ITK_EXPORT DDParkerShortScanImageFilter : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
+class ITK_TEMPLATE_EXPORT DDParkerShortScanImageFilter : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */

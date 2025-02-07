@@ -4,6 +4,7 @@
 #include "CLHEP/Units/PhysicalConstants.h"
 
 #include "pctMostLikelyPathFunction.h"
+#include "PCTExport.h"
 
 #include "itkMath.h"
 // C++11 does not guarantee that assert can be used in constexpr
@@ -136,7 +137,7 @@ public:
  *
  * \ingroup Functions PCT
  */
-class ITK_EXPORT PolynomialMLPFunction : public MostLikelyPathFunction<double>
+class PCT_EXPORT PolynomialMLPFunction : public MostLikelyPathFunction<double>
 {
 public:
   /** Standard class typedefs. */

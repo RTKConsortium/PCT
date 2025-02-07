@@ -4,6 +4,7 @@
 #include "CLHEP/Units/PhysicalConstants.h"
 
 #include "pctMostLikelyPathFunction.h"
+#include "PCTExport.h"
 
 namespace pct
 {
@@ -137,7 +138,7 @@ public:
  *
  * \ingroup Functions PCT
  */
-class ITK_EXPORT SchulteMLPFunction : public MostLikelyPathFunction<double>
+class PCT_EXPORT SchulteMLPFunction : public MostLikelyPathFunction<double>
 {
 public:
   /** Standard class typedefs. */

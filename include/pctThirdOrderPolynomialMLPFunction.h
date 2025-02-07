@@ -12,7 +12,7 @@ namespace pct
  * \ingroup Functions PCT
  */
 template <class TCoordRep = double>
-class ITK_EXPORT ThirdOrderPolynomialMLPFunction : public MostLikelyPathFunction<TCoordRep>
+class ITK_TEMPLATE_EXPORT ThirdOrderPolynomialMLPFunction : public MostLikelyPathFunction<TCoordRep>
 {
 public:
   /** Standard class typedefs. */

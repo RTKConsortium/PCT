@@ -17,7 +17,7 @@ namespace pct
 {
 
 template <class TInputImage, class TOutputImage = TInputImage, class TFFTPrecision = double>
-class ITK_EXPORT FDKDDConeBeamReconstructionFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
+class ITK_TEMPLATE_EXPORT FDKDDConeBeamReconstructionFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */

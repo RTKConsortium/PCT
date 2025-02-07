@@ -17,7 +17,7 @@ namespace pct
 
 template <class TInputImage,
           class TOutputImage = itk::Image<typename TInputImage::PixelType, TInputImage::ImageDimension - 1>>
-class ITK_EXPORT ZengBackProjectionImageFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
+class ITK_TEMPLATE_EXPORT ZengBackProjectionImageFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
