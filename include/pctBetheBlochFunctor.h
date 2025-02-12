@@ -1,10 +1,7 @@
 #ifndef __pctBetheBlochFunctor_h
 #define __pctBetheBlochFunctor_h
 
-#ifdef pascal
-#  undef pascal
-#endif
-#include "CLHEP/Units/PhysicalConstants.h"
+#include "pctPhysicalConstants.h"
 #include <itkImage.h>
 
 #ifdef PCT_GEANT4

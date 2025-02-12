@@ -1,10 +1,7 @@
 #ifndef __pctEnergyStragglingFunctor_h
 #define __pctEnergyStragglingFunctor_h
 
-#ifdef pascal
-#  undef pascal
-#endif
-#include "CLHEP/Units/PhysicalConstants.h"
+#include "pctPhysicalConstants.h"
 
 namespace pct
 {

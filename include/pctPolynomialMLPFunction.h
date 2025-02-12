@@ -1,9 +1,8 @@
 #ifndef __pctPolynomialMLPFunction_h
 #define __pctPolynomialMLPFunction_h
 
-#include "CLHEP/Units/PhysicalConstants.h"
-
 #include "pctMostLikelyPathFunction.h"
+#include "pctPhysicalConstants.h"
 #include "PCTExport.h"
 
 #include "itkMath.h"

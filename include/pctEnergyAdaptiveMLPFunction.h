@@ -1,9 +1,8 @@
 #ifndef __pctEnergyAdaptiveMLPFunction_h
 #define __pctEnergyAdaptiveMLPFunction_h
 
-#include "CLHEP/Units/PhysicalConstants.h"
-
 #include "pctMostLikelyPathFunction.h"
+#include "pctPhysicalConstants.h"
 #include "PCTExport.h"
 
 // #include <cmath>
