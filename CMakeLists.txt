@@ -12,8 +12,6 @@ else()
   itk_module_impl()
 endif()
 
-itk_module_examples()
-
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 if(NOT PCT_INSTALL_RUNTIME_DIR)
