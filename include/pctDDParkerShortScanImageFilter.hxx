@@ -1,5 +1,5 @@
-#ifndef __pctDDParkerShortScanImageFilter_txx
-#define __pctDDParkerShortScanImageFilter_txx
+#ifndef __pctDDParkerShortScanImageFilter_hxx
+#define __pctDDParkerShortScanImageFilter_hxx
 
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkMacro.h>

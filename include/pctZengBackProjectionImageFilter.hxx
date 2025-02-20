@@ -1,5 +1,5 @@
-#ifndef __pctZengBackProjectionImageFilter_txx
-#define __pctZengBackProjectionImageFilter_txx
+#ifndef __pctZengBackProjectionImageFilter_hxx
+#define __pctZengBackProjectionImageFilter_hxx
 
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkMacro.h>

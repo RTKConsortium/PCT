@@ -1,5 +1,5 @@
-#ifndef __pctFDKDDBackProjectionImageFilter_txx
-#define __pctFDKDDBackProjectionImageFilter_txx
+#ifndef __pctFDKDDBackProjectionImageFilter_hxx
+#define __pctFDKDDBackProjectionImageFilter_hxx
 
 #include <itkImageRegionIteratorWithIndex.h>
 #include <itkLinearInterpolateImageFunction.h>

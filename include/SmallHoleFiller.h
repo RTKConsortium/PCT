@@ -1,5 +1,5 @@
-#ifndef SmallHoleFiller_H
-#define SmallHoleFiller_H
+#ifndef __SmallHoleFiller_h
+#define __SmallHoleFiller_h
 
 template <typename TImage>
 class SmallHoleFiller
@@ -47,7 +47,8 @@ template <typename TImage>
 void
 DeepCopy(typename TImage::Pointer input, typename TImage::Pointer output);
 
-
-#include "SmallHoleFiller.hxx"
+#ifndef ITK_MANUAL_INSTANTIATION
+  #include "SmallHoleFiller.hxx"
+#endif
 
 #endif

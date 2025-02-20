@@ -1,5 +1,5 @@
-#ifndef __pctFDKDDWeightProjectionFilter_txx
-#define __pctFDKDDWeightProjectionFilter_txx
+#ifndef __pctFDKDDWeightProjectionFilter_hxx
+#define __pctFDKDDWeightProjectionFilter_hxx
 
 #include <itkImageRegionIterator.h>
 #include <itkImageFileWriter.h>

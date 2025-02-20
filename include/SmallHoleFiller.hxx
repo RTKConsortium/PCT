@@ -1,3 +1,6 @@
+#ifndef __SmallHoleFiller_hxx
+#define __SmallHoleFiller_hxx
+
 #include "itkImageFileWriter.h" // For intermediate debugging output
 #include "itkImageRegionConstIterator.h"
 #include "itkImageRegionIterator.h"
@@ -165,3 +168,5 @@ DeepCopy(typename TImage::Pointer input, typename TImage::Pointer output)
     ++outputIterator;
   }
 }
+
+#endif
