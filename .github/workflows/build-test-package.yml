@@ -18,7 +18,7 @@ jobs:
       # Disable RTK_BUILD_APPLICATIONS to reduce compilation time
       cmake-options: '-DRTK_BUILD_APPLICATIONS:BOOL=OFF'
       python3-minor-versions: ${{ github.event_name == 'pull_request' && '["11"]' || '["9","10","11"]' }}
-      itk-python-package-tag: 'c9c8130258a0cbb7d29ee1047d3b8692540e26cf'
+      itk-python-package-tag: 'v5.4.2.post1'
       itk-module-deps: RTKConsortium/RTK@f7595babde69005a5df98a294c47dedfd579c171
     secrets:
       pypi_password: ${{ secrets.pypi_password }}
