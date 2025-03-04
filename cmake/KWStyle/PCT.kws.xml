@@ -15,5 +15,5 @@
     <EmptyLines>2</EmptyLines>
     <Template>[TNV]</Template>
     <Operator>1,1</Operator>
-    <Header>@PCT_SOURCE_DIR@/cmake/KWStyle/PCTHeader.h,false,true</Header>
+    <Header>cmake/KWStyle/PCTHeader.h,false,true</Header>
 </Description>
