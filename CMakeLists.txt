@@ -30,3 +30,10 @@ option(PCT_BUILD_APPLICATIONS "Build PCT applications" ${RTK_BUILD_APPLICATIONS}
 if(PCT_BUILD_APPLICATIONS)
   add_subdirectory(applications)
 endif()
+
+#=========================================================
+# Build doc
+option(PCT_BUILD_SPHINX "Build Sphinx Documentation" OFF)
+if(PCT_BUILD_SPHINX)
+  add_subdirectory(documentation/docs)
+endif()
