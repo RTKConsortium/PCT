@@ -5,7 +5,7 @@ import os
 import itk
 import numpy as np
 
-from gate.protonct import protonct
+from protonct import protonct
 from pctpairprotons import pctpairprotons
 
 test_folder = '/tmp/pctPairProtons'
