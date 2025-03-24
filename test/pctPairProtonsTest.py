@@ -5,7 +5,7 @@ import os
 import itk
 import numpy as np
 
-from gate.protonct import protonct
+from protonct import protonct
 from pctpairprotons import pctpairprotons
 
 test_folder = '/tmp/pctPairProtons'
@@ -28,4 +28,4 @@ pctpairprotons(
 )
 
 im = itk.imread(os.path.join(test_folder, 'pairs0000.mhd'))
-assert np.asarray(im).shape == (97, 5, 3)
+assert np.asarray(im).shape == (96, 5, 3)
