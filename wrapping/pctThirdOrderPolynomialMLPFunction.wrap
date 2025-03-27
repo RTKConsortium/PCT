@@ -1,12 +1,3 @@
-itk_wrap_class("pct::MostLikelyPathFunction" POINTER)
-  foreach(t ${WRAP_ITK_REAL})
-    itk_wrap_template("${ITKM_${t}}" "${ITKT_${t}}")
-  endforeach()
-  if (NOT ITK_WRAP_double)
-    itk_wrap_template("${ITKM_D}" "${ITKT_D}")
-  endif()
-itk_end_wrap_class()
-
 itk_wrap_class("pct::ThirdOrderPolynomialMLPFunction" POINTER)
   foreach(t ${WRAP_ITK_REAL})
     itk_wrap_template("${ITKM_${t}}" "${ITKT_${t}}")

@@ -147,6 +147,8 @@ PolynomialMLPFunction ::Evaluate(std::vector<double> u, std::vector<double> & x,
   for (auto & element : u)
     element -= m_uOrigin;
 
+  x.resize(u.size());
+  y.resize(u.size());
   std::fill(x.begin(), x.end(), 0.);
   std::fill(y.begin(), y.end(), 0.);
 
