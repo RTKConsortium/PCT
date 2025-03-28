@@ -1,0 +1,14 @@
+itk_wrap_class("pct::MostLikelyPathFunction" POINTER)
+  foreach(t ${WRAP_ITK_REAL})
+    itk_wrap_template("${ITKM_${t}}" "${ITKT_${t}}")
+  endforeach()
+  if (NOT ITK_WRAP_double)
+    itk_wrap_template("${ITKM_D}" "${ITKT_D}")
+  endif()
+itk_end_wrap_class()
+
+set(ITK_WRAP_PYTHON_SWIG_EXT
+    "%include MostLikelyPathFunction.i\n${ITK_WRAP_PYTHON_SWIG_EXT}")
+
+file(COPY "${CMAKE_CURRENT_SOURCE_DIR}/MostLikelyPathFunction.i"
+    DESTINATION "${WRAPPER_MASTER_INDEX_OUTPUT_DIR}")
