@@ -1,8 +1,15 @@
 # PCT
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://github.com/RTKConsortium/PCT/blob/master/LICENSE)
+[![][gha-img]][gha-link]
 
 PCT (Proton Computed Tomography) is a toolkit used to process proton CT data and reconstruct proton stopping power maps. PCT is written both in C++ and Python, and is designed to be used either as a code library, or with command-line applications.
+
+## Links
+
+* [Documentation](https://proton-ct.readthedocs.io)
+* [Issue tracking](https://github.com/RTKConsortium/PCT/issues)
+* [ITK](https;//itk.org)
 
 ## Usage
 
