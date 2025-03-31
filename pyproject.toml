@@ -35,7 +35,6 @@ classifiers = [
 ]
 requires-python = ">=3.8"
 dependencies = [
-    "itk == 5.4.*",
     "itk-rtk == 2.6.*"
 ]
 
