@@ -19,6 +19,7 @@ PCT (Proton Computed Tomography) is a toolkit used to process proton CT data and
 :maxdepth: 1
 :caption: 📖 Learn
 documentation/docs/installation.md
+documentation/docs/getting_started.md
 documentation/docs/pct_format.md
 ```
 

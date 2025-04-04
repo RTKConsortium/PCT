@@ -56,10 +56,10 @@ def protonct(output,
         spiral.dz = 40 * cm
         spiral.material = 'Water'
         spiral.color = blue
-        spiral.rotation = Rotation.from_euler('y', 90, degrees=True).as_matrix()
+        spiral.rotation = Rotation.from_euler('yz', [90, 90], degrees=True).as_matrix()
 
         # Spiral rotation
-        tr, rot = gate.geometry.utility.volume_orbiting_transform('x', 0, 360, projections, spiral.translation, spiral.rotation)
+        tr, rot = gate.geometry.utility.volume_orbiting_transform('y', 0, 360, projections, spiral.translation, spiral.rotation)
         spiral.add_dynamic_parametrisation(translation=tr, rotation=rot)
 
         # Spiral inserts
@@ -102,7 +102,12 @@ def protonct(output,
     source.position.translation = [0, 0, -1060 * mm]
     source.direction.type = 'focused'
     source.direction.focus_point = [0, 0, -1000 * mm]
-    source.activity = protons_per_projection * Bq
+
+    if sim.visu:
+        # For visualisation speed, the number of particle is decreased
+        source.activity = 10 * Bq
+    else:
+        source.activity = protons_per_projection * Bq
 
     # Physics list
     sim.physics_manager.physics_list_name = 'QGSP_BIC_EMZ'
