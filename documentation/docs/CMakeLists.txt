@@ -5,12 +5,10 @@ if(PCT_BUILD_SPHINX)
   # Copy the source tree documentation to the build tree before calling sphinx.
   # The images are downloaded when conf.py is run by sphinx.
   add_custom_target(copy_sources ALL
-    COMMAND ${CMAKE_COMMAND} -E remove_directory "${PCT_DOC_OUTPUT_DIR}/applications"
-    COMMAND ${CMAKE_COMMAND} -E remove_directory "${PCT_DOC_OUTPUT_DIR}/documentation"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PCT_SOURCE_DIR}/applications" "${PCT_DOC_OUTPUT_DIR}/applications"
-    COMMAND ${CMAKE_COMMAND} -E copy_directory "${PCT_SOURCE_DIR}/documentation" "${PCT_DOC_OUTPUT_DIR}/documentation"
-    COMMAND ${CMAKE_COMMAND} -E copy "${PCT_SOURCE_DIR}/conf.py" "${PCT_DOC_OUTPUT_DIR}/conf.py"
-    COMMAND ${CMAKE_COMMAND} -E copy "${PCT_SOURCE_DIR}/index.md" "${PCT_DOC_OUTPUT_DIR}/index.md"
+    COMMAND ${CMAKE_COMMAND}
+               -DPCT_SOURCE_DIR:PATH="${PCT_SOURCE_DIR}"
+               -DPCT_DOC_OUTPUT_DIR:PATH="${PCT_DOC_OUTPUT_DIR}"
+               -P "${CMAKE_CURRENT_SOURCE_DIR}/copy_and_fetch_sphinx_doc_files.cmake"
     COMMENT "Copying documentation sources"
     )
 

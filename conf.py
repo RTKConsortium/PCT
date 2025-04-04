@@ -7,11 +7,15 @@
 from datetime import date
 
 import subprocess
+import os
 
 # -- Build setup -------------------------------------------------------------
 def setup(app):
   # Fetch documentation images
-  subprocess.check_call("cmake -P documentation/docs/ExternalData/FetchExternalData.cmake", stderr=subprocess.STDOUT, shell=True)
+  cwd = os.getcwd()
+  subprocess.check_call(f'cmake -DPCT_SOURCE_DIR:PATH={cwd}'
+                        f'      -DPCT_DOC_OUTPUT_DIR:PATH={cwd}'
+                         '      -P documentation/docs/copy_and_fetch_sphinx_doc_files.cmake', stderr=subprocess.STDOUT, shell=True)
 
 # -- Project information -----------------------------------------------------
 project = 'PCT'
