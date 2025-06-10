@@ -8,17 +8,17 @@ concurrency:
 
 jobs:
   cxx-build-workflow:
-    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@v5.4.2
+    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@v5.4.3
     with: 
       itk-module-deps: RTK@master
 
   python-build-workflow:
-    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@main
+    uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@v5.4.3
     with:
       # Disable RTK_BUILD_APPLICATIONS to reduce compilation time
       cmake-options: '-DRTK_BUILD_APPLICATIONS:BOOL=OFF'
       python3-minor-versions: ${{ github.event_name == 'pull_request' && '["11"]' || '["9","10","11"]' }}
-      itk-python-package-tag: 'v5.4.2.post1'
-      itk-module-deps: RTKConsortium/RTK@f7595babde69005a5df98a294c47dedfd579c171
+      itk-python-package-tag: 'release'
+      itk-module-deps: RTKConsortium/RTK@master
     secrets:
       pypi_password: ${{ secrets.pypi_password }}
