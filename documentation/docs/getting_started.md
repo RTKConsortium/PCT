@@ -95,7 +95,7 @@ for i in {0000..0719}; do
         --input pairs_cut${i}.mhd \
         --output proj${i}.mhd \
         --source -1000. \
-        --dimension=200,1,220 \
+        --size=200,1,220 \
         --spacing=2,1,1 \
         --verbose
 done
@@ -103,7 +103,7 @@ done
 
 The `--source` parameter is used to provide the source position relatively to the isocenter along the $z$ axis. This parameter is crucial and defaults to 0, i.e., a parallel geometry. Setting a wrong source position results in malformed projections thus in an erroneous reconstruction.
 
-The `--dimension` (in voxels) and `--spacing` (in millimeters) define the lattice of the projections.
+The `--size` (in voxels) and `--spacing` (in millimeters) define the lattice of the projections.
 
 (reconstruction)=
 ## Tomographic reconstruction
@@ -125,10 +125,10 @@ pctfdk \
     --path . \
     --regexp proj....\\.mhd \
     --output recon.mhd \
-    --dimension=210,1,210 \
+    --size=210,1,210 \
     --verbose
 ```
-where `--geometry` is the geometry file generated above, `--path` is the path to the folder containing the projections, `--regexp` is a regular expression used to select the projection files, `--output` is the output file name, and `--dimension` is the size in voxels of the output image (here a 2D image, hence a size of 1 in the $y$ direction).
+where `--geometry` is the geometry file generated above, `--path` is the path to the folder containing the projections, `--regexp` is a regular expression used to select the projection files, `--output` is the output file name, and `--size` is the size in voxels of the output image (here a 2D image, hence a size of 1 in the $y$ direction).
 
 The resulting image can be visualized by any MHD image viewer, such as [vv](https://github.com/open-vv/vv).
 

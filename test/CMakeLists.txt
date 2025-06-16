@@ -34,7 +34,7 @@ if(PCT_BUILD_APPLICATIONS)
       DATA{Baseline/projections0000.mhd,projections0000.raw}
       ${ITK_TEST_OUTPUT_DIR}/projections.mhd
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/pctbinning
-      -i DATA{Input/pairs0000.mhd,pairs0000.raw} -o ${ITK_TEST_OUTPUT_DIR}/projections.mhd --source 1000 --dimension=400,20,220
+      -i DATA{Input/pairs0000.mhd,pairs0000.raw} -o ${ITK_TEST_OUTPUT_DIR}/projections.mhd --source 1000 --size=400,20,220
   )
 
 endif()
