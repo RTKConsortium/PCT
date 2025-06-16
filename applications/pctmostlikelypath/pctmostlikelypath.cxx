@@ -21,7 +21,7 @@ main(int argc, char * argv[])
 
   // Create outputs
   OutputImageType::RegionType region;
-  region.SetSize(0, args_info.dimension_arg);
+  region.SetSize(0, args_info.size_arg);
   OutputImageType::Pointer trajectory = OutputImageType::New();
   trajectory->SetRegions(region);
   trajectory->Allocate();
@@ -120,13 +120,13 @@ main(int argc, char * argv[])
   std::vector<double>       zmmMLP;
   std::vector<unsigned int> kMLP;
   std::vector<double>       xxArr;
-  xxArr.reserve(args_info.dimension_arg);
+  xxArr.reserve(args_info.size_arg);
   std::vector<double> yyArr;
-  yyArr.reserve(args_info.dimension_arg);
+  yyArr.reserve(args_info.size_arg);
 
   double dx, dy;
   // loop to populate MLP array
-  for (unsigned int k = 0; k < args_info.dimension_arg; k++)
+  for (unsigned int k = 0; k < args_info.size_arg; k++)
   {
     const double dk = args_info.origin_arg + k * args_info.spacing_arg;
     if (dk <= pSIn[2]) // before entrance
@@ -171,7 +171,7 @@ main(int argc, char * argv[])
   }
 
 
-  for (int k = 0; k < args_info.dimension_arg; k++)
+  for (int k = 0; k < args_info.size_arg; k++)
   {
     const double u = args_info.origin_arg + k * args_info.spacing_arg;
     VectorType   point;

@@ -1,7 +1,7 @@
 #!/bin/sh -x
 
 OPTIONS='--lowmem
-    --dimension 210,1,210
+    --size 210,1,210
     --spacing 1
     --pad 0.
     --hann 0.

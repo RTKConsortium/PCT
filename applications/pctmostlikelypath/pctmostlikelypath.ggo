@@ -16,5 +16,6 @@ option "mlppolydeg" - "Degree of the polynomial to approximate 1/beta^2p^2"     
 
 section "Sampling parameters"
 option "origin"    - "Origin (default=centered)" double no
-option "dimension" - "Dimension"                 int    no default="256"
+option "dimension" - "Dimension(Deprecated) Use --size instead." int no  default="256"
+option "size"      - "Size"                      int no default="256"
 option "spacing"   - "Spacing"                   double no default="1"
