@@ -128,6 +128,7 @@ def protonct(output,
             'EventID',
             'TrackID',
             'KineticEnergy',
+            'PreGlobalTime',
             'Position',
             'Direction'
         ]
