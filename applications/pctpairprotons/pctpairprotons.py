@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import argparse
+import json
 import uproot
 import itk
 
@@ -15,6 +16,8 @@ def pctpairprotons(
     min_run=0,
     max_run=1e6,
     no_nuclear=False,
+    fit=None,
+    fit_kind=None,
     verbose=False,
     psin='PhaseSpace',
     psout='PhaseSpace'
@@ -28,25 +31,12 @@ def pctpairprotons(
 
     def load_tree_as_df(root_file, tree_name):
 
-        branch_names = [
-            'RunID',
-            'EventID',
-            'TrackID',
-            'KineticEnergy',
-            'Position_X',
-            'Position_Y',
-            'Position_Z',
-            'Direction_X',
-            'Direction_Y',
-            'Direction_Z'
-        ]
-
         tree = uproot.open(root_file)[tree_name]
-        branches = tree.arrays(branch_names, library='np')
+        branches = tree.arrays(library='np')
 
         dtype = [(name, branch.dtype) for name, branch in branches.items()]
         ps = np.rec.recarray((len(branches['RunID']), ), dtype=dtype)
-        for branch_name in branch_names:
+        for (branch_name, _) in dtype:
             ps[branch_name] = branches[branch_name]
 
         ps = rfn.rename_fields(ps, {
@@ -105,6 +95,20 @@ def pctpairprotons(
         np.recarray.sort(pairs, order=['RunID', 'EventID', 'TrackID_in', 'TrackID_out'])
     verbose("Merged input and output phase spaces.")
 
+    if fit is not None:
+        verbose("Converting energy loss or TOF to WEPL…")
+        with open(fit, 'r', encoding='utf-8') as f:
+            p = json.load(f)
+        if fit_kind == 'tof':
+            xs = pairs['PreGlobalTime_out'] - pairs['PreGlobalTime_in']
+        elif fit_kind == 'energy':
+            xs = pairs['KineticEnergy_in'] - pairs['KineticEnergy_out']
+        else:
+            raise NotImplementedError
+        wepls = np.polyval(p, xs)
+        pairs['KineticEnergy_in'] = 0.
+        pairs['KineticEnergy_out'] = wepls
+
     number_of_runs = pairs['RunID'].max() + 1
     verbose("Identified number of runs: " + str(number_of_runs))
 
@@ -152,6 +156,8 @@ def main():
     parser.add_argument('--min-run', help="Minimum run (inclusive)", default=0, type=int)
     parser.add_argument('--max-run', help="Maximum run (exclusive)", default=1e6, type=int)
     parser.add_argument('--no-nuclear', help="Remove inelastic nuclear collisions", default=False, action='store_true')
+    parser.add_argument('--fit', help="Fit file used to convert from energy loss or TOF to WEPL")
+    parser.add_argument('--fit-kind', help="Whether to convert to WEPL using energy loss or TOF", choices=['tof', 'energy'])
     parser.add_argument('--verbose', '-v', help="Verbose execution", default=False, action='store_true')
     parser.add_argument('--psin', help="Name of tree in input phase space", default='PhaseSpace')
     parser.add_argument('--psout', help="Name of tree in output phase space", default='PhaseSpace')
