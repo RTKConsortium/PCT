@@ -44,14 +44,37 @@ main(int argc, char * argv[])
   projection->SetSourceDistance(args_info.source_arg);
   projection->SetMostLikelyPathType(args_info.mlptype_arg);
   projection->SetMostLikelyPathPolynomialDegree(args_info.mlppolydeg_arg);
-  projection->SetMostLikelyPathTrackerUncertainties(args_info.mlptrackeruncert_flag);
-  projection->SetTrackerResolution(args_info.trackerresolution_arg);
-  projection->SetTrackerPairSpacing(args_info.trackerspacing_arg);
-  projection->SetMaterialBudget(args_info.materialbudget_arg);
   projection->SetIonizationPotential(args_info.ionpot_arg * CLHEP::eV);
   projection->SetRobust(args_info.robust_flag);
   projection->SetComputeScattering(args_info.scatwepl_given);
   projection->SetComputeNoise(args_info.noise_given);
+
+  // Uncertainties
+  ProjectionFilter::TwoDMatrixType sigmaIn, sigmaOut;
+  if (args_info.sigmaIn_given)
+  {
+    if (args_info.sigmaIn_given != 4)
+    {
+      std::cerr << "--sigmaIn needs exactly 4 values" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    for (unsigned int i = 0; i < 2; i++)
+      for (unsigned int j = 0; j < 2; j++)
+        sigmaIn[i][j] = args_info.sigmaIn_arg[i * 2 + j];
+    projection->SetSigmaIn(sigmaIn);
+  }
+  if (args_info.sigmaOut_given)
+  {
+    if (args_info.sigmaOut_given != 4)
+    {
+      std::cerr << "--sigmaOut needs exactly 4 values" << std::endl;
+      exit(EXIT_FAILURE);
+    }
+    for (unsigned int i = 0; i < 2; i++)
+      for (unsigned int j = 0; j < 2; j++)
+        sigmaOut[i][j] = args_info.sigmaOut_arg[i * 2 + j];
+    projection->SetSigmaOut(sigmaOut);
+  }
 
   if (args_info.quadricIn_given)
   {

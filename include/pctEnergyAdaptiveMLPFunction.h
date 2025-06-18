@@ -109,6 +109,8 @@ public:
   using Pointer = itk::SmartPointer<Self>;
   using ConstPointer = itk::SmartPointer<const Self>;
 
+  using TwoDMatrixType = Superclass::TwoDMatrixType;
+
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
@@ -130,7 +132,7 @@ public:
 
   /** Evaluate the error (x,y) (equation 27) at depth z. */
   void
-  EvaluateError(const double u1, itk::Matrix<double, 2, 2> & error);
+  EvaluateError(const double u1, TwoDMatrixType & error);
 
 #ifdef MLP_TIMING
   /** Print timing information */

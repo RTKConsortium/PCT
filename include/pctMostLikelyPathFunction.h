@@ -30,6 +30,7 @@ public:
 
   /** Useful defines. */
   using VectorType = itk::Vector<TCoordRep, 3>;
+  using TwoDMatrixType = typename itk::Matrix<TCoordRep, 2, 2>;
 
   /** Init the mlp parameters from the input and output directions and positions. */
   virtual void
@@ -52,15 +53,7 @@ public:
 
   /** Init with additional parameters to consider tracker uncertainties */
   virtual void
-  InitUncertain(const VectorType posIn,
-                const VectorType posOut,
-                const VectorType dirIn,
-                const VectorType dirOut,
-                double           dEntry,
-                double           dExit,
-                double           m_TrackerResolution,
-                double           m_TrackerPairSpacing,
-                double           m_MaterialBudget)
+  InitUncertain(double dEntry, double dExit, TwoDMatrixType sigmaIn, TwoDMatrixType sigmaOut)
   {
     itkGenericExceptionMacro("Not implemented in the derived class.");
   }
