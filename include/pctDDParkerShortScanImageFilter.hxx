@@ -45,17 +45,13 @@ DDParkerShortScanImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerate
 
   // Weight image parameters
   typename WeightImageType::RegionType  region;
-  typename WeightImageType::SpacingType spacing;
-  typename WeightImageType::PointType   origin;
   region.SetSize(0, outputRegionForThread.GetSize(0));
   region.SetIndex(0, outputRegionForThread.GetIndex(0));
-  spacing[0] = this->GetInput()->GetSpacing()[0];
-  origin[0] = this->GetInput()->GetOrigin()[0];
 
   // Create one line of weights
   typename WeightImageType::Pointer weights = WeightImageType::New();
-  weights->SetSpacing(spacing);
-  weights->SetOrigin(origin);
+  weights->SetSpacing(itk::MakeVector(this->GetInput()->GetSpacing()[0]));
+  weights->SetOrigin(itk::MakePoint(this->GetInput()->GetOrigin()[0]));
   weights->SetRegions(region);
   weights->Allocate();
   typename itk::ImageRegionIteratorWithIndex<WeightImageType> itWeights(weights, weights->GetLargestPossibleRegion());
@@ -125,7 +121,7 @@ DDParkerShortScanImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerate
         itWeights.Set(0.);
 
       ++itWeights;
-      point[0] += spacing[0];
+      point[0] += this->GetInput()->GetSpacing()[0];
     }
 
     // Multiply each line of the current slice
