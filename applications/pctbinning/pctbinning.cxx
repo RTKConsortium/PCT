@@ -32,13 +32,13 @@ main(int argc, char * argv[])
 
   // Create a stack of empty projection images
   using ConstantImageSourceType = rtk::ConstantImageSource<OutputImageType>;
-  ConstantImageSourceType::Pointer constantImageSource = ConstantImageSourceType::New();
+  auto constantImageSource = ConstantImageSourceType::New();
   rtk::SetConstantImageSourceFromGgo<ConstantImageSourceType, args_info_pctbinning>(constantImageSource, args_info);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(constantImageSource->Update());
 
   // Projection filter
   using ProjectionFilter = pct::ProtonPairsToDistanceDrivenProjection<OutputImageType, OutputImageType>;
-  ProjectionFilter::Pointer projection = ProjectionFilter::New();
+  auto projection = ProjectionFilter::New();
   projection->SetInput(constantImageSource->GetOutput());
   projection->SetProtonPairsFileName(args_info.input_arg);
   projection->SetSourceDistance(args_info.source_arg);
@@ -95,8 +95,7 @@ main(int argc, char * argv[])
     filler.Fill();
   }
 
-  using CIIType = itk::ChangeInformationImageFilter<OutputImageType>;
-  CIIType::Pointer cii = CIIType::New();
+  auto cii = itk::ChangeInformationImageFilter<OutputImageType>::New();
   if (args_info.fill_flag)
     cii->SetInput(filler.GetOutput());
   else
@@ -112,7 +111,7 @@ main(int argc, char * argv[])
   {
     // Write
     using WriterType = itk::ImageFileWriter<OutputImageType>;
-    WriterType::Pointer writer = WriterType::New();
+    auto writer = WriterType::New();
     if (args_info.elosswepl_given)
       writer->SetFileName(args_info.elosswepl_arg);
     else
@@ -124,8 +123,7 @@ main(int argc, char * argv[])
   if (args_info.count_given)
   {
     // Write
-    using CountWriterType = itk::ImageFileWriter<ProjectionFilter::CountImageType>;
-    CountWriterType::Pointer cwriter = CountWriterType::New();
+    auto cwriter = itk::ImageFileWriter<ProjectionFilter::CountImageType>::New();
     cwriter->SetFileName(args_info.count_arg);
     cwriter->SetInput(projection->GetCount());
     TRY_AND_EXIT_ON_ITK_EXCEPTION(cwriter->Update())
@@ -134,8 +132,7 @@ main(int argc, char * argv[])
   if (args_info.scatwepl_given)
   {
     // Write
-    using AngleWriterType = itk::ImageFileWriter<ProjectionFilter::AngleImageType>;
-    AngleWriterType::Pointer swriter = AngleWriterType::New();
+    auto swriter = itk::ImageFileWriter<ProjectionFilter::AngleImageType>::New();
     swriter->SetFileName(args_info.scatwepl_arg);
     swriter->SetInput(projection->GetAngle());
     TRY_AND_EXIT_ON_ITK_EXCEPTION(swriter->Update())
@@ -145,7 +142,7 @@ main(int argc, char * argv[])
   {
     // Write
     using WriterType = itk::ImageFileWriter<OutputImageType>;
-    WriterType::Pointer nwriter = WriterType::New();
+    auto nwriter = WriterType::New();
     nwriter->SetFileName(args_info.noise_arg);
     nwriter->SetInput(projection->GetSquaredOutput());
     TRY_AND_EXIT_ON_ITK_EXCEPTION(nwriter->Update())

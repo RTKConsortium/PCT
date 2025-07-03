@@ -22,16 +22,16 @@ main(int argc, char * argv[])
   // Create outputs
   OutputImageType::RegionType region;
   region.SetSize(0, args_info.size_arg);
-  OutputImageType::Pointer trajectory = OutputImageType::New();
+  auto trajectory = OutputImageType::New();
   trajectory->SetRegions(region);
   trajectory->Allocate();
   region.SetSize(0, 2);
-  OutputImageType::Pointer intersections = OutputImageType::New();
+  auto intersections = OutputImageType::New();
   intersections->SetRegions(region);
   intersections->Allocate();
 
   using RQIType = rtk::QuadricShape;
-  RQIType::Pointer quadricIn = RQIType::New();
+  auto quadricIn = RQIType::New();
   if (args_info.quadricIn_given)
   {
     quadricIn->SetA(args_info.quadricIn_arg[0]);
@@ -46,7 +46,7 @@ main(int argc, char * argv[])
     quadricIn->SetJ(args_info.quadricIn_arg[9]);
   }
 
-  RQIType::Pointer quadricOut = RQIType::New();
+  auto quadricOut = RQIType::New();
   if (args_info.quadricOut_given)
   {
     quadricOut->SetA(args_info.quadricOut_arg[0]);
@@ -103,8 +103,7 @@ main(int argc, char * argv[])
     mlp = pct::ThirdOrderPolynomialMLPFunction<double>::New();
   else if (args_info.type_arg == std::string("krah"))
   {
-    pct::PolynomialMLPFunction::Pointer mlp_poly;
-    mlp_poly = pct::PolynomialMLPFunction::New();
+    auto mlp_poly = pct::PolynomialMLPFunction::New();
     // pct::PolynomialMLPFunction::Pointer polynomial_mlp = dynamic_cast<pct::PolynomialMLPFunction*>(mlp.GetPointer());
     mlp_poly->SetPolynomialDegree(args_info.mlppolydeg_arg);
     mlp = mlp_poly;
@@ -185,8 +184,7 @@ main(int argc, char * argv[])
 
 
   // Write
-  using WriterType = itk::ImageFileWriter<OutputImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<OutputImageType>::New();
 
   writer->SetFileName(args_info.trajectory_arg);
   writer->SetInput(trajectory);
