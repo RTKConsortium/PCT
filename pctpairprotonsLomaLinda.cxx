@@ -88,10 +88,7 @@ void
 WritePairs(const std::vector<std::pair<ParticleDataFinal, ParticleDataFinal>> & pairs, std::string fileName)
 {
   itk::ImageRegion<2>           region;
-  itk::ImageRegion<2>::SizeType size;
-  size[0] = 5;
-  size[1] = pairs.size();
-  region.SetSize(size);
+  region.SetSize(itk::MakeSize(5, pairs.size()));
 
   using PixelType = itk::Vector<float, 3>;
   using ImageType = itk::Image<PixelType, 2>;
