@@ -4,7 +4,7 @@
 
 The easiest way to install PCT and its dependencies is using the automatically generated Python wheels that can be downloaded directly on [PCT's GitHub Actions page](https://github.com/RTKConsortium/PCT/actions). Log in to GitHub, navigate to the artifact section of an action that recently finished successfully, and download the wheel that corresponds to your operating system and architecture. For example, a Linux user on an x64 machine should download the file named `LinuxWheel311_2_28-x64`. Then unzip the downloaded folder. It should contain a file with a name like `itk_pct-0.1.0-cp311-abi3-manylinux_2_28_x86_64.whl`.
 
-The `311` in the name above correspond to the Python version, in that case Python 3.11. Python in backward-compatible, so Python 3.12 or above also be able to run the wheel. If the Python version of your computer matches this requirement, then you can install it. However, it is much advised to intall PCT in a virtual environment, created for instance unsing [`conda`](https://conda.io) or [`virtualenv`](https://virtualenv.pypa.io). Older versions of Python are compiled on the master branch only.
+The `311` in the name above correspond to the Python version, in that case Python 3.11. Python in backward-compatible, so Python 3.12 or above also be able to run the wheel. If the Python version of your computer matches this requirement, then you can install it. However, it is much advised to intall PCT in a virtual environment, created for instance unsing [`conda`](https://conda.io) or [`virtualenv`](https://virtualenv.pypa.io). Older versions of Python are compiled on the main branch only.
 
 Once a proper Python version is set up, PCT can be installed using
 ```bash
@@ -88,4 +88,4 @@ in the user's `.bashrc` file. This allows to run PCT applications from anywhere 
 ```bash
 pip install opengate
 ```
-An example of proton CT GATE simulation can be found in [`gate/protonct.py`](https://github.com/RTKConsortium/PCT/blob/master/gate/protonct.py).
+An example of proton CT GATE simulation can be found in [`gate/protonct.py`](https://github.com/RTKConsortium/PCT/blob/main/gate/protonct.py).
