@@ -17,8 +17,7 @@ main(int argc, char * argv[])
   const unsigned int Dimension = 4;
   using InputImageType = itk::Image<InputPixelType, Dimension>;
 
-  itk::ImageFileReader<InputImageType>::Pointer reader;
-  reader = itk::ImageFileReader<InputImageType>::New();
+  auto reader = itk::ImageFileReader<InputImageType>::New();
   reader->SetFileName(args_info.input_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(reader->Update())
 
@@ -28,8 +27,7 @@ main(int argc, char * argv[])
   zeng->SetInput(reader->GetOutput());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(zeng->Update())
 
-  using WriterType = itk::ImageFileWriter<ZengFilterType::OutputImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<ZengFilterType::OutputImageType>::New();
   writer->SetInput(zeng->GetOutput(0));
   writer->SetFileName(args_info.outputc_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->UpdateLargestPossibleRegion())

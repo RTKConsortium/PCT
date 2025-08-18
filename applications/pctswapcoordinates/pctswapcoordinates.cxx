@@ -14,8 +14,7 @@ main(int argc, char * argv[])
   // Read
   using VectorType = itk::Vector<float, 3>;
   using PairsImageType = itk::Image<VectorType, 2>;
-  using ReaderType = itk::ImageFileReader<PairsImageType>;
-  ReaderType::Pointer reader = ReaderType::New();
+  auto reader = itk::ImageFileReader<PairsImageType>::New();
   reader->SetFileName(args_info.input_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(reader->Update());
 
@@ -31,8 +30,7 @@ main(int argc, char * argv[])
   }
 
   // Write
-  using WriterType = itk::ImageFileWriter<PairsImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<PairsImageType>::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(reader->GetOutput());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update());

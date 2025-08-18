@@ -74,7 +74,7 @@ main(int argc, char * argv[])
   }
 
   // Projection filter
-  ProjectionFilter::Pointer projection = ProjectionFilter::New();
+  auto projection = ProjectionFilter::New();
   projection->SetInput(inBp);
   projection->SetCounts(inCount);
   projection->SetProtonPairsFileNames(names->GetFileNames());
@@ -85,8 +85,7 @@ main(int argc, char * argv[])
   // Geometry
   if (args_info.verbose_flag)
     std::cout << "Reading geometry information from " << args_info.geometry_arg << "..." << std::endl;
-  rtk::ThreeDCircularProjectionGeometryXMLFileReader::Pointer geometryReader;
-  geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
+  auto geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
   geometryReader->SetFilename(args_info.geometry_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(geometryReader->GenerateOutputInformation())
   projection->SetGeometry(geometryReader->GetOutputObject());
@@ -133,8 +132,7 @@ main(int argc, char * argv[])
     filler.Fill();
   }
 
-  using CIIType = itk::ChangeInformationImageFilter<OutputImageType>;
-  CIIType::Pointer cii = CIIType::New();
+  auto cii = itk::ChangeInformationImageFilter<OutputImageType>::New();
   if (args_info.fill_flag)
     cii->SetInput(filler.GetOutput());
   else
@@ -147,8 +145,7 @@ main(int argc, char * argv[])
   cii->SetOutputSpacing(projection->GetOutput()->GetSpacing());
 
   // Write
-  using WriterType = itk::ImageFileWriter<OutputImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<OutputImageType>::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(cii->GetOutput());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update());
@@ -156,8 +153,7 @@ main(int argc, char * argv[])
   if (args_info.count_given)
   {
     // Write
-    using CountWriterType = itk::ImageFileWriter<ProjectionFilter::CountImageType>;
-    CountWriterType::Pointer cwriter = CountWriterType::New();
+    auto cwriter = itk::ImageFileWriter<ProjectionFilter::CountImageType>::New();
     cwriter->SetFileName(args_info.count_arg);
     cwriter->SetInput(projection->GetCounts());
     TRY_AND_EXIT_ON_ITK_EXCEPTION(cwriter->Update())

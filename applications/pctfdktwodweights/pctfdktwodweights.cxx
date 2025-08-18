@@ -28,29 +28,25 @@ main(int argc, char * argv[])
 
   // Projections reader
   using ProjectionImageType = itk::Image<OutputPixelType, Dimension + 1>;
-  using ReaderType = rtk::ProjectionsReader<ProjectionImageType>;
-  ReaderType::Pointer reader = ReaderType::New();
+  auto reader = rtk::ProjectionsReader<ProjectionImageType>::New();
   reader->SetFileNames(names->GetFileNames());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(reader->GenerateOutputInformation());
 
   // Geometry
   if (args_info.verbose_flag)
     std::cout << "Reading geometry information from " << args_info.geometry_arg << "..." << std::endl;
-  rtk::ThreeDCircularProjectionGeometryXMLFileReader::Pointer geometryReader;
-  geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
+  auto geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
   geometryReader->SetFilename(args_info.geometry_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(geometryReader->GenerateOutputInformation())
 
   // Weights filter
-  using WeightType = pct::FDKDDWeightProjectionFilter<ProjectionImageType>;
-  WeightType::Pointer wf = WeightType::New();
+  auto wf = pct::FDKDDWeightProjectionFilter<ProjectionImageType>::New();
   wf->SetInput(reader->GetOutput());
   wf->SetGeometry(geometryReader->GetOutputObject());
   wf->InPlaceOff();
 
   // Write
-  using WriterType = itk::ImageFileWriter<ProjectionImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<ProjectionImageType>::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(wf->GetOutput());
   writer->SetNumberOfStreamDivisions(args_info.divisions_arg);
