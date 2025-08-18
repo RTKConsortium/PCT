@@ -146,6 +146,8 @@ public:
   using Pointer = itk::SmartPointer<Self>;
   using ConstPointer = itk::SmartPointer<const Self>;
 
+  using TwoDMatrixType = Superclass::TwoDMatrixType;
+
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
 
@@ -158,15 +160,7 @@ public:
 
   /** Init with additional parameters to consider tracker uncertainties */
   virtual void
-  InitUncertain(const VectorType posIn,
-                const VectorType posOut,
-                const VectorType dirIn,
-                const VectorType dirOut,
-                double           dEntry,
-                double           dExit,
-                double           TrackerResolution,
-                double           TrackerPairSpacing,
-                double           MaterialBudget) override;
+  InitUncertain(double dEntry, double dExit, TwoDMatrixType sigmaIn, TwoDMatrixType sigmaOut) override;
 
   /** Evaluate the coordinates (x,y) at depth u1. */
   virtual void
@@ -174,7 +168,7 @@ public:
 
   /** Evaluate the error (x,y) (equation 27) at depth z. */
   void
-  EvaluateError(const double u1, itk::Matrix<double, 2, 2> & error);
+  EvaluateError(const double u1, TwoDMatrixType & error);
 
 #ifdef MLP_TIMING
   /** Print timing information */
@@ -185,10 +179,10 @@ public:
 protected:
   /// Implementation of 2x2 matrix inversion, faster than itk/vnl inversion
   void
-  InverseMatrix(itk::Matrix<double, 2, 2> & mat);
+  InverseMatrix(TwoDMatrixType & mat);
 
   /// Constructor
-  SchulteMLPFunction();
+  SchulteMLPFunction() = default;
 
   /// Destructor
   ~SchulteMLPFunction() {}
@@ -200,8 +194,8 @@ private:
 
   // Depth position at entrance and exit, only u1 is variable
   double m_uOrigin;
-  double m_u0;
-  double m_u2;
+  double m_u0{0.};
+  double m_u2{0.};
 
   // Entrance and exit parameters (equation 1)
   itk::Vector<double, 2> m_x0;
@@ -210,26 +204,26 @@ private:
   itk::Vector<double, 2> m_y2;
 
   // Part of the rotation matrices which is constant for the trajectory
-  itk::Matrix<double, 2, 2> m_R0;
-  itk::Matrix<double, 2, 2> m_R1;
-  itk::Matrix<double, 2, 2> m_R0T;
-  itk::Matrix<double, 2, 2> m_R1T;
+  TwoDMatrixType m_R0{TwoDMatrixType::GetIdentity()};
+  TwoDMatrixType m_R1{TwoDMatrixType::GetIdentity()};
+  TwoDMatrixType m_R0T{TwoDMatrixType::GetIdentity()};
+  TwoDMatrixType m_R1T{TwoDMatrixType::GetIdentity()};
 
   // Scattering matrices
-  itk::Matrix<double, 2, 2> m_Sigma1;
-  itk::Matrix<double, 2, 2> m_Sigma2;
+  TwoDMatrixType m_Sigma1;
+  TwoDMatrixType m_Sigma2;
 
-  bool m_considerTrackerUncertainties;
+  // Members for MLP with tracker uncertainties
+  bool m_ConsiderTrackerUncertainties;
+  TwoDMatrixType m_SigmaIn;
+  TwoDMatrixType m_SigmaOut;
+  TwoDMatrixType m_SIn{TwoDMatrixType::GetIdentity()};
+  TwoDMatrixType m_SInT{TwoDMatrixType::GetIdentity()};
+  TwoDMatrixType m_SOut{TwoDMatrixType::GetIdentity()};
+  TwoDMatrixType m_SOutT{TwoDMatrixType::GetIdentity()};
+  TwoDMatrixType m_SOut_Inv;
+  TwoDMatrixType m_SOutT_Inv;
 
-  // Addtional matrices needed for MLP with tracker uncertainties
-  itk::Matrix<double, 2, 2> m_SigmaIn;
-  itk::Matrix<double, 2, 2> m_SigmaOut;
-  itk::Matrix<double, 2, 2> m_Sin;
-  itk::Matrix<double, 2, 2> m_SinT;
-  itk::Matrix<double, 2, 2> m_Sout;
-  itk::Matrix<double, 2, 2> m_SoutT;
-  itk::Matrix<double, 2, 2> m_Sout_Inv;
-  itk::Matrix<double, 2, 2> m_SoutT_Inv;
   // Part common to all positions along the trajectory
   // double m_IntForSigmaSqTheta0;  //Always 0. because m_u0=0.
   // double m_IntForSigmaSqTTheta0; //Always 0. because m_u0=0.
