@@ -381,11 +381,7 @@ main(int argc, char * argv[])
   std::cout << "Write pairs..." << std::endl;
 
   itk::ImageRegion<2>           pairsRegion;
-  itk::ImageRegion<2>::SizeType size;
-  size[0] = region.GetSize(0);
-  size[1] = pairs.size() / region.GetSize(0);
-
-  pairsRegion.SetSize(size);
+  pairsRegion.SetSize(itk::MakeSize(region.GetSize(0), pairs.size() / region.GetSize(0)));
   PairsImageType::Pointer img = PairsImageType::New();
   img->SetRegions(pairsRegion);
   img->Allocate();

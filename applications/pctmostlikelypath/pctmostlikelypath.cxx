@@ -20,12 +20,11 @@ main(int argc, char * argv[])
   using OutputImageType = itk::Image<VectorType, Dimension>;
 
   // Create outputs
-  OutputImageType::RegionType region;
-  region.SetSize(0, args_info.size_arg);
+  auto region = itk::MakeSize(args_info.size_arg);
   OutputImageType::Pointer trajectory = OutputImageType::New();
   trajectory->SetRegions(region);
   trajectory->Allocate();
-  region.SetSize(0, 2);
+  region[0] = 2;
   OutputImageType::Pointer intersections = OutputImageType::New();
   intersections->SetRegions(region);
   intersections->Allocate();
