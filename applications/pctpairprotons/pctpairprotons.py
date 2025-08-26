@@ -18,6 +18,7 @@ def pctpairprotons(
     no_nuclear=False,
     fit=None,
     fit_kind=None,
+    store_time=False,
     verbose=False,
     psin='PhaseSpace',
     psout='PhaseSpace'
@@ -28,6 +29,8 @@ def pctpairprotons(
     else:
         def verbose(message):
             pass
+
+    measurement_column = 'PreGlobalTime' if store_time else 'KineticEnergy'
 
     def load_tree_as_df(root_file, tree_name):
 
@@ -135,8 +138,8 @@ def pctpairprotons(
         ps_np[:,3,0] = ps_run['du_out']
         ps_np[:,3,1] = ps_run['dv_out']
         ps_np[:,3,2] = ps_run['dw_out']
-        ps_np[:,4,0] = ps_run['KineticEnergy_in']
-        ps_np[:,4,1] = ps_run['KineticEnergy_out']
+        ps_np[:,4,0] = ps_run[measurement_column + '_in']
+        ps_np[:,4,1] = ps_run[measurement_column + '_out']
         ps_np[:,4,2] = ps_run['TrackID'] if no_nuclear else ps_run['TrackID_out']
 
         df_itk = itk.GetImageFromArray(ps_np, ttype=ImageType)
@@ -158,6 +161,7 @@ def main():
     parser.add_argument('--no-nuclear', help="Remove inelastic nuclear collisions", default=False, action='store_true')
     parser.add_argument('--fit', help="Fit file used to convert from energy loss or TOF to WEPL")
     parser.add_argument('--fit-kind', help="Whether to convert to WEPL using energy loss or TOF", choices=['tof', 'energy'])
+    parser.add_argument('--store-time', help="Store time instead of energy in the output list-mode", default=False, action='store_true')
     parser.add_argument('--verbose', '-v', help="Verbose execution", default=False, action='store_true')
     parser.add_argument('--psin', help="Name of tree in input phase space", default='PhaseSpace')
     parser.add_argument('--psout', help="Name of tree in output phase space", default='PhaseSpace')
