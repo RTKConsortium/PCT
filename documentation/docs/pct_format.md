@@ -11,8 +11,10 @@ Proton pairs are stored in 2D images of 3D float vectors, in which the first dim
 3. $(\dot u_{\text{in}}, \dot v_{\text{in}}, \dot w_{\text{in}})$ direction of the proton at the entrance detector (as unit vector);
 4. $(\dot u_{\text{out}}, \dot v_{\text{out}}, \dot w_{\text{out}})$ direction of the proton at the exit detector (as unit vector);
 5. $(e_{\text{in}},e_{\text{out}},t)$ where
-    - $e_{\text{in}}$ and $e_{\text{out}}$ are the proton energy at the entrance and exit detectors, respectively. **Important note: if $e_{\text{in}}=0$, then $e_{\text{out}}$ will directly be interpreted as the water equivalent path length (WEPL) for the proton pair.**
-    - $t$ is not used in PCT but can be used to store some useful scalar, e.g., the time-of-flight or the [GATE](https://github.com/OpenGATE/opengate) `TrackID` in `pctpairprotons`.
+    - $e_{\text{in}}$ and $e_{\text{out}}$ are the proton energy at the entrance and exit detectors, respectively.
+        - **Important note 1: if $e_{\text{in}}=0$, then $e_{\text{out}}$ will directly be interpreted as the water equivalent path length (WEPL) for the proton pair.**
+        - **Important note 2: $e_{\text{in}}$ and $e_{\text{out}}$ can alternatively represent the time of detection of the protons, if `pctpairprotons` was executed using the `--store-time` flag.**
+    - $t$ is not used in PCT but can be used to store some useful scalar such as the [GATE](https://github.com/OpenGATE/opengate) `TrackID` in `pctpairprotons`.
 6. Optionally, mainly for the work in http://doi.org/10.1088/0031-9155/61/9/3258 $(\text{creatorProcess}, \text{nuclearProcess}, \text{order})$ are used in simulations to indicate
     - the process which created the exit particle,
     - whether the particle did encounter a nuclear interaction,
