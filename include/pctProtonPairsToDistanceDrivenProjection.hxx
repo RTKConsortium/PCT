@@ -81,7 +81,10 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
     itkGenericExceptionMacro("MLP must either be schulte, polynomial, krah, or adaptive, not [" << m_MostLikelyPathType
                                                                                                 << ']');
   }
-  if (m_MostLikelyPathTrackerUncertainties && m_MostLikelyPathType != "schulte")
+
+  const TwoDMatrixType id{ TwoDMatrixType::GetIdentity() };
+  bool bMLPTrackerUncertainties = !(m_SigmaIn==id && m_SigmaOut==id);
+  if (bMLPTrackerUncertainties && m_MostLikelyPathType != "schulte")
   {
     itkGenericExceptionMacro("Tracker uncertainties can currently only be considered with MLP type 'Schulte'.");
   }
@@ -296,17 +299,13 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
     // Init MLP before mm to voxel conversion
     double xIn, xOut, yIn, yOut;
     double dxIn, dxOut, dyIn, dyOut;
-    if (m_MostLikelyPathTrackerUncertainties)
+    if (bMLPTrackerUncertainties)
     {
-      mlp->InitUncertain(pSIn,
-                         pSOut,
-                         dIn,
-                         dOut,
-                         distanceEntry,
+      mlp->InitUncertain(distanceEntry,
                          distanceExit,
-                         m_TrackerResolution,
-                         m_TrackerPairSpacing,
-                         m_MaterialBudget);
+                         m_SigmaIn,
+                         m_SigmaOut);
+      mlp->Init(pSIn, pSOut, dIn, dOut);
       mlp->Evaluate(pSIn[2], xIn, yIn, dxIn, dyIn); // get entrance and exit position according to MLP
       mlp->Evaluate(pSOut[2], xOut, yOut, dxOut, dyOut);
     }
@@ -335,7 +334,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
     double dxDummy, dyDummy;
 
     double dInMLP[2];
-    if (m_MostLikelyPathTrackerUncertainties && QuadricIntersected)
+    if (bMLPTrackerUncertainties && QuadricIntersected)
     {
       dInMLP[0] = dxIn;
       dInMLP[1] = dyIn;
@@ -347,7 +346,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
     }
 
     double dOutMLP[2];
-    if (m_MostLikelyPathTrackerUncertainties && QuadricIntersected)
+    if (bMLPTrackerUncertainties && QuadricIntersected)
     {
       dOutMLP[0] = dxOut;
       dOutMLP[1] = dyOut;

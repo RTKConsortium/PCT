@@ -1,12 +1,15 @@
 #ifndef __pctProtonPairsToDistanceDrivenProjection_h
 #define __pctProtonPairsToDistanceDrivenProjection_h
 
-#include "rtkConfiguration.h"
-#include "pctBetheBlochFunctor.h"
-
-#include <rtkQuadricShape.h>
-#include <itkInPlaceImageFilter.h>
 #include <mutex>
+
+#include <itkInPlaceImageFilter.h>
+
+#include <rtkConfiguration.h>
+#include <rtkQuadricShape.h>
+
+#include "pctBetheBlochFunctor.h"
+#include "pctMostLikelyPathFunction.h"
 
 namespace pct
 {
@@ -36,6 +39,7 @@ public:
   using OutputImageRegionType = typename OutputImageType::RegionType;
 
   using RQIType = rtk::QuadricShape;
+  using TwoDMatrixType = typename MostLikelyPathFunction<double>::TwoDMatrixType;
 
   /** Method for creation through the object factory. */
   itkNewMacro(Self);
@@ -55,18 +59,15 @@ public:
   itkGetMacro(MostLikelyPathType, std::string);
   itkSetMacro(MostLikelyPathType, std::string);
 
-  itkGetMacro(MostLikelyPathTrackerUncertainties, bool);
-  itkSetMacro(MostLikelyPathTrackerUncertainties, bool);
+  /** Tracker uncertainty parameters ([Krah et al, 2018, PMB] section 2.5) */
+  itkGetMacro(SigmaIn, TwoDMatrixType);
+  itkSetMacro(SigmaIn, TwoDMatrixType);
+
+  itkGetMacro(SigmaOut, TwoDMatrixType);
+  itkSetMacro(SigmaOut, TwoDMatrixType);
 
   itkGetMacro(MostLikelyPathPolynomialDegree, int);
   itkSetMacro(MostLikelyPathPolynomialDegree, int);
-
-  itkGetMacro(TrackerResolution, double);
-  itkSetMacro(TrackerResolution, double);
-  itkGetMacro(TrackerPairSpacing, double);
-  itkSetMacro(TrackerPairSpacing, double);
-  itkGetMacro(MaterialBudget, double);
-  itkSetMacro(MaterialBudget, double);
 
   /** Get/Set the boundaries of the object. */
   itkGetMacro(QuadricIn, RQIType::Pointer);
@@ -140,10 +141,8 @@ private:
   bool   m_VariableBeamEnergy = false;
 
   // MLP considering tracker uncertainties
-  bool   m_MostLikelyPathTrackerUncertainties;
-  double m_TrackerResolution;
-  double m_TrackerPairSpacing;
-  double m_MaterialBudget;
+  TwoDMatrixType m_SigmaIn;
+  TwoDMatrixType m_SigmaOut;
 
   /** Count event in each thread */
   CountImagePointer              m_Count;
