@@ -29,29 +29,25 @@ main(int argc, char * argv[])
     std::cout << "Regular expression matches " << names->GetFileNames().size() << " file(s)..." << std::endl;
 
   // Projections reader
-  using ReaderType = rtk::ProjectionsReader<OutputImageType>;
-  ReaderType::Pointer reader = ReaderType::New();
+  auto reader = rtk::ProjectionsReader<OutputImageType>::New();
   reader->SetFileNames(names->GetFileNames());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(reader->GenerateOutputInformation())
 
   // Geometry
   if (args_info.verbose_flag)
     std::cout << "Reading geometry information from " << args_info.geometry_arg << "..." << std::endl;
-  rtk::ThreeDCircularProjectionGeometryXMLFileReader::Pointer geometryReader;
-  geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
+  auto geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
   geometryReader->SetFilename(args_info.geometry_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(geometryReader->GenerateOutputInformation())
 
   // Short scan image filter
-  using PSSFType = pct::DDParkerShortScanImageFilter<OutputImageType>;
-  PSSFType::Pointer pssf = PSSFType::New();
+  auto pssf = pct::DDParkerShortScanImageFilter<OutputImageType>::New();
   pssf->SetInput(reader->GetOutput());
   pssf->SetGeometry(geometryReader->GetOutputObject());
   pssf->InPlaceOff();
 
   // Write
-  using WriterType = itk::ImageFileWriter<OutputImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<OutputImageType>::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(pssf->GetOutput());
   writer->SetNumberOfStreamDivisions(args_info.divisions_arg);

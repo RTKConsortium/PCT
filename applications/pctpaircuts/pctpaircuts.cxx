@@ -44,9 +44,9 @@ main(int argc, char * argv[])
 
   // Create a stack of empty projection images and associated proton count
   using ConstantImageSourceType = rtk::ConstantImageSource<ProjectionImageType>;
-  ConstantImageSourceType::Pointer sumEnergy = ConstantImageSourceType::New();
-  ConstantImageSourceType::Pointer sumEnergySq = ConstantImageSourceType::New();
-  ConstantImageSourceType::Pointer sumAngleSq = ConstantImageSourceType::New();
+  auto sumEnergy = ConstantImageSourceType::New();
+  auto sumEnergySq = ConstantImageSourceType::New();
+  auto sumAngleSq = ConstantImageSourceType::New();
 
   rtk::SetConstantImageSourceFromGgo<ConstantImageSourceType, args_info_pctpaircuts>(sumEnergy, args_info);
   rtk::SetConstantImageSourceFromGgo<ConstantImageSourceType, args_info_pctpaircuts>(sumEnergySq, args_info);
@@ -58,7 +58,7 @@ main(int argc, char * argv[])
 
   using CountImageType = itk::Image<unsigned int, 2>;
   using CountImageSourceType = rtk::ConstantImageSource<CountImageType>;
-  CountImageSourceType::Pointer counts = CountImageSourceType::New();
+  auto counts = CountImageSourceType::New();
 
   rtk::SetConstantImageSourceFromGgo<CountImageSourceType, args_info_pctpaircuts>(counts, args_info);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(counts->Update());
@@ -75,8 +75,7 @@ main(int argc, char * argv[])
   // Read pairs
   using VectorType = itk::Vector<float, 3>;
   using PairsImageType = itk::Image<VectorType, 2>;
-  using ReaderType = itk::ImageFileReader<PairsImageType>;
-  ReaderType::Pointer reader = ReaderType::New();
+  auto reader = itk::ImageFileReader<PairsImageType>::New();
   reader->SetFileName(args_info.input_arg);
   reader->UpdateOutputInformation();
   size_t nprotons = reader->GetOutput()->GetLargestPossibleRegion().GetSize()[1]; // total image proton pairs number
@@ -380,9 +379,9 @@ main(int argc, char * argv[])
 
   std::cout << "Write pairs..." << std::endl;
 
-  itk::ImageRegion<2>           pairsRegion;
+  itk::ImageRegion<2> pairsRegion;
   pairsRegion.SetSize(itk::MakeSize(region.GetSize(0), pairs.size() / region.GetSize(0)));
-  PairsImageType::Pointer img = PairsImageType::New();
+  auto img = PairsImageType::New();
   img->SetRegions(pairsRegion);
   img->Allocate();
 
@@ -391,8 +390,7 @@ main(int argc, char * argv[])
     it.Set(pairs[i]);
 
   // Write
-  using WriterType = itk::ImageFileWriter<PairsImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<PairsImageType>::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(img);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update());
@@ -401,14 +399,14 @@ main(int argc, char * argv[])
   using PWriterType = itk::ImageFileWriter<ProjectionImageType>;
   if (args_info.sangle_given)
   {
-    PWriterType::Pointer w = PWriterType::New();
+    auto w = PWriterType::New();
     w->SetInput(sumAngleSq->GetOutput());
     w->SetFileName(args_info.sangle_arg);
     TRY_AND_EXIT_ON_ITK_EXCEPTION(w->Update());
   }
   if (args_info.menergy_given)
   {
-    PWriterType::Pointer w = PWriterType::New();
+    auto w = PWriterType::New();
     w->SetInput(sumEnergy->GetOutput());
     w->SetFileName(args_info.menergy_arg);
     TRY_AND_EXIT_ON_ITK_EXCEPTION(w->Update());
@@ -416,15 +414,14 @@ main(int argc, char * argv[])
   using PWriterType = itk::ImageFileWriter<ProjectionImageType>;
   if (args_info.senergy_given)
   {
-    PWriterType::Pointer w = PWriterType::New();
+    auto w = PWriterType::New();
     w->SetInput(sumEnergySq->GetOutput());
     w->SetFileName(args_info.senergy_arg);
     TRY_AND_EXIT_ON_ITK_EXCEPTION(w->Update());
   }
   if (args_info.count_given)
   {
-    itk::ImageFileWriter<CountImageType>::Pointer w;
-    w = itk::ImageFileWriter<CountImageType>::New();
+    auto w = itk::ImageFileWriter<CountImageType>::New();
     w->SetInput(counts->GetOutput());
     w->SetFileName(args_info.count_arg);
     TRY_AND_EXIT_ON_ITK_EXCEPTION(w->Update());
