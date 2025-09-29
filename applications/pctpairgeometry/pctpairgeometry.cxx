@@ -15,8 +15,7 @@ main(int argc, char * argv[])
   // Read pairs
   using VectorType = itk::Vector<float, 3>;
   using PairsImageType = itk::Image<VectorType, 2>;
-  using ReaderType = itk::ImageFileReader<PairsImageType>;
-  ReaderType::Pointer reader = ReaderType::New();
+  auto reader = itk::ImageFileReader<PairsImageType>::New();
   reader->SetFileName(args_info.input_arg);
   reader->UpdateOutputInformation();
   size_t nprotons = reader->GetOutput()->GetLargestPossibleRegion().GetSize()[1]; // total image proton pairs number

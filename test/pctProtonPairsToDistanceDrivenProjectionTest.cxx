@@ -27,8 +27,7 @@ pctProtonPairsToDistanceDrivenProjectionTest(int argc, char* argv[])
   using PixelType = float;
   using ImageType = itk::Image<PixelType, Dimension>;
 
-  using FilterType = pct::ProtonPairsToDistanceDrivenProjection<ImageType, ImageType>;
-  FilterType::Pointer filter = FilterType::New();
+  auto filter = pct::ProtonPairsToDistanceDrivenProjection<ImageType, ImageType>::New();
 
   ITK_EXERCISE_BASIC_OBJECT_METHODS(filter, ProtonPairsToDistanceDrivenProjection, InPlaceImageFilter);
 

@@ -25,8 +25,7 @@ main(int argc, char * argv[])
   // Geometry
   if (args_info.verbose_flag)
     std::cout << "Reading geometry information from " << args_info.geometry_arg << "..." << std::flush;
-  rtk::ThreeDCircularProjectionGeometryXMLFileReader::Pointer geometryReader;
-  geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
+  auto geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
   geometryReader->SetFilename(args_info.geometry_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(geometryReader->GenerateOutputInformation())
   if (args_info.verbose_flag)
@@ -34,7 +33,7 @@ main(int argc, char * argv[])
 
   // Create an empty volume
   using ConstantImageSourceType = rtk::ConstantImageSource<OutputImageType>;
-  ConstantImageSourceType::Pointer constantImageSource = ConstantImageSourceType::New();
+  auto constantImageSource = ConstantImageSourceType::New();
   rtk::SetConstantImageSourceFromGgo<ConstantImageSourceType, args_info_pctbackprojections>(constantImageSource,
                                                                                             args_info);
 
@@ -49,8 +48,7 @@ main(int argc, char * argv[])
     std::cout << "Reading " << names->GetFileNames().size() << " projection file(s)..." << std::flush;
 
   // Projections reader
-  using ReaderType = rtk::ProjectionsReader<ProjectionImageType>;
-  ReaderType::Pointer reader = ReaderType::New();
+  auto reader = rtk::ProjectionsReader<ProjectionImageType>::New();
   reader->SetFileNames(names->GetFileNames());
   if (args_info.wpc_given)
   {
@@ -66,8 +64,7 @@ main(int argc, char * argv[])
   // Create back projection image filter
   if (args_info.verbose_flag)
     std::cout << "Backprojecting volume..." << std::flush;
-  using BPType = pct::FDKDDBackProjectionImageFilter<OutputImageType, OutputImageType>;
-  BPType::Pointer bp = BPType::New();
+  auto bp = pct::FDKDDBackProjectionImageFilter<OutputImageType, OutputImageType>::New();
   bp->SetInput(constantImageSource->GetOutput());
   bp->SetProjectionStack(reader->GetOutput());
   bp->SetGeometry(geometryReader->GetOutputObject());
@@ -78,8 +75,7 @@ main(int argc, char * argv[])
   // Write
   if (args_info.verbose_flag)
     std::cout << "Writing... " << std::flush;
-  using WriterType = itk::ImageFileWriter<OutputImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<OutputImageType>::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(bp->GetOutput());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update());

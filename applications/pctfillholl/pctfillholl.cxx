@@ -19,8 +19,7 @@ main(int argc, char * argv[])
   using OutputImageType = itk::Image<OutputPixelType, Dimension>;
 
   // Reader
-  using ReaderType = itk::ImageFileReader<OutputImageType>;
-  ReaderType::Pointer reader = ReaderType::New();
+  auto reader = itk::ImageFileReader<OutputImageType>::New();
   reader->SetFileName(args_info.input_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(reader->Update());
 
@@ -29,8 +28,7 @@ main(int argc, char * argv[])
   filler.SetHolePixel(0.);
   filler.Fill();
 
-  using CIIType = itk::ChangeInformationImageFilter<OutputImageType>;
-  CIIType::Pointer cii = CIIType::New();
+  auto cii = itk::ChangeInformationImageFilter<OutputImageType>::New();
   cii->SetInput(filler.GetOutput());
   cii->ChangeOriginOn();
   cii->ChangeDirectionOn();
@@ -40,8 +38,7 @@ main(int argc, char * argv[])
   cii->SetOutputSpacing(reader->GetOutput()->GetSpacing());
 
   // Write
-  using WriterType = itk::ImageFileWriter<OutputImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<OutputImageType>::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(cii->GetOutput());
   TRY_AND_EXIT_ON_ITK_EXCEPTION(writer->Update());

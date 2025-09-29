@@ -34,8 +34,7 @@ main(int argc, char * argv[])
 
   // Projections reader
   using ProjectionImageType = itk::Image<OutputPixelType, Dimension + 1>;
-  using ReaderType = rtk::ProjectionsReader<ProjectionImageType>;
-  ReaderType::Pointer reader = ReaderType::New();
+  auto reader = rtk::ProjectionsReader<ProjectionImageType>::New();
   reader->SetFileNames(names->GetFileNames());
   if (args_info.wpc_given)
   {
@@ -47,26 +46,23 @@ main(int argc, char * argv[])
   // Geometry
   if (args_info.verbose_flag)
     std::cout << "Reading geometry information from " << args_info.geometry_arg << "..." << std::endl;
-  rtk::ThreeDCircularProjectionGeometryXMLFileReader::Pointer geometryReader;
-  geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
+  auto geometryReader = rtk::ThreeDCircularProjectionGeometryXMLFileReader::New();
   geometryReader->SetFilename(args_info.geometry_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(geometryReader->GenerateOutputInformation())
 
   // Short scan image filter
-  using PSSFType = pct::DDParkerShortScanImageFilter<ProjectionImageType>;
-  PSSFType::Pointer pssf = PSSFType::New();
+  auto pssf = pct::DDParkerShortScanImageFilter<ProjectionImageType>::New();
   pssf->SetInput(reader->GetOutput());
   pssf->SetGeometry(geometryReader->GetOutputObject());
   pssf->InPlaceOff();
 
   // Create reconstructed image
   using ConstantImageSourceType = rtk::ConstantImageSource<OutputImageType>;
-  ConstantImageSourceType::Pointer constantImageSource = ConstantImageSourceType::New();
+  auto constantImageSource = ConstantImageSourceType::New();
   rtk::SetConstantImageSourceFromGgo<ConstantImageSourceType, args_info_pctfdk>(constantImageSource, args_info);
 
   // FDK reconstruction filtering
-  using FDKCPUType = pct::FDKDDConeBeamReconstructionFilter<OutputImageType>;
-  FDKCPUType::Pointer feldkamp = FDKCPUType::New();
+  auto feldkamp = pct::FDKDDConeBeamReconstructionFilter<OutputImageType>::New();
   feldkamp->SetInput(0, constantImageSource->GetOutput());
   feldkamp->SetProjectionStack(pssf->GetOutput());
   feldkamp->SetGeometry(geometryReader->GetOutputObject());
@@ -75,8 +71,7 @@ main(int argc, char * argv[])
   feldkamp->GetRampFilter()->SetHannCutFrequencyY(args_info.hannY_arg);
 
   // Write
-  using WriterType = itk::ImageFileWriter<OutputImageType>;
-  WriterType::Pointer writer = WriterType::New();
+  auto writer = itk::ImageFileWriter<OutputImageType>::New();
   writer->SetFileName(args_info.output_arg);
   writer->SetInput(feldkamp->GetOutput());
 
