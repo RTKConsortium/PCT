@@ -8,21 +8,8 @@ import matplotlib.pyplot as plt
 import opengate as gate
 import uproot
 import numpy as np
-
-DEFAULT_OUTPUT = "pctweplfit"
-DEFAULT_NUMBER_OF_PARTICLES = 1e4
-DEFAULT_PATH_TYPE = "simple"
-DEFAULT_PHANTOM_LENGTH_SAMPLES = 10
-DEFAULT_PHANTOM_WIDTH = 40
-DEFAULT_DETECTOR_DISTANCE = 220.0
-DEFAULT_INITIAL_ENERGY = 200.0
-DEFAULT_NUMBER_OF_DETECTORS = 10
-DEFAULT_POLYDEG_MIN = 3
-DEFAULT_POLYDEG_MAX = 3
-DEFAULT_VISU = False
-DEFAULT_DISPLAY = False
-DEFAULT_SAVEFIG = False
-DEFAULT_VERBOSE = False
+import itk
+from itk import PCT as pct
 
 epsilon_mm = 1e-5
 
@@ -42,15 +29,15 @@ def pv(verbose, *args, **kwargs):
 
 def tof_fit_mc(
     phantom_length_mm,
-    output=DEFAULT_OUTPUT,
-    phantom_width_cm=DEFAULT_PHANTOM_WIDTH,
-    detector_distance_mm=DEFAULT_DETECTOR_DISTANCE,
-    number_of_particles=DEFAULT_NUMBER_OF_PARTICLES,
-    initial_energy=DEFAULT_INITIAL_ENERGY,
-    path_type=DEFAULT_PATH_TYPE,
-    number_of_detectors=DEFAULT_NUMBER_OF_DETECTORS,
-    visu=DEFAULT_VISU,
-    verbose=DEFAULT_VERBOSE,
+    output,
+    phantom_width_cm,
+    detector_distance_mm,
+    number_of_particles,
+    initial_energy,
+    path_type,
+    number_of_detectors,
+    visu,
+    verbose,
 ):
 
     pv(verbose, "Starting simulation with following parameters: " + str(locals()))
@@ -246,13 +233,13 @@ def process_phantom_length(
 def tof_fit(
     phantom_lengths,
     number_of_detectors,
-    output=DEFAULT_OUTPUT,
-    path_type=DEFAULT_PATH_TYPE,
-    polydeg_min=DEFAULT_POLYDEG_MIN,
-    polydeg_max=DEFAULT_POLYDEG_MAX,
-    display=DEFAULT_DISPLAY,
-    savefig=DEFAULT_SAVEFIG,
-    verbose=DEFAULT_VERBOSE,
+    output,
+    path_type,
+    polydeg_min,
+    polydeg_max,
+    display,
+    savefig,
+    verbose,
 ):
 
     manager = Manager()
@@ -346,20 +333,20 @@ def tof_fit(
 
 
 def pctweplfit(
-    output=DEFAULT_OUTPUT,
-    number_of_particles=DEFAULT_NUMBER_OF_PARTICLES,
-    path_type=DEFAULT_PATH_TYPE,
-    phantom_length_samples=DEFAULT_PHANTOM_LENGTH_SAMPLES,
-    phantom_width=DEFAULT_PHANTOM_WIDTH,
-    detector_distance=DEFAULT_DETECTOR_DISTANCE,
-    number_of_detectors=DEFAULT_NUMBER_OF_DETECTORS,
-    initial_energy=DEFAULT_INITIAL_ENERGY,
-    polydeg_min=DEFAULT_POLYDEG_MIN,
-    polydeg_max=DEFAULT_POLYDEG_MAX,
-    visu=DEFAULT_VISU,
-    display=DEFAULT_DISPLAY,
-    savefig=DEFAULT_SAVEFIG,
-    verbose=DEFAULT_VERBOSE,
+    output,
+    number_of_particles,
+    path_type,
+    phantom_length_samples,
+    phantom_width,
+    detector_distance,
+    number_of_detectors,
+    initial_energy,
+    polydeg_min,
+    polydeg_max,
+    visu,
+    display,
+    savefig,
+    verbose,
 ):
     phantom_lengths = np.linspace(0.0, detector_distance, phantom_length_samples)
 
@@ -400,100 +387,118 @@ def pctweplfit(
     )
 
 
-def main():
+def build_parser():
+    parser = pct.PCTArgumentParser(
+        description="Convert TOF to WEPL using a fit on Monte Carlo data",
+    )
 
-    parser = argparse.ArgumentParser(
-        description="Convert TOF to WEPL using a fit on Monte Carlo data"
-    )
-    parser.add_argument(
-        "-o", "--output", help="Path of outputs", default=DEFAULT_OUTPUT
-    )
+    parser.add_argument("-o", "--output", help="Path of outputs", default="pctweplfit")
     parser.add_argument(
         "-n",
         "--number-of-particles",
         help="Number of generated particles",
-        default=DEFAULT_NUMBER_OF_PARTICLES,
+        default=10000,
         type=int,
     )
     parser.add_argument(
         "--path-type",
         help="How to compute proton path",
         choices=["phantom_length", "simple", "realistic"],
-        default=DEFAULT_PATH_TYPE,
+        default="simple",
     )
     parser.add_argument(
         "--phantom-length-samples",
         help="Number of phantom length samples",
-        default=DEFAULT_PHANTOM_LENGTH_SAMPLES,
+        default=10,
         type=int,
     )
     parser.add_argument(
         "-w",
         "--phantom-width",
         help="Phantom width",
-        default=DEFAULT_PHANTOM_WIDTH,
+        default=40.0,
         type=float,
     )
     parser.add_argument(
         "-d",
         "--detector-distance",
         help="Distance between detectors",
-        default=DEFAULT_DETECTOR_DISTANCE,
+        default=220.0,
         type=float,
     )
     parser.add_argument(
         "-e",
         "--initial-energy",
         help="Initial energy of the protons (in MeV)",
-        default=DEFAULT_INITIAL_ENERGY,
+        default=200.0,
         type=float,
     )
     parser.add_argument(
         "--number-of-detectors",
         help="Number of detectors in the phantom",
-        default=DEFAULT_NUMBER_OF_DETECTORS,
+        default=10,
         type=int,
     )
     parser.add_argument(
         "--polydeg-min",
         help="Minimum polynom degree",
-        default=DEFAULT_POLYDEG_MIN,
+        default=3,
         type=int,
     )
     parser.add_argument(
         "--polydeg-max",
         help="Maximum polynom degree",
-        default=DEFAULT_POLYDEG_MAX,
+        default=3,
         type=int,
     )
     parser.add_argument(
         "--visu",
         help="Visualize Monte Carlo simulation",
-        default=DEFAULT_VISU,
         action="store_true",
     )
     parser.add_argument(
         "--display",
         help="Display polynomial fit plot",
-        default=DEFAULT_DISPLAY,
         action="store_true",
     )
     parser.add_argument(
         "--savefig",
         help="Write polynomial fit plot to disk",
-        default=DEFAULT_SAVEFIG,
         action="store_true",
     )
     parser.add_argument(
         "--verbose",
         "-v",
         help="Verbose execution",
-        default=DEFAULT_VERBOSE,
         action="store_true",
     )
-    args_info = parser.parse_args()
 
-    pctweplfit(**vars(args_info))
+    return parser
+
+
+def process(args_info: argparse.Namespace):
+    pctweplfit(
+        output=args_info.output,
+        number_of_particles=args_info.number_of_particles,
+        path_type=args_info.path_type,
+        phantom_length_samples=args_info.phantom_length_samples,
+        phantom_width=args_info.phantom_width,
+        detector_distance=args_info.detector_distance,
+        number_of_detectors=args_info.number_of_detectors,
+        initial_energy=args_info.initial_energy,
+        polydeg_min=args_info.polydeg_min,
+        polydeg_max=args_info.polydeg_max,
+        visu=args_info.visu,
+        display=args_info.display,
+        savefig=args_info.savefig,
+        verbose=args_info.verbose,
+    )
+
+
+def main(argv=None):
+    parser = build_parser()
+    args_info = parser.parse_args(argv)
+    process(args_info)
 
 
 if __name__ == "__main__":
