@@ -38,6 +38,11 @@ dependencies = [
     "itk-rtk == 2.7.*"
 ]
 
+[project.scripts]
+pctfdktwodweights = "itk.pctfdktwodweights:main"
+pctpairprotons = "itk.pctpairprotons:main"
+
+
 [project.urls]
 Download = "https://github.com/RTKConsortium/PCT"
 Homepage = "https://github.com/RTKConsortium/PCT"

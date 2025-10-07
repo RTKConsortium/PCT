@@ -8,17 +8,19 @@ configure_file(
   ${PCT_VERSION_SCRIPT}
 )
 
-list(
-  APPEND
-  PCT_PYTHON_APP
-  ${PCT_SOURCE_DIR}/applications/pctfdktwodweights/pctfdktwodweights.py
-  ${PCT_SOURCE_DIR}/applications/pctpairprotons/pctpairprotons.py
-  ${PCT_SOURCE_DIR}/applications/pctweplfit/pctweplfit.py
-  ${PCT_SOURCE_DIR}/gate/protonct.py
+file(
+  GLOB PCT_PYTHON_APP
+  CONFIGURE_DEPENDS
+  "${PCT_SOURCE_DIR}/applications/pct*/pct*.py"
 )
 
-# Install python applications
-wrap_itk_python_bindings_install(/itk "PCT"  ${PCT_PYTHON_APP})
+wrap_itk_python_bindings_install(/itk "PCT"
+  __init_pct__.py
+  ${PCT_PYTHON_APP}
+  ${PCT_VERSION_SCRIPT}
+  ${PCT_SOURCE_DIR}/wrapping/pctExtras.py
+  ${PCT_SOURCE_DIR}/applications/pctargumentparser.py
+)
 
 # Copy python applications to the ITK wrapping directory to ensure they can be imported in tests.
 # This directory is added to the PYTHONPATH by itk_python_add_test.

@@ -15,3 +15,17 @@ for mod_name in pct_submodules:
     for a in dir(mod):
         if a[0] != "_":
             setattr(pct_module, a, getattr(mod, a))
+
+# Application modules
+_app_modules = [
+    "pctfdktwodweights",
+    "pctpairprotons",
+]
+
+# Dynamically access make_application_func from pctExtras
+pct_extras = importlib.import_module("itk.pctExtras")
+make_application_func = getattr(pct_extras, "make_application_func")
+
+# Dynamically register applications
+for app_name in _app_modules:
+    setattr(pct_module, app_name, make_application_func(app_name))
