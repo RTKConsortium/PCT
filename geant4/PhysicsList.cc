@@ -64,7 +64,7 @@
 #include "G4IonBinaryCascadePhysics.hh"
 #include "G4IonPhysics.hh"
 #include "G4EmExtraPhysics.hh"
-#include "G4EmProcessOptions.hh"
+// #include "G4EmProcessOptions.hh" // GD: obsolete in 11.3
 
 #include "G4HadronPhysicsFTFP_BERT.hh"
 #include "G4HadronPhysicsFTFP_BERT_HP.hh"
@@ -88,7 +88,7 @@
 #include "G4Proton.hh"
 
 #include "G4SystemOfUnits.hh"
-
+#include "G4UnitsTable.hh" // GD: needed in 11.3
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
 PhysicsList::PhysicsList()
