@@ -48,7 +48,7 @@ void
 DeepCopy(typename TImage::Pointer input, typename TImage::Pointer output);
 
 #ifndef ITK_MANUAL_INSTANTIATION
-  #include "SmallHoleFiller.hxx"
+#  include "SmallHoleFiller.hxx"
 #endif
 
 #endif

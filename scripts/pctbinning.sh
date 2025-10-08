@@ -8,4 +8,3 @@ qsub -N pctbinning.${FIRST} \
          -v FIRST=${FIRST},LAST=$(($FIRST+$GROUP-1)),DIRECTORY=$(pwd) \
          /home/srit/src/pct/pct/scripts/pctbinning.job
 done
-

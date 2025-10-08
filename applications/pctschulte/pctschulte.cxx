@@ -48,7 +48,7 @@ main(int argc, char * argv[])
     os.close();
   }
 
-  auto mlp = pct::SchulteMLPFunction::New();
+  auto                   mlp = pct::SchulteMLPFunction::New();
   itk::Vector<double, 3> p1, p2, d;
   p1.Fill(0.);
   p2 = p1;

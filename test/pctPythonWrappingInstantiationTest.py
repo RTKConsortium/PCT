@@ -7,7 +7,7 @@ pct.FDKDDConeBeamReconstructionFilter[imageType].New()
 pct.FDKDDBackProjectionImageFilter[imageType, imageType].New()
 pct.ProtonPairsToDistanceDrivenProjection[imageType, imageType].New()
 pct.SmallHoleFiller[imageType]()
- 
+
 imageType = itk.Image[itk.F, 4]
 pct.DDParkerShortScanImageFilter[imageType, imageType].New()
 pct.ProtonPairsToBackProjection[imageType, imageType].New()
@@ -22,9 +22,6 @@ pct.PolynomialMLPFunction.New()
 
 for t1 in [itk.F, itk.D]:
     for t2 in [itk.F, itk.D]:
-        pct.EnergyStragglingFunctor[t1,t2]()
-        pct.BetheBlochProtonStoppingPower[t1,t2]()
-        pct.IntegratedBetheBlochProtonStoppingPowerInverse[t1,t2](1,1)
-
-
-
+        pct.EnergyStragglingFunctor[t1, t2]()
+        pct.BetheBlochProtonStoppingPower[t1, t2]()
+        pct.IntegratedBetheBlochProtonStoppingPowerInverse[t1, t2](1, 1)

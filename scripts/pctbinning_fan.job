@@ -28,4 +28,3 @@ cd /home/srit/data/gate/fan/results.TiLV
   --ionpot 68.998 \
   --energycut 0. \
   --anglecut 0.
-

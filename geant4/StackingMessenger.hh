@@ -59,13 +59,13 @@ public:
 
   StackingMessenger(StackingAction*);
   virtual ~StackingMessenger();
-    
+
   virtual void SetNewValue(G4UIcommand*, G4String);
-    
+
 private:
-    
+
   StackingAction*     fStackAction;
-    
+
   G4UIcmdWithABool*   fKillCmd;
   G4UIcmdWithAString* fKCmd;
 };

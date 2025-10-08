@@ -49,28 +49,28 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 PrimaryGeneratorAction::PrimaryGeneratorAction()
- : G4VUserPrimaryGeneratorAction(),
-   fParticleGun(0), fHisto(0)
+  : G4VUserPrimaryGeneratorAction()
+  , fParticleGun(0)
+  , fHisto(0)
 {
-  fParticleGun  = new G4ParticleGun(1);
-  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0.,0.,1.));
+  fParticleGun = new G4ParticleGun(1);
+  fParticleGun->SetParticleMomentumDirection(G4ThreeVector(0., 0., 1.));
   fHisto = HistoManager::GetPointer();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-PrimaryGeneratorAction::~PrimaryGeneratorAction()
-{
-  delete fParticleGun;
-}
+PrimaryGeneratorAction::~PrimaryGeneratorAction() { delete fParticleGun; }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void
+PrimaryGeneratorAction::GeneratePrimaries(G4Event * anEvent)
 {
-  if(fHisto->DefaultBeamPosition()) {
-    G4double zVertex = -(5.0*mm + fHisto->Length());
-    fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.,zVertex));
+  if (fHisto->DefaultBeamPosition())
+  {
+    G4double zVertex = -(5.0 * mm + fHisto->Length());
+    fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., zVertex));
   }
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }

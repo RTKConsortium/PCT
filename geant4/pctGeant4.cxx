@@ -65,22 +65,24 @@
 #include "StackingAction.hh"
 
 /// Unique static instance
-pct::pctGeant4 *pct::pctGeant4::mSingleton = 0;
+pct::pctGeant4 * pct::pctGeant4::mSingleton = 0;
 #if ITK_VERSION_MAJOR <= 4
 itk::FastMutexLock::Pointer pct::pctGeant4::m_Lock = itk::FastMutexLock::New();
 #else
-std::mutex* pct::pctGeant4::m_Lock = new std::mutex;
+std::mutex * pct::pctGeant4::m_Lock = new std::mutex;
 #endif
 
 //------------------------------------------------------------------------------
-pct::pctGeant4 * pct::pctGeant4::GetInstance()
+pct::pctGeant4 *
+pct::pctGeant4::GetInstance()
 {
 #if ITK_VERSION_MAJOR <= 4
   m_Lock->Lock();
 #else
   m_Lock->lock();
 #endif
-  if (mSingleton == 0) {
+  if (mSingleton == 0)
+  {
     mSingleton = new pctGeant4();
   }
 #if ITK_VERSION_MAJOR <= 4
@@ -94,25 +96,29 @@ pct::pctGeant4 * pct::pctGeant4::GetInstance()
 //------------------------------------------------------------------------------
 pct::pctGeant4::pctGeant4()
 {
-  //choose the Random engine
+  // choose the Random engine
   CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine());
 
-  //Construct the default run manager
+  // Construct the default run manager
   m_RunManager = new G4RunManager();
 
-  //set mandatory initialization classes
+  // set mandatory initialization classes
   m_RunManager->SetUserInitialization(new DetectorConstruction());
 
-  G4PhysListFactory factory;
-  G4VModularPhysicsList* phys = 0;
+  G4PhysListFactory       factory;
+  G4VModularPhysicsList * phys = 0;
   m_Mess = 0;
   // Physics List name defined via environment variable
   G4String physName = "QGSP_BIC";
-  char* path = getenv("PHYSLIST");
-  if (path) { physName = G4String(path); }
+  char *   path = getenv("PHYSLIST");
+  if (path)
+  {
+    physName = G4String(path);
+  }
 
   // reference PhysicsList via its name
-  if("" != physName && factory.IsReferencePhysList(physName)) {
+  if ("" != physName && factory.IsReferencePhysList(physName))
+  {
     phys = factory.GetReferencePhysList(physName);
 
     // added extra EM options
@@ -123,19 +129,22 @@ pct::pctGeant4::pctGeant4()
   }
 
   // local Physics List
-  if(!phys) { phys = new PhysicsList(); }
+  if (!phys)
+  {
+    phys = new PhysicsList();
+  }
 
   // define physics
   m_RunManager->SetUserInitialization(phys);
   m_RunManager->SetUserAction(new PrimaryGeneratorAction());
 
-  //set user action classes
+  // set user action classes
   m_RunManager->SetUserAction(new RunAction());
   m_RunManager->SetUserAction(new EventAction());
   m_RunManager->SetUserAction(new StackingAction());
 
-  //get the pointer to the User Interface manager
-  G4UImanager* UImanager = G4UImanager::GetUIpointer();
+  // get the pointer to the User Interface manager
+  G4UImanager * UImanager = G4UImanager::GetUIpointer();
   UImanager->ApplyCommand("/material/verbose 0");
   UImanager->ApplyCommand("/run/initialize");
   UImanager->ApplyCommand("/material/verbose 0");

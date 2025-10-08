@@ -26,7 +26,11 @@ endif()
 
 # --------------------------------------------------------
 # Build applications
-option(PCT_BUILD_APPLICATIONS "Build PCT applications" ${RTK_BUILD_APPLICATIONS})
+option(
+  PCT_BUILD_APPLICATIONS
+  "Build PCT applications"
+  ${RTK_BUILD_APPLICATIONS}
+)
 if(PCT_BUILD_APPLICATIONS)
   add_subdirectory(applications)
 endif()
@@ -40,16 +44,23 @@ endif()
 
 #---------------------------------------------------------
 # Git hooks
-if(EXISTS "${PCT_SOURCE_DIR}/.git/config" AND
-    NOT EXISTS "${PCT_SOURCE_DIR}/.git/hooks/pre-commit")
+if(
+  EXISTS
+    "${PCT_SOURCE_DIR}/.git/config"
+  AND
+    NOT
+      EXISTS
+        "${PCT_SOURCE_DIR}/.git/hooks/pre-commit"
+)
   # Silently ignore the error if the hooks directory is read-only.
   execute_process(
-    COMMAND ${CMAKE_COMMAND} -E copy ${PCT_SOURCE_DIR}/cmake/Hooks/pre-commit
-                                     ${PCT_SOURCE_DIR}/.git/hooks/pre-commit
+    COMMAND
+      ${CMAKE_COMMAND} -E copy ${PCT_SOURCE_DIR}/cmake/Hooks/pre-commit
+      ${PCT_SOURCE_DIR}/.git/hooks/pre-commit
     OUTPUT_VARIABLE _output
-    ERROR_VARIABLE  _output
+    ERROR_VARIABLE _output
     RESULT_VARIABLE _result
-    )
+  )
   if(_result AND NOT "${_output}" MATCHES "Error copying file")
     message("${_output}")
   endif()

@@ -60,8 +60,8 @@ public:
 private:
 
   Histo*                  fHisto;
-   
-  G4UIdirectory*          fHistoDir;   
+
+  G4UIdirectory*          fHistoDir;
   G4UIcmdWithAString*     fFactoryCmd;
   G4UIcmdWithAString*     fFileCmd;
   G4UIcommand*            fHistoCmd;

@@ -67,11 +67,9 @@ private:
   PrimaryGeneratorAction(const PrimaryGeneratorAction&);
 
   G4ParticleGun*   fParticleGun;
-  HistoManager*    fHisto; 
+  HistoManager*    fHisto;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-
-

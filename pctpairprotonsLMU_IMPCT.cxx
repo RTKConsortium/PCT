@@ -76,7 +76,7 @@ BranchParticleToPhaseSpace(/*struct ParticleInfo &pi, */ struct ParticleData & p
 void
 WritePairs(const std::vector<std::pair<ParticleData, ParticleData>> & pairs, std::string fileName)
 {
-  itk::ImageRegion<2>           region;
+  itk::ImageRegion<2> region;
   region.SetSize(itk::MakeSize(5, pairs.size()));
 
   using PixelType = itk::Vector<float, 3>;

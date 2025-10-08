@@ -40,7 +40,7 @@
 // 04.06.2006 Adoptation of Hadr01 (V.Ivanchenko)
 //
 ////////////////////////////////////////////////////////////////////////
-// 
+//
 
 #ifndef PhysicsListMessenger_h
 #define PhysicsListMessenger_h 1
@@ -58,26 +58,25 @@ class G4UIcmdWithoutParameter;
 class PhysicsListMessenger: public G4UImessenger
 {
 public:
-  
+
   PhysicsListMessenger(PhysicsList* p = 0);
   virtual ~PhysicsListMessenger();
-    
+
   virtual void SetNewValue(G4UIcommand*, G4String);
-    
+
 private:
-  
+
   PhysicsList* fPhysicsList;
-    
+
   G4UIcmdWithADoubleAndUnit* fGammaCutCmd;
   G4UIcmdWithADoubleAndUnit* fElectCutCmd;
   G4UIcmdWithADoubleAndUnit* fPosCutCmd;
   G4UIcmdWithADoubleAndUnit* fCutCmd;
   G4UIcmdWithADoubleAndUnit* fAllCutCmd;
   G4UIcmdWithAString*        fPListCmd;
-  G4UIcmdWithoutParameter*   fListCmd;  
+  G4UIcmdWithoutParameter*   fListCmd;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-

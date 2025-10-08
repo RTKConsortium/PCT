@@ -1,6 +1,6 @@
 #!/bin/sh -x
 
-for FILENAME in results.???? 
+for FILENAME in results.????
 do
     cd $FILENAME
     $(dirname $0)/pctpairprotons.sh
@@ -29,4 +29,3 @@ for i in pairs????.mhd
 do
     cat ../results.????/$(basename $i mhd)raw >$(basename $i mhd)raw
 done
-

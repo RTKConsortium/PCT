@@ -38,7 +38,7 @@
 // 04.06.2006 Adoptation of Hadr01 (V.Ivanchenko)
 //
 ////////////////////////////////////////////////////////////////////////
-// 
+//
 
 #include "TargetSD.hh"
 #include "HistoManager.hh"
@@ -48,25 +48,27 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-TargetSD::TargetSD(const G4String& name)
- :G4VSensitiveDetector(name), fHisto(0)
+TargetSD::TargetSD(const G4String & name)
+  : G4VSensitiveDetector(name)
+  , fHisto(0)
 {
   fHisto = HistoManager::GetPointer();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-TargetSD::~TargetSD()
+TargetSD::~TargetSD() {}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void
+TargetSD::Initialize(G4HCofThisEvent *)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void TargetSD::Initialize(G4HCofThisEvent*)
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4bool TargetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool
+TargetSD::ProcessHits(G4Step * aStep, G4TouchableHistory *)
 {
   fHisto->AddTargetStep(aStep);
   return true;
@@ -74,19 +76,21 @@ G4bool TargetSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void TargetSD::EndOfEvent(G4HCofThisEvent*)
+void
+TargetSD::EndOfEvent(G4HCofThisEvent *)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void TargetSD::clear()
+void
+TargetSD::clear()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 
-void TargetSD::PrintAll()
+void
+TargetSD::PrintAll()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

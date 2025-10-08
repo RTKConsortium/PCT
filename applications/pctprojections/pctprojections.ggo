@@ -7,4 +7,3 @@ option "path"		 	p	"Path containing projections"		                            st
 option "regexp"		r	"Regular expression to select projection files in path"		  string  	yes
 option "output"   o "Output file name"                                          string    yes
 option "wpc"       - "Water precorrection coefficients (default is no correction)" double  multiple no
-

@@ -46,9 +46,15 @@ SchulteMLPFunction ::SchulteMLPFunction()
 
 // Initialize terms needed to include tracker uncertainties
 void
-SchulteMLPFunction
-::InitUncertain(const VectorType posIn, const VectorType posOut, const VectorType dirIn, const VectorType dirOut,
-                double dEntry, double dExit, double TrackerResolution, double TrackerPairSpacing, double MaterialBudget)
+SchulteMLPFunction ::InitUncertain(const VectorType posIn,
+                                   const VectorType posOut,
+                                   const VectorType dirIn,
+                                   const VectorType dirOut,
+                                   double           dEntry,
+                                   double           dExit,
+                                   double           TrackerResolution,
+                                   double           TrackerPairSpacing,
+                                   double           MaterialBudget)
 {
   m_considerTrackerUncertainties = true; // NK: maybe this should actually go into constructor
   m_u2 = posOut[2] - posIn[2];

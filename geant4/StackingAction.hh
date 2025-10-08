@@ -38,7 +38,7 @@
 // 04.06.2006 Adoptation of Hadr01 (V.Ivanchenko)
 //
 ////////////////////////////////////////////////////////////////////////
-// 
+//
 
 #ifndef StackingAction_h
 #define StackingAction_h 1
@@ -59,15 +59,15 @@ public:
 
   StackingAction();
   virtual ~StackingAction();
-   
+
   void SetKillStatus(G4bool value);
   void SetKill(const G4String& name);
-     
+
   virtual G4ClassificationOfNewTrack ClassifyNewTrack(const G4Track*);
-    
+
 private:
 
-  HistoManager*       fHistoManager;    
+  HistoManager*       fHistoManager;
   StackingMessenger*  fStackMessenger;
   G4bool              fKillSecondary;
 
@@ -78,4 +78,3 @@ private:
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-

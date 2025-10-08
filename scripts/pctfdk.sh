@@ -35,5 +35,3 @@ rtkfdk \
     -g geometry.rtk \
     -p out \
     -o fdk_out.mha
-
-

@@ -41,7 +41,7 @@
 // 16.10.2012 Renamed used classes (A.Ribon)
 //
 ////////////////////////////////////////////////////////////////////////
-// 
+//
 
 #include "PhysicsList.hh"
 #include "PhysicsListMessenger.hh"
@@ -91,17 +91,19 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-PhysicsList::PhysicsList() 
- : G4VModularPhysicsList(),
-   fEmPhysicsList(0), fParticleList(0), fMessenger(0)
+PhysicsList::PhysicsList()
+  : G4VModularPhysicsList()
+  , fEmPhysicsList(0)
+  , fParticleList(0)
+  , fMessenger(0)
 {
   G4LossTableManager::Instance();
-  defaultCutValue = 0.7*mm;
-  fCutForGamma     = defaultCutValue;
-  fCutForElectron  = defaultCutValue;
-  fCutForPositron  = defaultCutValue;
-  fCutForProton    = defaultCutValue;
-  verboseLevel    = 1;
+  defaultCutValue = 0.7 * mm;
+  fCutForGamma = defaultCutValue;
+  fCutForElectron = defaultCutValue;
+  fCutForPositron = defaultCutValue;
+  fCutForProton = defaultCutValue;
+  verboseLevel = 1;
 
   fMessenger = new PhysicsListMessenger(this);
 
@@ -119,203 +121,241 @@ PhysicsList::~PhysicsList()
   delete fMessenger;
   delete fParticleList;
   delete fEmPhysicsList;
-  for(size_t i=0; i<fHadronPhys.size(); i++) {
+  for (size_t i = 0; i < fHadronPhys.size(); i++)
+  {
     delete fHadronPhys[i];
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void PhysicsList::ConstructParticle()
+void
+PhysicsList::ConstructParticle()
 {
   fParticleList->ConstructParticle();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void PhysicsList::ConstructProcess()
+void
+PhysicsList::ConstructProcess()
 {
   AddTransportation();
   fEmPhysicsList->ConstructProcess();
   fParticleList->ConstructProcess();
-  for(size_t i=0; i<fHadronPhys.size(); i++) {
+  for (size_t i = 0; i < fHadronPhys.size(); i++)
+  {
     fHadronPhys[i]->ConstructProcess();
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void PhysicsList::AddPhysicsList(const G4String& name)
+void
+PhysicsList::AddPhysicsList(const G4String & name)
 {
-  if (verboseLevel>0) {
+  if (verboseLevel > 0)
+  {
     G4cout << "PhysicsList::AddPhysicsList: <" << name << ">" << G4endl;
   }
-  if (name == "emstandard_opt0") {
+  if (name == "emstandard_opt0")
+  {
 
     delete fEmPhysicsList;
     fEmPhysicsList = new G4EmStandardPhysics();
-
-  } else if (name == "emstandard_opt1") {
+  }
+  else if (name == "emstandard_opt1")
+  {
 
     delete fEmPhysicsList;
     fEmPhysicsList = new G4EmStandardPhysics_option1();
-
-  } else if (name == "emstandard_opt2") {
+  }
+  else if (name == "emstandard_opt2")
+  {
 
     delete fEmPhysicsList;
     fEmPhysicsList = new G4EmStandardPhysics_option2();
-
-  } else if (name == "emstandard_opt3") {
+  }
+  else if (name == "emstandard_opt3")
+  {
 
     delete fEmPhysicsList;
     fEmPhysicsList = new G4EmStandardPhysics_option3();
-
-  } else if (name == "emstandard_opt4") {
+  }
+  else if (name == "emstandard_opt4")
+  {
 
     delete fEmPhysicsList;
     fEmPhysicsList = new G4EmStandardPhysics_option4();
-
-  } else if (name == "FTFP_BERT_EMV") {
+  }
+  else if (name == "FTFP_BERT_EMV")
+  {
 
     AddPhysicsList("emstandard_opt1");
     AddPhysicsList("FTFP_BERT");
-
-  } else if (name == "FTFP_BERT_EMX") {
+  }
+  else if (name == "FTFP_BERT_EMX")
+  {
 
     AddPhysicsList("emstandard_opt2");
     AddPhysicsList("FTFP_BERT");
-
-  } else if (name == "FTFP_BERT_EMZ") {
+  }
+  else if (name == "FTFP_BERT_EMZ")
+  {
 
     AddPhysicsList("emstandard_opt4");
     AddPhysicsList("FTFP_BERT");
-
-  } else if (name == "FTFP_BERT") {
+  }
+  else if (name == "FTFP_BERT")
+  {
 
     SetBuilderList1();
-    fHadronPhys.push_back( new G4HadronPhysicsFTFP_BERT());
-
-  } else if (name == "FTF_BIC") {
+    fHadronPhys.push_back(new G4HadronPhysicsFTFP_BERT());
+  }
+  else if (name == "FTF_BIC")
+  {
 
     SetBuilderList0();
-    fHadronPhys.push_back( new G4HadronPhysicsFTF_BIC());
-    fHadronPhys.push_back( new G4NeutronCrossSectionXS(verboseLevel));
-
-  } else if (name == "QBBC") {
+    fHadronPhys.push_back(new G4HadronPhysicsFTF_BIC());
+    fHadronPhys.push_back(new G4NeutronCrossSectionXS(verboseLevel));
+  }
+  else if (name == "QBBC")
+  {
 
     AddPhysicsList("emstandard_opt0");
     SetBuilderList2();
-    fHadronPhys.push_back( new G4HadronInelasticQBBC());
-
-  } else if (name == "QGSP_BERT") {
-
-    SetBuilderList1();
-    fHadronPhys.push_back( new G4HadronPhysicsQGSP_BERT());
-
-  } else if (name == "QGSP_FTFP_BERT") {
+    fHadronPhys.push_back(new G4HadronInelasticQBBC());
+  }
+  else if (name == "QGSP_BERT")
+  {
 
     SetBuilderList1();
-    fHadronPhys.push_back( new G4HadronPhysicsQGSP_FTFP_BERT());
+    fHadronPhys.push_back(new G4HadronPhysicsQGSP_BERT());
+  }
+  else if (name == "QGSP_FTFP_BERT")
+  {
 
-  } else if (name == "QGSP_FTFP_BERT_EMV") {
+    SetBuilderList1();
+    fHadronPhys.push_back(new G4HadronPhysicsQGSP_FTFP_BERT());
+  }
+  else if (name == "QGSP_FTFP_BERT_EMV")
+  {
 
     AddPhysicsList("emstandard_opt1");
     AddPhysicsList("QGSP_FTFP_BERT");
-
-  } else if (name == "QGSP_BERT_EMV") {
+  }
+  else if (name == "QGSP_BERT_EMV")
+  {
 
     AddPhysicsList("emstandard_opt1");
     AddPhysicsList("QGSP_BERT");
-
-  } else if (name == "QGSP_BERT_EMX") {
+  }
+  else if (name == "QGSP_BERT_EMX")
+  {
 
     AddPhysicsList("emstandard_opt2");
     AddPhysicsList("QGSP_BERT");
-
-  } else if (name == "QGSP_BERT_HP") {
+  }
+  else if (name == "QGSP_BERT_HP")
+  {
 
     SetBuilderList1(true);
-    fHadronPhys.push_back( new G4HadronPhysicsQGSP_BERT_HP());
-
-  } else if (name == "QGSP_BIC") {
+    fHadronPhys.push_back(new G4HadronPhysicsQGSP_BERT_HP());
+  }
+  else if (name == "QGSP_BIC")
+  {
 
     SetBuilderList0();
-    fHadronPhys.push_back( new G4HadronPhysicsQGSP_BIC());
-
-  } else if (name == "QGSP_BIC_EMY") {
+    fHadronPhys.push_back(new G4HadronPhysicsQGSP_BIC());
+  }
+  else if (name == "QGSP_BIC_EMY")
+  {
 
     AddPhysicsList("emstandard_opt3");
     SetBuilderList0();
-    fHadronPhys.push_back( new G4HadronPhysicsQGSP_BIC());
-
-  } else if (name == "QGS_BIC") {
+    fHadronPhys.push_back(new G4HadronPhysicsQGSP_BIC());
+  }
+  else if (name == "QGS_BIC")
+  {
 
     SetBuilderList0();
-    fHadronPhys.push_back( new G4HadronPhysicsQGS_BIC());
-    fHadronPhys.push_back( new G4NeutronCrossSectionXS(verboseLevel));
-
-  } else if (name == "QGSP_BIC_HP") {
+    fHadronPhys.push_back(new G4HadronPhysicsQGS_BIC());
+    fHadronPhys.push_back(new G4NeutronCrossSectionXS(verboseLevel));
+  }
+  else if (name == "QGSP_BIC_HP")
+  {
 
     SetBuilderList0(true);
-    fHadronPhys.push_back( new G4HadronPhysicsQGSP_BIC_HP());
-
-  } else {
+    fHadronPhys.push_back(new G4HadronPhysicsQGSP_BIC_HP());
+  }
+  else
+  {
 
     G4cout << "PhysicsList::AddPhysicsList: <" << name << ">"
-           << " is not defined"
-           << G4endl;
+           << " is not defined" << G4endl;
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void PhysicsList::SetBuilderList0(G4bool flagHP)
+void
+PhysicsList::SetBuilderList0(G4bool flagHP)
 {
-  fHadronPhys.push_back( new G4EmExtraPhysics(verboseLevel));
-  if(flagHP) {
-    fHadronPhys.push_back( new G4HadronElasticPhysicsHP(verboseLevel) );
-  } else {
-    fHadronPhys.push_back( new G4HadronElasticPhysics(verboseLevel) );
+  fHadronPhys.push_back(new G4EmExtraPhysics(verboseLevel));
+  if (flagHP)
+  {
+    fHadronPhys.push_back(new G4HadronElasticPhysicsHP(verboseLevel));
   }
-  fHadronPhys.push_back( new G4StoppingPhysics(verboseLevel));
-  fHadronPhys.push_back( new G4IonBinaryCascadePhysics(verboseLevel));
-  fHadronPhys.push_back( new G4NeutronTrackingCut(verboseLevel));
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
-
-void PhysicsList::SetBuilderList1(G4bool flagHP)
-{
-  fHadronPhys.push_back( new G4EmExtraPhysics(verboseLevel));
-  if(flagHP) {
-    fHadronPhys.push_back( new G4HadronElasticPhysicsHP(verboseLevel) );
-  } else {
-    fHadronPhys.push_back( new G4HadronElasticPhysics(verboseLevel) );
+  else
+  {
+    fHadronPhys.push_back(new G4HadronElasticPhysics(verboseLevel));
   }
-  fHadronPhys.push_back( new G4StoppingPhysics(verboseLevel));
-  fHadronPhys.push_back( new G4IonPhysics(verboseLevel));
-  fHadronPhys.push_back( new G4NeutronTrackingCut(verboseLevel));
+  fHadronPhys.push_back(new G4StoppingPhysics(verboseLevel));
+  fHadronPhys.push_back(new G4IonBinaryCascadePhysics(verboseLevel));
+  fHadronPhys.push_back(new G4NeutronTrackingCut(verboseLevel));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void PhysicsList::SetBuilderList2()
+void
+PhysicsList::SetBuilderList1(G4bool flagHP)
 {
-  fHadronPhys.push_back( new G4EmExtraPhysics(verboseLevel));
-  fHadronPhys.push_back( new G4HadronElasticPhysicsXS(verboseLevel) );
-  fHadronPhys.push_back( new G4StoppingPhysics(verboseLevel));
-  fHadronPhys.push_back( new G4IonPhysics(verboseLevel));
-  fHadronPhys.push_back( new G4NeutronTrackingCut(verboseLevel));
+  fHadronPhys.push_back(new G4EmExtraPhysics(verboseLevel));
+  if (flagHP)
+  {
+    fHadronPhys.push_back(new G4HadronElasticPhysicsHP(verboseLevel));
+  }
+  else
+  {
+    fHadronPhys.push_back(new G4HadronElasticPhysics(verboseLevel));
+  }
+  fHadronPhys.push_back(new G4StoppingPhysics(verboseLevel));
+  fHadronPhys.push_back(new G4IonPhysics(verboseLevel));
+  fHadronPhys.push_back(new G4NeutronTrackingCut(verboseLevel));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void PhysicsList::SetCuts()
+void
+PhysicsList::SetBuilderList2()
+{
+  fHadronPhys.push_back(new G4EmExtraPhysics(verboseLevel));
+  fHadronPhys.push_back(new G4HadronElasticPhysicsXS(verboseLevel));
+  fHadronPhys.push_back(new G4StoppingPhysics(verboseLevel));
+  fHadronPhys.push_back(new G4IonPhysics(verboseLevel));
+  fHadronPhys.push_back(new G4NeutronTrackingCut(verboseLevel));
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
+
+void
+PhysicsList::SetCuts()
 {
 
-  if (verboseLevel >0){
+  if (verboseLevel > 0)
+  {
     G4cout << "PhysicsList::SetCuts:";
-    G4cout << "CutLength : " << G4BestUnit(defaultCutValue,"Length") << G4endl;
+    G4cout << "CutLength : " << G4BestUnit(defaultCutValue, "Length") << G4endl;
   }
 
   // set cut values for gamma at first and for e- second and next for e+,
@@ -325,12 +365,16 @@ void PhysicsList::SetCuts()
   SetCutValue(fCutForPositron, "e+");
   SetCutValue(fCutForProton, "proton");
 
-  if (verboseLevel>0) { DumpCutValuesTable(); }
+  if (verboseLevel > 0)
+  {
+    DumpCutValuesTable();
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 
-void PhysicsList::SetCutForGamma(G4double cut)
+void
+PhysicsList::SetCutForGamma(G4double cut)
 {
   fCutForGamma = cut;
   SetParticleCuts(fCutForGamma, G4Gamma::Gamma());
@@ -338,7 +382,8 @@ void PhysicsList::SetCutForGamma(G4double cut)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PhysicsList::SetCutForElectron(G4double cut)
+void
+PhysicsList::SetCutForElectron(G4double cut)
 {
   fCutForElectron = cut;
   SetParticleCuts(fCutForElectron, G4Electron::Electron());
@@ -346,7 +391,8 @@ void PhysicsList::SetCutForElectron(G4double cut)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PhysicsList::SetCutForPositron(G4double cut)
+void
+PhysicsList::SetCutForPositron(G4double cut)
 {
   fCutForPositron = cut;
   SetParticleCuts(fCutForPositron, G4Positron::Positron());
@@ -354,27 +400,24 @@ void PhysicsList::SetCutForPositron(G4double cut)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void PhysicsList::SetCutForProton(G4double cut)
+void
+PhysicsList::SetCutForProton(G4double cut)
 {
   fCutForProton = cut;
   SetParticleCuts(fCutForProton, G4Proton::Proton());
 }
 
-void PhysicsList::List()
+void
+PhysicsList::List()
 {
   G4cout << "### PhysicsLists available: FTFP_BERT FTFP_BERT_EMV "
-         << "FTFP_BERT_EMX FTFP_BERT_EMZ"
-         << G4endl;
+         << "FTFP_BERT_EMX FTFP_BERT_EMZ" << G4endl;
   G4cout << "                            FTF_BIC QBBC QGSP_BERT "
-         << "QGSP_BERT_EMV QGSP_BERT_EMX"
-         << G4endl; 
+         << "QGSP_BERT_EMV QGSP_BERT_EMX" << G4endl;
   G4cout << "                            QGSP_BERT_HP QGSP_FTFP_BERT "
-         << "QGSP_FTFP_BERT_EMV"
-         << G4endl; 
+         << "QGSP_FTFP_BERT_EMV" << G4endl;
   G4cout << "                            QGS_BIC QGSP_BIC QGSP_BIC_EMY "
-         << "QGSP_BIC_HP" 
-         << G4endl; 
+         << "QGSP_BIC_HP" << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

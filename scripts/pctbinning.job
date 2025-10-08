@@ -25,5 +25,5 @@ do
     --size 125,2,125 \
     --source -1000 \
     --quadricIn="1,0,1,0,0,0,0,0,0,-10000"
-  rm pairs${NUM}c.mha 
+  rm pairs${NUM}c.mha
 done

@@ -58,14 +58,14 @@ public:
 
   EventActionMessenger(EventAction*);
   virtual ~EventActionMessenger();
-    
+
   virtual void SetNewValue(G4UIcommand*, G4String);
-    
+
 private:
 
-  EventAction*          fEventAction;   
-  G4UIcmdWithAnInteger* fPrintCmd;    
-  G4UIcmdWithAnInteger* fCmd;    
+  EventAction*          fEventAction;
+  G4UIcmdWithAnInteger* fPrintCmd;
+  G4UIcmdWithAnInteger* fCmd;
 
 };
 

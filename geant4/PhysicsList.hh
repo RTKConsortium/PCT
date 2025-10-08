@@ -39,7 +39,7 @@
 // 04.06.2006 Adoptation of Hadr01 (V.Ivanchenko)
 //
 ////////////////////////////////////////////////////////////////////////
-// 
+//
 
 #ifndef PhysicsList_h
 #define PhysicsList_h 1
@@ -60,7 +60,7 @@ public:
   virtual ~PhysicsList();
 
   virtual void ConstructParticle();
-  virtual void ConstructProcess();    
+  virtual void ConstructProcess();
 
   virtual void SetCuts();
 
@@ -68,10 +68,10 @@ public:
   void SetCutForElectron(G4double);
   void SetCutForPositron(G4double);
   void SetCutForProton(G4double);
-        
+
   void AddPhysicsList(const G4String& name);
   void List();
-  
+
 private:
 
   void SetBuilderList0(G4bool flagHP = false);
@@ -86,7 +86,7 @@ private:
   G4VPhysicsConstructor*  fEmPhysicsList;
   G4VPhysicsConstructor*  fParticleList;
   std::vector<G4VPhysicsConstructor*>  fHadronPhys;
-    
+
   PhysicsListMessenger* fMessenger;
 
 };
@@ -94,4 +94,3 @@ private:
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
-

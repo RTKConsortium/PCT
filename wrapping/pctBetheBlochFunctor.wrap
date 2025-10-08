@@ -9,7 +9,7 @@ itk_wrap_class("pct::Functor::BetheBlochProtonStoppingPower")
       itk_wrap_template("${ITKM_${t_1}}${ITKM_${t_2}}" "${ITKT_${t_1}}, ${ITKT_${t_2}}")
     endforeach()
   endforeach()
- 
+
 itk_end_wrap_class()
 
 itk_wrap_class("pct::Functor::IntegratedBetheBlochProtonStoppingPowerInverse")
