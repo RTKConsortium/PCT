@@ -46,6 +46,10 @@ public:
   itkGetMacro(Geometry, rtk::ThreeDCircularProjectionGeometry::Pointer);
   itkSetMacro(Geometry, rtk::ThreeDCircularProjectionGeometry::Pointer);
 
+  /** Get/ Set variance mode */
+  itkGetMacro(VarianceReconstruction, bool);
+  itkSetMacro(VarianceReconstruction, bool);
+
 protected:
   FDKDDWeightProjectionFilter() {}
   ~FDKDDWeightProjectionFilter() {}
@@ -54,6 +58,8 @@ protected:
   BeforeThreadedGenerateData() override;
   virtual void
   DynamicThreadedGenerateData(const OutputImageRegionType & outputRegionForThread) override;
+
+  bool m_VarianceReconstruction = false;
 
 private:
   FDKDDWeightProjectionFilter(const Self &); // purposely not implemented

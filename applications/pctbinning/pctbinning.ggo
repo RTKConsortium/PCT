@@ -7,6 +7,7 @@ option "input"      i "Input file name containing the proton pairs"             
 option "output"     o "Output file name"                                         string          no
 option "elosswepl"  - "Output file name (alias for --output)"                    string          no
 option "count"      c "Image of count of proton pairs per pixel"                 string          no
+option "variance"   - "Image of variance of WEPL values per pixel"               string          no
 option "scatwepl"   - "Image of scattering WEPL of proton pairs per pixel"       string          no
 option "noise"      - "Image of WEPL variance per pixel"                         string          no
 option "robust"     r "Use robust estimation of scattering using 19.1 %ile."     flag            off
@@ -20,6 +21,7 @@ option "mlptrackeruncert"    - "Consider tracker uncertainties in MLP [Krah 2018
 option "mlppolydeg" - "Degree of the polynomial to approximate 1/beta^2p^2"      int             no  default="5"
 option "ionpot"     - "Ionization potential used in the reconstruction in eV"    double          no  default="68.9984"
 option "fill"       - "Fill holes, i.e. pixels that were not hit by protons"     flag            off
+option "fillvariance" - "Fill holes, i.e. pixels that were not hit by protons (for variance projections)"     flag            off
 option "trackerresolution"       - "Tracker resolution in mm"     double no
 option "trackerspacing"       - "Tracker pair spacing in mm"     double no
 option "materialbudget"       - "Material budget x/X0 of tracker"     double no

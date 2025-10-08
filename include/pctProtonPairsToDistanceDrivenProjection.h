@@ -29,6 +29,9 @@ public:
   using CountImageType = itk::Image<unsigned int, 3>;
   using CountImagePointer = CountImageType::Pointer;
 
+  typedef itk::Image<float, 3>       VarianceImageType;
+  typedef VarianceImageType::Pointer VarianceImagePointer;
+
   using AngleImageType = itk::Image<float, 3>;
   using AngleImagePointer = AngleImageType::Pointer;
 
@@ -78,6 +81,9 @@ public:
   /** Get/Set the count of proton pairs per pixel. */
   itkGetMacro(Count, CountImagePointer);
 
+  /** Get/Set the variance of proton pairs per pixel. */
+  itkGetMacro(Variance, VarianceImagePointer);
+
   /** Get/Set the angle of proton pairs per pixel. */
   itkGetMacro(Angle, AngleImagePointer);
 
@@ -109,6 +115,12 @@ public:
   itkSetMacro(ComputeNoise, bool);
   itkGetConstMacro(ComputeNoise, bool);
   itkBooleanMacro(ComputeNoise);
+
+  /** Do the variance projections
+   ** Default is off. */
+  itkSetMacro(ComputeVariance, bool);
+  itkGetConstMacro(ComputeVariance, bool);
+  itkBooleanMacro(ComputeVariance);
 
   /** Get/Set the particle type. */
   itkGetMacro(Particle, std::string);
@@ -154,6 +166,12 @@ private:
   CountImagePointer              m_Count;
   std::vector<CountImagePointer> m_Counts;
 
+  /** Calculate variance in each thread */
+  VarianceImagePointer              m_Variance;
+  std::vector<VarianceImagePointer> m_Variances;
+  VarianceImagePointer              m_VarianceSq;
+  std::vector<VarianceImagePointer> m_VariancesSq;
+
   AngleImagePointer               m_Angle;
   std::vector<AngleImagePointer>  m_Angles;
   std::vector<std::vector<float>> m_AnglesVectors;
@@ -185,6 +203,7 @@ private:
   ProtonPairsImageType::Pointer m_ProtonPairs;
   bool                          m_Robust;
   bool                          m_ComputeScattering;
+  bool                          m_ComputeVariance;
   bool                          m_ComputeNoise;
 
   /** The particle type, enum comes from gengetopt header. */
