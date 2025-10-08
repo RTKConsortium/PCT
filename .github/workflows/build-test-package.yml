@@ -9,7 +9,7 @@ concurrency:
 jobs:
   cxx-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@v5.4.4
-    with: 
+    with:
       itk-module-deps: RTK@main
 
   python-build-workflow:

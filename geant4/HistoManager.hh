@@ -73,7 +73,7 @@ private:
 
   HistoManager();
 
-public: 
+public:
 
   ~HistoManager();
 
@@ -89,12 +89,12 @@ public:
   void AddTargetStep(const G4Step*);
   void AddLeakingParticle(const G4Track*);
 
-  void SetVerbose(G4int val);        
+  void SetVerbose(G4int val);
 
   inline void SetTargetLength(G4double val)            {fLength  = val;};
   inline void SetNumberOfSlices(G4int val)             {fNSlices = val;};
   inline void SetNumberOfBinsE(G4int val)              {fNBinsE  = val;};
-  inline void SetDefaultBeamPositionFlag(G4bool f)     {fBeamFlag = f;};        
+  inline void SetDefaultBeamPositionFlag(G4bool f)     {fBeamFlag = f;};
   inline void SetMaxEnergyDeposit(G4double val)        {fEdepMax = val;};
 
   inline G4double Length()         const               {return fLength;};
@@ -119,7 +119,7 @@ private:
   G4double fLength;
   G4double fAbsZ0;
   G4double fPrimaryKineticEnergy;
- 
+
   G4int fVerbose;
   G4int fNBinsE;
   G4int fNSlices;

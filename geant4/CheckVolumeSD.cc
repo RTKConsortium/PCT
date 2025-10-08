@@ -38,7 +38,7 @@
 // 04.06.2006 Adoptation of Hadr01 (V.Ivanchenko)
 //
 ////////////////////////////////////////////////////////////////////////
-// 
+//
 
 #include "CheckVolumeSD.hh"
 #include "HistoManager.hh"
@@ -49,46 +49,52 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-CheckVolumeSD::CheckVolumeSD(const G4String& name)
- :G4VSensitiveDetector(name), fHisto(0)
+CheckVolumeSD::CheckVolumeSD(const G4String & name)
+  : G4VSensitiveDetector(name)
+  , fHisto(0)
 {
   fHisto = HistoManager::GetPointer();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-CheckVolumeSD::~CheckVolumeSD()
+CheckVolumeSD::~CheckVolumeSD() {}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void
+CheckVolumeSD::Initialize(G4HCofThisEvent *)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void CheckVolumeSD::Initialize(G4HCofThisEvent*)
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4bool CheckVolumeSD::ProcessHits(G4Step* aStep, G4TouchableHistory*)
+G4bool
+CheckVolumeSD::ProcessHits(G4Step * aStep, G4TouchableHistory *)
 {
-  const G4Track* track = aStep->GetTrack();
-  if(track->GetTrackID() > 1) { fHisto->AddLeakingParticle(track); }
+  const G4Track * track = aStep->GetTrack();
+  if (track->GetTrackID() > 1)
+  {
+    fHisto->AddLeakingParticle(track);
+  }
   return true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void CheckVolumeSD::EndOfEvent(G4HCofThisEvent*)
+void
+CheckVolumeSD::EndOfEvent(G4HCofThisEvent *)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void CheckVolumeSD::clear()
+void
+CheckVolumeSD::clear()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void CheckVolumeSD::PrintAll()
+void
+CheckVolumeSD::PrintAll()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-

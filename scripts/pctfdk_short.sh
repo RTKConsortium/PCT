@@ -11,7 +11,7 @@ OPTIONS='--lowmem
 rm -fr short
 mkdir -p short/in short/out
 for i in $(seq -w 640 719) $(seq -w 0 319)
-do    
+do
     j=$(echo $i | sed "s/^0*//g")
     if test "$j" = ""
     then
@@ -57,4 +57,3 @@ rtkfdk \
     -g geometry_short.rtk \
     -p short/out \
     -o fdk_short_out.mha
-

@@ -54,40 +54,43 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 G4EmUserPhysics::G4EmUserPhysics(G4int ver)
-  : G4VPhysicsConstructor("User EM Options"), fVerbose(ver)
+  : G4VPhysicsConstructor("User EM Options")
+  , fVerbose(ver)
 {
   G4LossTableManager::Instance();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-G4EmUserPhysics::~G4EmUserPhysics()
-{}
+G4EmUserPhysics::~G4EmUserPhysics() {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4EmUserPhysics::ConstructParticle()
+void
+G4EmUserPhysics::ConstructParticle()
 {
   G4AntiProton::AntiProton();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void G4EmUserPhysics::ConstructProcess()
+void
+G4EmUserPhysics::ConstructProcess()
 {
-  const G4ParticleDefinition* pbar = G4AntiProton::AntiProton();
-  G4ProcessManager* pmanager = pbar->GetProcessManager();
-  G4ProcessVector* pv = pmanager->GetProcessList(); 
-  size_t nn = pv->size();
-  for(size_t i=0; i<nn; ++i) {
-    G4VProcess* proc = (*pv)[i];
-    if(fIonisation == proc->GetProcessSubType()) {
-      G4VEnergyLossProcess* eloss = static_cast<G4VEnergyLossProcess*>(proc);
-      G4double elim = 1.e-6*eV;
+  const G4ParticleDefinition * pbar = G4AntiProton::AntiProton();
+  G4ProcessManager *           pmanager = pbar->GetProcessManager();
+  G4ProcessVector *            pv = pmanager->GetProcessList();
+  size_t                       nn = pv->size();
+  for (size_t i = 0; i < nn; ++i)
+  {
+    G4VProcess * proc = (*pv)[i];
+    if (fIonisation == proc->GetProcessSubType())
+    {
+      G4VEnergyLossProcess * eloss = static_cast<G4VEnergyLossProcess *>(proc);
+      G4double               elim = 1.e-6 * eV;
       eloss->SetLowestEnergyLimit(elim);
       G4cout << "### G4EmUserPhysics::ConstructProcess: "
-             << "set new lowest energy limit " << elim/eV << " eV for "
-             << pbar->GetParticleName() << G4endl;
+             << "set new lowest energy limit " << elim / eV << " eV for " << pbar->GetParticleName() << G4endl;
       break;
     }
   }

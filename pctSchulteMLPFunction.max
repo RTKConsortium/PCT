@@ -65,4 +65,3 @@ tex(%, "pctOptSchulteMLPFunction.tex")$
 u1: 20;
 sqrt(SigmaSquareTheta1), numer;
 sqrt(SigmaSquareT1), numer;
-

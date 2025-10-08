@@ -5,12 +5,13 @@ import opengate as gate
 from scipy.spatial.transform import Rotation
 
 
-def protonct(output,
+def protonct(
+    output,
     projections=720,
     protons_per_projection=1000,
     seed=None,
     visu=False,
-    verbose=False
+    verbose=False,
 ):
 
     # Units
@@ -25,11 +26,11 @@ def protonct(output,
     # Simulation
     sim = gate.Simulation()
 
-    sim.random_engine = 'MersenneTwister'
-    sim.random_seed = 'auto' if seed is None else seed
+    sim.random_engine = "MersenneTwister"
+    sim.random_seed = "auto" if seed is None else seed
     sim.check_volumes_overlap = False
     sim.visu = visu
-    sim.visu_type = 'vrml'
+    sim.visu_type = "vrml"
     sim.g4_verbose = False
     sim.progress_bar = verbose
     sim.number_of_threads = 1
@@ -37,12 +38,14 @@ def protonct(output,
     sim.run_timing_intervals = [[j * sec, (j + 1) * sec] for j in range(projections)]
 
     # Misc
-    yellow = [1, 1, 0, .5]
-    blue = [0, 0, 1, .5]
+    yellow = [1, 1, 0, 0.5]
+    blue = [0, 0, 1, 0.5]
 
     # Geometry
-    sim.volume_manager.add_material_database(gate.utility.get_contrib_path() / 'GateMaterials.db')
-    sim.world.material = 'Vacuum'
+    sim.volume_manager.add_material_database(
+        gate.utility.get_contrib_path() / "GateMaterials.db"
+    )
+    sim.world.material = "Vacuum"
     sim.world.size = [4 * m, 4 * m, 4 * m]
     sim.world.color = [0, 0, 0, 0]
 
@@ -50,16 +53,18 @@ def protonct(output,
 
     def add_spiral(sim):
         # Mother of all
-        spiral = sim.add_volume('Tubs', name='Spiral')
+        spiral = sim.add_volume("Tubs", name="Spiral")
         spiral.rmin = 0 * cm
         spiral.rmax = 10 * cm
         spiral.dz = 40 * cm
-        spiral.material = 'Water'
+        spiral.material = "Water"
         spiral.color = blue
-        spiral.rotation = Rotation.from_euler('yz', [90, 90], degrees=True).as_matrix()
+        spiral.rotation = Rotation.from_euler("yz", [90, 90], degrees=True).as_matrix()
 
         # Spiral rotation
-        tr, rot = gate.geometry.utility.volume_orbiting_transform('y', 0, 360, projections, spiral.translation, spiral.rotation)
+        tr, rot = gate.geometry.utility.volume_orbiting_transform(
+            "y", 0, 360, projections, spiral.translation, spiral.rotation
+        )
         spiral.add_dynamic_parametrisation(translation=tr, rotation=rot)
 
         # Spiral inserts
@@ -70,7 +75,17 @@ def protonct(output,
         posx = [radius[i] * math.cos(angles[i]) for i in range(len(radius))]
         posy = [radius[i] * math.sin(angles[i]) for i in range(len(radius))]
 
-        def add_spiral_insert(sim, mother, name, rmin=0 * mm, rmax=1 * mm, dz=40 * cm, material='Aluminium', translation=None, color=None):
+        def add_spiral_insert(
+            sim,
+            mother,
+            name,
+            rmin=0 * mm,
+            rmax=1 * mm,
+            dz=40 * cm,
+            material="Aluminium",
+            translation=None,
+            color=None,
+        ):
 
             if translation is None:
                 translation = [0 * mm, 0 * mm, 0 * mm]
@@ -78,7 +93,7 @@ def protonct(output,
             if color is None:
                 color = yellow
 
-            spiral_insert = sim.add_volume('Tubs', name=name)
+            spiral_insert = sim.add_volume("Tubs", name=name)
             spiral_insert.mother = mother.name
             spiral_insert.rmin = rmin
             spiral_insert.rmax = rmax
@@ -88,19 +103,24 @@ def protonct(output,
             spiral_insert.color = color
 
         for i in range(len(radius)):
-            add_spiral_insert(sim, spiral, f'SpiralInsert{i:02d}', translation=[posx[i] * mm, posy[i] * mm, 0])
+            add_spiral_insert(
+                sim,
+                spiral,
+                f"SpiralInsert{i:02d}",
+                translation=[posx[i] * mm, posy[i] * mm, 0],
+            )
 
     add_spiral(sim)
 
     # Beam
-    source = sim.add_source('GenericSource', 'mybeam')
-    source.particle = 'proton'
+    source = sim.add_source("GenericSource", "mybeam")
+    source.particle = "proton"
     source.energy.mono = 200 * MeV
-    source.energy.type = 'mono'
-    source.position.type = 'box'
+    source.energy.type = "mono"
+    source.position.type = "box"
     source.position.size = [16 * mm, 1 * nm, 1 * nm]
     source.position.translation = [0, 0, -1060 * mm]
-    source.direction.type = 'focused'
+    source.direction.type = "focused"
     source.direction.focus_point = [0, 0, -1000 * mm]
 
     if sim.visu:
@@ -110,52 +130,66 @@ def protonct(output,
         source.activity = protons_per_projection * Bq
 
     # Physics list
-    sim.physics_manager.physics_list_name = 'QGSP_BIC_EMZ'
+    sim.physics_manager.physics_list_name = "QGSP_BIC_EMZ"
 
     # Phase spaces
 
     def add_detector(sim, name, translation):
-        plane = sim.add_volume('Box', 'PlanePhaseSpace' + name)
+        plane = sim.add_volume("Box", "PlanePhaseSpace" + name)
         plane.size = [400 * mm, 400 * mm, 1 * nm]
         plane.translation = translation
-        plane.material = 'Vacuum'
+        plane.material = "Vacuum"
         plane.color = yellow
 
-        phase_space = sim.add_actor('PhaseSpaceActor', 'PhaseSpace' + name)
+        phase_space = sim.add_actor("PhaseSpaceActor", "PhaseSpace" + name)
         phase_space.attached_to = plane.name
         phase_space.attributes = [
-            'RunID',
-            'EventID',
-            'TrackID',
-            'KineticEnergy',
-            'PreGlobalTime',
-            'Position',
-            'Direction'
+            "RunID",
+            "EventID",
+            "TrackID",
+            "KineticEnergy",
+            "PreGlobalTime",
+            "Position",
+            "Direction",
         ]
-        phase_space.output_filename = f'{output}/PhaseSpace{name}.root'
+        phase_space.output_filename = f"{output}/PhaseSpace{name}.root"
 
-        ps_filter = sim.add_filter('ParticleFilter', 'Filter' + name)
-        ps_filter.particle = 'proton'
+        ps_filter = sim.add_filter("ParticleFilter", "Filter" + name)
+        ps_filter.particle = "proton"
         phase_space.filters.append(ps_filter)
 
-    add_detector(sim, 'In', [0, 0, -110 * mm])
-    add_detector(sim, 'Out', [0, 0, 110 * mm])
+    add_detector(sim, "In", [0, 0, -110 * mm])
+    add_detector(sim, "Out", [0, 0, 110 * mm])
 
     # Particle stats
-    stat = sim.add_actor('SimulationStatisticsActor', 'stat')
-    stat.output_filename = f'{output}/protonct.txt'
+    stat = sim.add_actor("SimulationStatisticsActor", "stat")
+    stat.output_filename = f"{output}/protonct.txt"
 
     sim.run()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-o', '--output', help="Output folder", default='output')
-    parser.add_argument('-p', '--projections', help="Number of projections", default=720, type=int)
-    parser.add_argument('-n', '--protons-per-projection', help="Number of protons per projection", default=1000, type=int)
-    parser.add_argument('-s', '--seed', help="Random number generator seed", type=int, required=False)
-    parser.add_argument('--visu', help="Enable visualization", default=False, action='store_true')
-    parser.add_argument('--verbose', help="Verbose execution", default=False, action='store_true')
+    parser.add_argument("-o", "--output", help="Output folder", default="output")
+    parser.add_argument(
+        "-p", "--projections", help="Number of projections", default=720, type=int
+    )
+    parser.add_argument(
+        "-n",
+        "--protons-per-projection",
+        help="Number of protons per projection",
+        default=1000,
+        type=int,
+    )
+    parser.add_argument(
+        "-s", "--seed", help="Random number generator seed", type=int, required=False
+    )
+    parser.add_argument(
+        "--visu", help="Enable visualization", default=False, action="store_true"
+    )
+    parser.add_argument(
+        "--verbose", help="Verbose execution", default=False, action="store_true"
+    )
     args = parser.parse_args()
 
     protonct(**vars(args))

@@ -4,4 +4,3 @@ pctpairprotons \
     -o pairs.mhd \
     --planeIn -110 \
     --planeOut 110
-

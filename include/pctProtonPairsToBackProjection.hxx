@@ -26,7 +26,8 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>::BeforeThreadedGenerateDa
 }
 
 template <class TInputImage, class TOutputImage>
-void ProtonPairsToBackProjection<TInputImage, TOutputImage>::GenerateData()
+void
+ProtonPairsToBackProjection<TInputImage, TOutputImage>::GenerateData()
 {
   this->AllocateOutputs();
   this->BeforeThreadedGenerateData();
@@ -306,14 +307,15 @@ void ProtonPairsToBackProjection<TInputImage, TOutputImage>::GenerateData()
               << m_ProtonPairs->GetLargestPossibleRegion().GetSize(1)
               << " pairs of protons processed (100%) in all threads." << std::endl;
 #ifdef MLP_TIMING
-      mlp->PrintTiming(std::cout);
+    mlp->PrintTiming(std::cout);
 #endif
   }
   this->AfterThreadedGenerateData();
 }
 
 template <class TInputImage, class TOutputImage>
-void ProtonPairsToBackProjection<TInputImage, TOutputImage>::AfterThreadedGenerateData()
+void
+ProtonPairsToBackProjection<TInputImage, TOutputImage>::AfterThreadedGenerateData()
 {
   using ImageIteratorType = typename itk::ImageRegionIterator<TOutputImage>;
   ImageIteratorType itOut(this->GetOutput(), this->GetOutput()->GetRequestedRegion());
@@ -334,4 +336,4 @@ void ProtonPairsToBackProjection<TInputImage, TOutputImage>::AfterThreadedGenera
     ++itCOut;
   }
 }
-}
+} // namespace pct

@@ -5,10 +5,16 @@ find_package(Gengetopt REQUIRED)
 # Required to include ITK_USE_FILE in order to Register IO factories
 # Force requested modules to be PCT dependencies only, otherwise all
 # available factories will try to register themselves.
-if (NOT ITK_DIR)
+if(NOT ITK_DIR)
   set(ITK_DIR ${ITK_BINARY_DIR}/CMakeTmp)
 endif()
-find_package(ITK REQUIRED COMPONENTS ${ITK_MODULE_PCT_DEPENDS} ${ITK_MODULE_PCT-Test_DEPENDS})
+find_package(
+  ITK
+  REQUIRED
+  COMPONENTS
+    ${ITK_MODULE_PCT_DEPENDS}
+    ${ITK_MODULE_PCT-Test_DEPENDS}
+)
 include(${ITK_USE_FILE})
 
 add_subdirectory(pctpaircuts)

@@ -61,14 +61,14 @@ public:
 
   ~Histo();
 
-  // Book predefined histogramms 
+  // Book predefined histogramms
   void Book();
 
   // Save histogramms to file
   void Save();
 
   // In this method 1-D histogramms are predefined
-  void Add1D(const G4String&, const G4String&, G4int nb, G4double x1, 
+  void Add1D(const G4String&, const G4String&, G4int nb, G4double x1,
                                                G4double x2, G4double u=1.);
 
   // It change bins and boundaries
@@ -96,7 +96,7 @@ public:
   void FillTupleF(G4int, G4float);
   void FillTupleD(G4int, G4double);
 
-  // Save tuple event 
+  // Save tuple event
   void AddRow();
 
   // Set output file
@@ -111,7 +111,7 @@ private:
 
   G4RootAnalysisManager* fManager;
   HistoMessenger*        fMessenger;
- 
+
   G4String fHistName;
   G4String fHistType;
   G4String fTupleName;

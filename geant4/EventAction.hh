@@ -37,11 +37,11 @@
 // Modified:
 //
 ////////////////////////////////////////////////////////////////////////
-// 
+//
 
 #ifndef EventAction_h
 #define EventAction_h 1
- 
+
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 #include <vector>
@@ -81,17 +81,15 @@ private:
 
 };
 
-inline void EventAction::SetPrintModulo(G4int val)   
-{ 
+inline void EventAction::SetPrintModulo(G4int val)
+{
   fPrintModulo = val;
 }
- 
-inline void EventAction::AddEventToDebug(G4int val)  
-{ 
+
+inline void EventAction::AddEventToDebug(G4int val)
+{
   fSelectedEvents.push_back(val);
   ++fSelected;
 }
 
 #endif
-
-

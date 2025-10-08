@@ -87,7 +87,7 @@ BranchParticleToPhaseSpace(struct ParticleInfo & piInput, struct ParticleData & 
 void
 WritePairs(const std::vector<std::pair<ParticleDataFinal, ParticleDataFinal>> & pairs, std::string fileName)
 {
-  itk::ImageRegion<2>           region;
+  itk::ImageRegion<2> region;
   region.SetSize(itk::MakeSize(5, pairs.size()));
 
   using PixelType = itk::Vector<float, 3>;
@@ -165,8 +165,8 @@ main(int argc, char * argv[])
 	std::cout << "Input Entry = " << iIn << " with data : "
 	<< pd.position0[0] << "	" << pd.position0[1] << "	" << pd.position0[2] << "	"
 	<< pd.position1[0] << "	" << pd.position1[1] << "	" << pd.position1[2] << "	"
-	<< pd.position2[0] << "	" << pd.position2[1] << "	" << pd.position2[2] << "	" 	
-	<< pd.position3[0] << "	" << pd.position3[1] << "	" << pd.position3[2] << "	"	
+	<< pd.position2[0] << "	" << pd.position2[1] << "	" << pd.position2[2] << "	"
+	<< pd.position3[0] << "	" << pd.position3[1] << "	" << pd.position3[2] << "	"
 	<< "	" << pd.wepl << std::endl;
 #endif
 
@@ -214,8 +214,8 @@ main(int argc, char * argv[])
 	std::cout << "Output Entry = " << iIn << " with data : "
 	<< pdIn.position[0] << "	" << pdIn.position[1] << "	" << pdIn.position[2] << "	"
 	<< pdOut.position[0] << "	" << pdOut.position[1] << "	" << pdOut.position[2] << "	"
-	<< pdIn.direction[0] << "	" << pdIn.direction[1] << "	" << pdIn.direction[2] << "	" 	
-	<< pdOut.direction[0] << "	" << pdOut.direction[1] << "	" << pdOut.direction[2] << "	"	
+	<< pdIn.direction[0] << "	" << pdIn.direction[1] << "	" << pdIn.direction[2] << "	"
+	<< pdOut.direction[0] << "	" << pdOut.direction[1] << "	" << pdOut.direction[2] << "	"
 	<< "	" << pdIn.wepl << "	" << pdOut.wepl << std::endl;
 #endif
     if (pdOut.wepl >= -20. && pdOut.wepl <= 900. && interceptionFlag)

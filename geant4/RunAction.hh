@@ -37,7 +37,7 @@
 //      GEANT4 Header file
 //      RunAction
 //
-// 
+//
 // -------------------------------------------------------------
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
@@ -57,7 +57,7 @@ public: // Without description
   virtual ~RunAction();
 
 public: // With description
- 
+
   virtual void BeginOfRunAction(const G4Run*);
   // In this method histogramms are booked
 
@@ -67,4 +67,3 @@ public: // With description
 };
 
 #endif
-

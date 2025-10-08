@@ -3,15 +3,13 @@ itk_module_test()
 #-----------------------------------------------------------------------------
 # CXX tests
 
-set(PCTTests
-  pctProtonPairsToDistanceDrivenProjectionTest.cxx
-  )
+set(PCTTests pctProtonPairsToDistanceDrivenProjectionTest.cxx)
 
-CreateTestDriver(PCT "${PCT-Test_LIBRARIES}" "${PCTTests}")
+createtestdriver(PCT "${PCT-Test_LIBRARIES}" "${PCTTests}")
 
 itk_add_test(NAME pctProtonPairsToDistanceDrivenProjectionTest
   COMMAND PCTTestDriver pctProtonPairsToDistanceDrivenProjectionTest
-  )
+)
 
 #-----------------------------------------------------------------------------
 # Python tests
@@ -27,7 +25,6 @@ endif()
 # in ITKModuleExternal.cmake for DATA{} to be referenced, so we put it here
 # rather than in the applications subdirectory.
 if(PCT_BUILD_APPLICATIONS)
-
   itk_add_test(NAME pctappbinningtest
     COMMAND itkTestDriver
       --compare
@@ -36,5 +33,4 @@ if(PCT_BUILD_APPLICATIONS)
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/pctbinning
       -i DATA{Input/pairs0000.mhd,pairs0000.raw} -o ${ITK_TEST_OUTPUT_DIR}/projections.mhd --source 1000 --size=400,20,220
   )
-
 endif()

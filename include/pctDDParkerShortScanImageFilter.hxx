@@ -44,7 +44,7 @@ DDParkerShortScanImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerate
   }
 
   // Weight image parameters
-  typename WeightImageType::RegionType  region;
+  typename WeightImageType::RegionType region;
   region.SetSize(0, outputRegionForThread.GetSize(0));
   region.SetIndex(0, outputRegionForThread.GetIndex(0));
 

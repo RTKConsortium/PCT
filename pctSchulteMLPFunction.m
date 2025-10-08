@@ -55,7 +55,7 @@ function [] = CompBetaPSquare()
     plot(u,schulte, 'r-');
     plot(u,williams, 'b-');
     plot(u,rit, 'k-');
-    % 
+    %
     % E0=13.6;
     % X0=36.1;
     % sigmasq = zeros(1,length(u));
@@ -63,9 +63,9 @@ function [] = CompBetaPSquare()
     %     sigmasq = sigmasq + a(i+1)./(i+1) .* u.^(i+1);
     % end
     % sigmasq = sigmasq .* E0*E0.*(1+0.038*log(u/X0))./X0;
-    % 
+    %
     % plot(u, sqrt(sigmasq), 'r-');
-    
+
 function [] = CompareSpatialSigma()
     % Computed with code
     calc = [0. 0.0316514 0.0942212 0.179374 0.284538 0.408824 0.552243 0.71532 0.898855 1.10379 1.33115 1.58214 1.85821 2.16138 2.49446 2.86144 3.26793 3.72148 4.23201 4.81203 5.47676];

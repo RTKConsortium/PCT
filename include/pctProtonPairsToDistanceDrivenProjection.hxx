@@ -163,7 +163,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
     imgSquaredData = m_SquaredOutputs[threadId]->GetBufferPointer();
   }
 
-  auto imgSpacingInv = itk::MakeVector(1.0f/imgSpacing[0], 1.0f/imgSpacing[1], 1.0f/imgSpacing[2]);
+  auto imgSpacingInv = itk::MakeVector(1.0f / imgSpacing[0], 1.0f / imgSpacing[1], 1.0f / imgSpacing[2]);
 
   // Corrections
   using VectorType = itk::Vector<double, 3>;
