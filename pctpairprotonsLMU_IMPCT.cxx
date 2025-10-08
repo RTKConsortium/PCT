@@ -214,17 +214,19 @@ main(int argc, char * argv[])
     prevEventIDOut = pdOut.eventID;
 
 
-    // Condition 1: both particles must be protons
-    //    if( pdOut.pdgID != 2212 )
-    //      {
-    //      iOut++;
-    //      continue;
-    //      }
-    //    if( pdIn.pdgID != 2212 )
-    //      {
-    //      iIn++;
-    //      continue;
-    //      }
+    // Condition 1: both particles must be protons/alphas
+    if ((args_info.particle_arg == particle_arg_proton && pdOut.pdgID != 2212) ||
+        (args_info.particle_arg == particle_arg_alpha && pdOut.pdgID != 1000020040))
+    {
+      iOut++;
+      continue;
+    }
+    if ((args_info.particle_arg == particle_arg_proton && pdIn.pdgID != 2212) ||
+        (args_info.particle_arg == particle_arg_alpha && pdIn.pdgID != 1000020040))
+    {
+      iIn++;
+      continue;
+    }
 
     // Condition 2: absolute time difference must be small
     //    if( pIn.time-pOut.time<-100.f )

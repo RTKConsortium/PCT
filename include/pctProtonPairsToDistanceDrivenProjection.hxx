@@ -40,8 +40,9 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::BeforeThreaded
 
   if (m_QuadricOut.GetPointer() == NULL)
     m_QuadricOut = m_QuadricIn;
+  const int zsq = (m_Particle == "alpha") ? 4 : 1; // helium energy is 800 MeV instead of 200 MeV for protons
   m_ConvFunc = new Functor::IntegratedBetheBlochProtonStoppingPowerInverse<float, double>(
-    m_IonizationPotential, 600. * CLHEP::MeV, 0.1 * CLHEP::keV);
+    m_IonizationPotential, zsq * 600. * CLHEP::MeV, 0.1 * CLHEP::keV, m_Particle);
 
   // Read pairs
   using ReaderType = itk::ImageFileReader<ProtonPairsImageType>;
@@ -57,12 +58,16 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
   const OutputImageRegionType & itkNotUsed(outputRegionForThread),
   rtk::ThreadIdType             threadId)
 {
+  if (m_Particle != "proton" && m_MostLikelyPathType != "schulte")
+    itkGenericExceptionMacro("Only Schulte's MLP can be used with particles which are not proton");
+
   // Create MLP depending on type
   pct::MostLikelyPathFunction<double>::Pointer mlp;
   if (m_MostLikelyPathType == "polynomial")
     mlp = pct::ThirdOrderPolynomialMLPFunction<double>::New();
   else if (m_MostLikelyPathType == "krah")
   {
+    mlp = pct::ThirdOrderPolynomialMLPFunction<double>::New();
     pct::PolynomialMLPFunction::Pointer mlp_poly;
     mlp_poly = pct::PolynomialMLPFunction::New();
     mlp_poly->SetPolynomialDegree(m_MostLikelyPathPolynomialDegree);
@@ -74,7 +79,9 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
   }
   else if (m_MostLikelyPathType == "schulte")
   {
-    mlp = pct::SchulteMLPFunction::New();
+    pct::SchulteMLPFunction::Pointer mlpSchulte = pct::SchulteMLPFunction::New();
+    mlpSchulte->SetParticle(m_Particle);
+    mlp = mlpSchulte;
   }
   else
   {

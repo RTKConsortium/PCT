@@ -105,9 +105,22 @@ SchulteMLPFunction ::Init(const VectorType posIn,
   m_uOrigin = posIn[2];
 
   m_u2 = posOut[2] - m_uOrigin;
-  m_IntForSigmaSqTheta2 = Functor::SchulteMLP::IntegralForSigmaSqTheta ::GetValue(m_u2);
-  m_IntForSigmaSqTTheta2 = Functor::SchulteMLP::IntegralForSigmaSqTTheta::GetValue(m_u2);
-  m_IntForSigmaSqT2 = Functor::SchulteMLP::IntegralForSigmaSqT ::GetValue(m_u2);
+  if (m_Particle == "proton")
+  {
+    m_IntForSigmaSqTheta2 = Functor::SchulteMLP::IntegralForSigmaSqTheta ::GetValue(m_u2);
+    m_IntForSigmaSqTTheta2 = Functor::SchulteMLP::IntegralForSigmaSqTTheta::GetValue(m_u2);
+    m_IntForSigmaSqT2 = Functor::SchulteMLP::IntegralForSigmaSqT ::GetValue(m_u2);
+  }
+  else if (m_Particle == "alpha")
+  {
+    m_IntForSigmaSqTheta2 = Functor::SchulteMLP::IntegralForSigmaSqTheta ::GetValueHe(m_u2);
+    m_IntForSigmaSqTTheta2 = Functor::SchulteMLP::IntegralForSigmaSqTTheta::GetValueHe(m_u2);
+    m_IntForSigmaSqT2 = Functor::SchulteMLP::IntegralForSigmaSqT ::GetValueHe(m_u2);
+  }
+  else
+  {
+    throw std::invalid_argument("Invalid particle in Schulte MLP function.");
+  }
 
   // Parameters vectors
   m_x0[0] = posIn[0];
@@ -141,27 +154,51 @@ SchulteMLPFunction ::Evaluate(const double u, double & x, double & y, double & d
   InverseMatrix(R1_Inv);
 
   // Constants used in both integrals
-  const double intForSigmaSqTheta1 = Functor::SchulteMLP::IntegralForSigmaSqTheta ::GetValue(u1);
-  const double intForSigmaSqTTheta1 = Functor::SchulteMLP::IntegralForSigmaSqTTheta::GetValue(u1);
-  const double intForSigmaSqT1 = Functor::SchulteMLP::IntegralForSigmaSqT ::GetValue(u1);
+  if (m_Particle == "proton")
+  {
+    const double intForSigmaSqTheta1 = Functor::SchulteMLP::IntegralForSigmaSqTheta ::GetValue(u1);
+    const double intForSigmaSqTTheta1 = Functor::SchulteMLP::IntegralForSigmaSqTTheta::GetValue(u1);
+    const double intForSigmaSqT1 = Functor::SchulteMLP::IntegralForSigmaSqT ::GetValue(u1);
 
-  // Construct Sigma1 (equations 6-9)
-  m_Sigma1(1, 1) = intForSigmaSqTheta1 /* - m_IntForSigmaSqTheta0*/;
-  m_Sigma1(0, 1) = u1 * m_Sigma1(1, 1) - intForSigmaSqTTheta1 /* + m_IntForSigmaSqTTheta0*/;
-  m_Sigma1(1, 0) = m_Sigma1(0, 1);
-  m_Sigma1(0, 0) = u1 * (2 * m_Sigma1(0, 1) - u1 * m_Sigma1(1, 1)) + intForSigmaSqT1 /* - m_IntForSigmaSqT0*/;
-  m_Sigma1 *= Functor::SchulteMLP::ConstantPartOfIntegrals::GetValue(m_u0, u1);
+    // Construct Sigma1 (equations 6-9)
+    m_Sigma1(1, 1) = intForSigmaSqTheta1 /* - m_IntForSigmaSqTheta0*/;
+    m_Sigma1(0, 1) = u1 * m_Sigma1(1, 1) - intForSigmaSqTTheta1 /* + m_IntForSigmaSqTTheta0*/;
+    m_Sigma1(1, 0) = m_Sigma1(0, 1);
+    m_Sigma1(0, 0) = u1 * (2 * m_Sigma1(0, 1) - u1 * m_Sigma1(1, 1)) + intForSigmaSqT1 /* - m_IntForSigmaSqT0*/;
+    m_Sigma1 *= Functor::SchulteMLP::ConstantPartOfIntegrals::GetValue(m_u0, u1);
 
-  double sigma1 = std::sqrt(m_Sigma2(1, 1));
+    double sigma1 = std::sqrt(m_Sigma2(1, 1));
 
-  // Construct Sigma2 (equations 15-18)
-  m_Sigma2(1, 1) = m_IntForSigmaSqTheta2 - intForSigmaSqTheta1;
-  m_Sigma2(0, 1) = m_u2 * m_Sigma2(1, 1) - m_IntForSigmaSqTTheta2 + intForSigmaSqTTheta1;
-  m_Sigma2(1, 0) = m_Sigma2(0, 1);
-  m_Sigma2(0, 0) = m_u2 * (2 * m_Sigma2(0, 1) - m_u2 * m_Sigma2(1, 1)) + m_IntForSigmaSqT2 - intForSigmaSqT1;
-  m_Sigma2 *= Functor::SchulteMLP::ConstantPartOfIntegrals::GetValue(u1, m_u2);
+    // Construct Sigma2 (equations 15-18)
+    m_Sigma2(1, 1) = m_IntForSigmaSqTheta2 - intForSigmaSqTheta1;
+    m_Sigma2(0, 1) = m_u2 * m_Sigma2(1, 1) - m_IntForSigmaSqTTheta2 + intForSigmaSqTTheta1;
+    m_Sigma2(1, 0) = m_Sigma2(0, 1);
+    m_Sigma2(0, 0) = m_u2 * (2 * m_Sigma2(0, 1) - m_u2 * m_Sigma2(1, 1)) + m_IntForSigmaSqT2 - intForSigmaSqT1;
+    m_Sigma2 *= Functor::SchulteMLP::ConstantPartOfIntegrals::GetValue(u1, m_u2);
+  }
+  else if (m_Particle == "alpha")
+  {
+    const double intForSigmaSqTheta1 = Functor::SchulteMLP::IntegralForSigmaSqTheta ::GetValueHe(u1);
+    const double intForSigmaSqTTheta1 = Functor::SchulteMLP::IntegralForSigmaSqTTheta::GetValueHe(u1);
+    const double intForSigmaSqT1 = Functor::SchulteMLP::IntegralForSigmaSqT ::GetValueHe(u1);
+
+    // Construct Sigma1 (equations 6-9)
+    m_Sigma1(1, 1) = intForSigmaSqTheta1 /* - m_IntForSigmaSqTheta0*/;
+    m_Sigma1(0, 1) = u1 * m_Sigma1(1, 1) - intForSigmaSqTTheta1 /* + m_IntForSigmaSqTTheta0*/;
+    m_Sigma1(1, 0) = m_Sigma1(0, 1);
+    m_Sigma1(0, 0) = u1 * (2 * m_Sigma1(0, 1) - u1 * m_Sigma1(1, 1)) + intForSigmaSqT1 /* - m_IntForSigmaSqT0*/;
+    m_Sigma1 *= Functor::SchulteMLP::ConstantPartOfIntegrals::GetValueHe(m_u0, u1);
+
+    // Construct Sigma2 (equations 15-18)
+    m_Sigma2(1, 1) = m_IntForSigmaSqTheta2 - intForSigmaSqTheta1;
+    m_Sigma2(0, 1) = m_u2 * m_Sigma2(1, 1) - m_IntForSigmaSqTTheta2 + intForSigmaSqTTheta1;
+    m_Sigma2(1, 0) = m_Sigma2(0, 1);
+    m_Sigma2(0, 0) = m_u2 * (2 * m_Sigma2(0, 1) - m_u2 * m_Sigma2(1, 1)) + m_IntForSigmaSqT2 - intForSigmaSqT1;
+    m_Sigma2 *= Functor::SchulteMLP::ConstantPartOfIntegrals::GetValueHe(u1, m_u2);
+  }
 
 #ifdef MLP_TIMING
+  m_EvaluateProbe1.Stop();
   m_EvaluateProbe2.Start();
 #endif
 
