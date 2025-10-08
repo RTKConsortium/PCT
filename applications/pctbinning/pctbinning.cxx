@@ -133,18 +133,17 @@ main(int argc, char * argv[])
   if (args_info.variance_given)
   {
 
-    SmallHoleFiller<ProjectionFilter::VarianceImageType> fillerVar;
+    auto varianceHoleFilter = pct::HoleFillingImageFilter<OutputImageType>::New();
     if (args_info.variance_given && args_info.fillvariance_flag)
     {
-      fillerVar.SetImage(projection->GetVariance());
-      fillerVar.SetHolePixel(0.);
-      fillerVar.Fill();
+      varianceHoleFilter->SetInput(projection->GetVariance());
+      TRY_AND_EXIT_ON_ITK_EXCEPTION(varianceHoleFilter->Update());
     }
 
     typedef itk::ChangeInformationImageFilter<ProjectionFilter::VarianceImageType> CIIVarType;
     CIIVarType::Pointer                                                            ciiVar = CIIVarType::New();
     if (args_info.fillvariance_flag)
-      ciiVar->SetInput(fillerVar.GetOutput());
+      ciiVar->SetInput(varianceHoleFilter->GetOutput());
     else
       ciiVar->SetInput(projection->GetVariance());
     ciiVar->ChangeOriginOn();
