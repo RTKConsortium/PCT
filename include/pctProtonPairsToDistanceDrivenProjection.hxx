@@ -15,6 +15,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ProtonPairsToD
   : m_Robust(false)
   , m_ComputeScattering(false)
   , m_ComputeNoise(false)
+  , m_ComputeVariance(false)
 {
   this->DynamicMultiThreadingOff();
   this->SetNumberOfWorkUnits(itk::MultiThreaderBase::GetGlobalDefaultNumberOfThreads());
@@ -26,6 +27,13 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::BeforeThreaded
 {
   m_Outputs.resize(this->GetNumberOfWorkUnits());
   m_Counts.resize(this->GetNumberOfWorkUnits());
+
+  if (m_ComputeVariance)
+  {
+    m_Variances.resize(this->GetNumberOfWorkUnits());
+    m_VariancesSq.resize(this->GetNumberOfWorkUnits());
+  }
+
   if (m_ComputeScattering)
   {
     m_Angles.resize(this->GetNumberOfWorkUnits());
@@ -99,6 +107,19 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
   m_Counts[threadId]->Allocate();
   m_Counts[threadId]->FillBuffer(0);
 
+  if (m_ComputeVariance)
+  {
+    m_Variances[threadId] = VarianceImageType::New();
+    m_Variances[threadId]->SetRegions(this->GetInput()->GetLargestPossibleRegion());
+    m_Variances[threadId]->Allocate();
+    m_Variances[threadId]->FillBuffer(0);
+
+    m_VariancesSq[threadId] = VarianceImageType::New();
+    m_VariancesSq[threadId]->SetRegions(this->GetInput()->GetLargestPossibleRegion());
+    m_VariancesSq[threadId]->Allocate();
+    m_VariancesSq[threadId]->FillBuffer(0);
+  }
+
   if (m_ComputeScattering &&
       (!m_Robust || threadId == 0)) // Note NK: is this condition correct? Should it not be !(m_Robust || threadId==0) ?
   {
@@ -125,6 +146,11 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
   {
     m_Outputs[0] = this->GetOutput();
     m_Count = m_Counts[0];
+    if (m_ComputeVariance)
+    {
+      m_Variance = m_Variances[0];
+      m_VarianceSq = m_VariancesSq[0];
+    }
     if (m_ComputeScattering)
     {
       m_Angle = m_Angles[0];
@@ -159,7 +185,15 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
   typename OutputImageType::PixelType * imgData = m_Outputs[threadId]->GetBufferPointer();
   typename OutputImageType::PixelType * imgSquaredData = NULL;
   unsigned int *                        imgCountData = m_Counts[threadId]->GetBufferPointer();
-  float *                               imgAngleData = NULL, *imgAngleSqData = NULL;
+
+  float *imgVarianceData = NULL, *imgVarianceSqData = NULL;
+  if (m_ComputeVariance)
+  {
+    imgVarianceData = m_Variances[threadId]->GetBufferPointer();
+    imgVarianceSqData = m_VariancesSq[threadId]->GetBufferPointer();
+  }
+
+  float *imgAngleData = NULL, *imgAngleSqData = NULL;
   if (m_ComputeScattering && !m_Robust)
   {
     imgAngleData = m_Angles[threadId]->GetBufferPointer();
@@ -438,6 +472,11 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
         {
           imgSquaredData[idx] += value * value;
         }
+        if (m_ComputeVariance)
+        {
+          imgVarianceData[idx] += value;
+          imgVarianceSqData[idx] += value * value;
+        }
         imgCountData[idx]++;
         if (m_ComputeScattering)
         {
@@ -552,6 +591,61 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::AfterThreadedG
     }
   }
 
+  if (m_ComputeVariance)
+  {
+    typedef itk::ImageRegionIterator<VarianceImageType> ImageVarianceIteratorType;
+    ImageVarianceIteratorType itVarianceOut(m_Variances[0], m_Outputs[0]->GetLargestPossibleRegion());
+
+    typedef itk::ImageRegionIterator<VarianceImageType> ImageVarianceSqIteratorType;
+    ImageVarianceSqIteratorType itVarianceSqOut(m_VariancesSq[0], m_Outputs[0]->GetLargestPossibleRegion());
+
+    for (unsigned int i = 1; i < this->GetNumberOfWorkUnits(); i++)
+    {
+      if (m_Outputs[i].GetPointer() == NULL)
+        continue;
+      ImageVarianceIteratorType   itVarianceOutThread(m_Variances[i], m_Outputs[i]->GetLargestPossibleRegion());
+      ImageVarianceSqIteratorType itVarianceSqOutThread(m_VariancesSq[i], m_Outputs[i]->GetLargestPossibleRegion());
+
+      while (!itVarianceOut.IsAtEnd())
+      {
+        itVarianceOut.Set(itVarianceOut.Get() + itVarianceOutThread.Get());
+        ++itVarianceOutThread;
+        ++itVarianceOut;
+
+        itVarianceSqOut.Set(itVarianceSqOut.Get() + itVarianceSqOutThread.Get());
+        ++itVarianceSqOutThread;
+        ++itVarianceSqOut;
+      }
+      itVarianceOut.GoToBegin();
+      itVarianceSqOut.GoToBegin();
+    }
+
+    // Set variance image information
+    m_Variance->SetSpacing(this->GetOutput()->GetSpacing());
+    m_Variance->SetOrigin(this->GetOutput()->GetOrigin());
+
+    itCOut.GoToBegin();
+    while (!itCOut.IsAtEnd())
+    {
+      if (itCOut.Get() >= 2)
+      {
+        const float vsum = itVarianceOut.Get();
+        const float vsqsum = itVarianceSqOut.Get();
+        const float n = itCOut.Get();
+        const float variance_wepl = (vsqsum - vsum * vsum / n) / (n - 1);
+        const float variance_proj = variance_wepl / n;
+        itVarianceOut.Set(variance_proj);
+      }
+      else
+      {
+        itVarianceOut.Set(0.);
+      }
+      ++itCOut;
+      ++itVarianceOut;
+      ++itVarianceSqOut;
+    }
+  }
+
   if (m_ComputeScattering)
   {
     using ImageAngleIteratorType = itk::ImageRegionIterator<AngleImageType>;
@@ -632,6 +726,8 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::AfterThreadedG
   m_Outputs.resize(0);
   m_SquaredOutputs.resize(0);
   m_Counts.resize(0);
+  m_Variances.resize(0);
+  m_VariancesSq.resize(0);
   m_Angles.resize(0);
   m_AnglesSq.resize(0);
   m_AnglesVectors.resize(0);
