@@ -160,6 +160,33 @@ main(int argc, char * argv[])
     treeIn->GetEntry(iIn);
     treeOut->GetEntry(iOut);
 
+    // Fluence modulation for ideal data, ROI always 0
+    //  Part for proton track segment - corcular ROI intersection
+    //  http://mathworld.wolfram.com/Circle-LineIntersection.html
+    bool interceptionFlag = true;
+    if (args_info.fmpct_flag)
+    {
+      double radius = args_info.roiR_arg; // ROI radius in mm
+      if (radius != 0)
+      {
+        std::cout << "Warning: ROI=0 for ideal data" << std::endl;
+      }
+      // double dx = pd.position2[2]-pd.position1[2];
+      // double dy = pd.position2[0]-pd.position1[0];
+      // double dr_sq = (dx*dx) + (dy*dy);
+      // double D = (pd.position1[2]*pd.position2[0]) - (pd.position2[2]*pd.position1[0]);
+      // double Delta = (radius*radius*dr_sq) - (D*D);
+      double randomNumber = ((double)rand() / (RAND_MAX));
+      // std::cout << "RAND_MAX = " << RAND_MAX << std::endl;
+      // std::cout << "randomNumber = " << randomNumber << std::endl;
+      // no interception, then discard proton with randomNumber > modF_arg
+      // if (Delta<0) {
+      if (randomNumber > args_info.modF_arg)
+        interceptionFlag = false;
+      //}
+      // std::cout << "Delta, randomNumber, interceptionFlag = " << Delta << "	" << randomNumber << "	" <<
+      // interceptionFlag <<std::endl;
+    }
 
     /*
       // George - test
@@ -270,7 +297,7 @@ main(int argc, char * argv[])
 
 
     // Corresponding protons found, add to vector if no nuclear interaction
-    if(args_info.runID_arg>=args_info.minRun_arg && args_info.runID_arg<args_info.maxRun_arg/* &&
+    if(args_info.runID_arg>=args_info.minRun_arg && args_info.runID_arg<args_info.maxRun_arg && interceptionFlag/* &&
        (!(args_info.nonuclear_flag) || (pdIn.trackID == pdOut.trackID))*/) // Condition to remove nuclear events if flag activated
     {
       /*std::cout << "George1 iIn/iOut: " << iIn << "	" << iOut << "	"
