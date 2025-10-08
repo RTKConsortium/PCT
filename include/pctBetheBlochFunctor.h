@@ -29,8 +29,13 @@ public:
   ~BetheBlochProtonStoppingPower() {}
 
   TOutput
-  GetValue(const TInput e, const double I) const
+  GetValue(const TInput e, const double I, const std::string particle) const
   {
+    if (particle != "proton")
+    {
+      // only implemented for protons
+      throw std::invalid_argument("Invalid particle type in Bethe Block Functor.");
+    }
     /** Physical constants */
     static const double K = 4. * CLHEP::pi * CLHEP::classic_electr_radius * CLHEP::classic_electr_radius *
                             CLHEP::electron_mass_c2 * 3.343e+23 / CLHEP::cm3;
@@ -55,10 +60,12 @@ template <class TInput, class TOutput>
 class IntegratedBetheBlochProtonStoppingPowerInverse
 {
 public:
-  IntegratedBetheBlochProtonStoppingPowerInverse(const double I,
-                                                 const double maxEnergy,
-                                                 const double binSize = 1. * CLHEP::keV)
+  IntegratedBetheBlochProtonStoppingPowerInverse(const double      I,
+                                                 const double      maxEnergy,
+                                                 const double      binSize = 1. * CLHEP::keV,
+                                                 const std::string particle = "proton")
     : m_BinSize(binSize)
+    , m_Particle(particle)
   {
     unsigned int lowBinLimit, numberOfBins;
     lowBinLimit = itk::Math::Ceil<unsigned int, double>(m_S.GetLowEnergyLimit() / m_BinSize);
@@ -71,7 +78,7 @@ public:
     }
     for (unsigned int i = lowBinLimit; i < numberOfBins; i++)
     {
-      m_LUT[i] = m_LUT[i - 1] + binSize / m_S.GetValue(TOutput(i) * binSize, I);
+      m_LUT[i] = m_LUT[i - 1] + binSize / m_S.GetValue(TOutput(i) * binSize, I, m_Particle);
       // Create inverse lut, i.e., get energy from length in water
       for (unsigned j = m_Length.size(); j < unsigned(m_LUT[i] * CLHEP::mm) + 1; j++)
       {
@@ -118,6 +125,7 @@ private:
   std::vector<TOutput>                            m_Length;
 
   double               m_BinSize;
+  std::string          m_Particle;
   std::vector<TOutput> m_LUT;
 };
 } // end namespace Functor
