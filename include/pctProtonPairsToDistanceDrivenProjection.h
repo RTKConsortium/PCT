@@ -110,6 +110,10 @@ public:
   itkGetConstMacro(ComputeNoise, bool);
   itkBooleanMacro(ComputeNoise);
 
+  /** Get/Set the particle type. */
+  itkGetMacro(Particle, std::string);
+  itkSetMacro(Particle, std::string);
+
 protected:
   ProtonPairsToDistanceDrivenProjection();
   virtual ~ProtonPairsToDistanceDrivenProjection() {}
@@ -182,6 +186,9 @@ private:
   bool                          m_Robust;
   bool                          m_ComputeScattering;
   bool                          m_ComputeNoise;
+
+  /** The particle type, enum comes from gengetopt header. */
+  std::string m_Particle;
 };
 
 } // end namespace pct
