@@ -4,14 +4,6 @@
 #include "pctPhysicalConstants.h"
 #include <itkImage.h>
 
-#ifdef PCT_GEANT4
-#  include "geant4/pctGeant4.h"
-#  include <G4Material.hh>
-#  include <G4Proton.hh>
-#  include <G4BetheBlochModel.hh>
-#  include <G4NistManager.hh>
-#endif
-
 namespace pct
 {
 
@@ -33,24 +25,9 @@ template <class TInput, class TOutput>
 class BetheBlochProtonStoppingPower
 {
 public:
-#ifdef PCT_GEANT4
-  BetheBlochProtonStoppingPower()
-    : m_Geant4(pctGeant4::GetInstance())
-    , m_G4BetheBlochModel(new G4BetheBlochModel)
-  {}
-#endif
+  BetheBlochProtonStoppingPower() = default;
   ~BetheBlochProtonStoppingPower() {}
 
-#ifdef PCT_GEANT4
-  TOutput
-  GetValue(const TInput e, const double itkNotUsed(I)) const
-  {
-    return m_G4BetheBlochModel->ComputeDEDXPerVolume(
-      G4NistManager::Instance()->FindOrBuildMaterial("G4_WATER"), // G4Material::GetMaterial("Water"),
-      G4Proton::Proton(),
-      G4double(e),
-      G4double(1 * CLHEP::km));
-#else
   TOutput
   GetValue(const TInput e, const double I) const
   {
@@ -61,24 +38,13 @@ public:
     TOutput betasq = CLHEP::proton_mass_c2 / (e + CLHEP::proton_mass_c2);
     betasq = 1. - betasq * betasq;
     return K * (log(2. * CLHEP::electron_mass_c2 / I * betasq / (1 - betasq)) - betasq) / betasq;
-#endif
   }
 
   TOutput
   GetLowEnergyLimit()
   {
-#ifdef PCT_GEANT4
-    return m_G4BetheBlochModel->LowEnergyLimit();
-#else
     return 1 * CLHEP::keV; // Arbitrary
-#endif
   }
-
-private:
-#ifdef PCT_GEANT4
-  pctGeant4 *         m_Geant4;
-  G4BetheBlochModel * m_G4BetheBlochModel;
-#endif
 };
 
 /** \class IntegratedBetheBlochProtonStoppingPowerInverse
