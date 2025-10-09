@@ -4,7 +4,6 @@
 #include <rtkGgoFunctions.h>
 #include <rtkConstantImageSource.h>
 
-// #include "pctConfiguration.h"
 #include "pctProtonPairsToDistanceDrivenProjection.h"
 #include "pctThirdOrderPolynomialMLPFunction.h"
 #include "pctSchulteMLPFunction.h"
@@ -15,28 +14,12 @@
 #include <itkRegularExpressionSeriesFileNames.h>
 #include <itkTimeProbe.h>
 
-#if PCT_WITH_ROOT
-#  include <RooRealVar.h>
-#  include <RooDataSet.h>
-#  include <RooGaussian.h>
-#  include <RooPlot.h>
-#  include <TCanvas.h>
-#endif
-
 #define PAIRS_IN_RAM 1000000
 
 int
 main(int argc, char * argv[])
 {
   GGO(pctpaircuts, args_info); // RTK macro parsing options from .ggo file (rtkMacro.h)
-
-#if !(PCT_WITH_ROOT)
-  if (args_info.plotpix_given)
-  {
-    std::cerr << "--plotpix requires PCT to be compiled with ROOT." << std::endl;
-    return EXIT_FAILURE;
-  }
-#endif
 
   using ProjectionPixelType = float;
   using ProjectionImageType = itk::Image<ProjectionPixelType, 2>;
@@ -158,7 +141,7 @@ main(int argc, char * argv[])
       const double angley = std::acos(std::min(1., dInY * dOutY / (dInY.GetNorm() * dOutY.GetNorm())));
       const double energy = (data[0] == 0.) ? data[1] : data[0] - data[1];
 
-      if (args_info.robust_flag || (args_info.plotpix_given && idx == (unsigned long)args_info.plotpix_arg))
+      if (args_info.robust_flag)
       {
         energies[idx].push_back(energy);
         angles[idx].push_back(anglex);
@@ -426,74 +409,6 @@ main(int argc, char * argv[])
     w->SetFileName(args_info.count_arg);
     TRY_AND_EXIT_ON_ITK_EXCEPTION(w->Update());
   }
-
-#if PCT_WITH_ROOT
-  if (args_info.plotpix_given)
-  {
-    // Energy plot
-    const unsigned int p = args_info.plotpix_arg;
-    if (pSumEnergySq[p] == 0.)
-      std::cout << "Can not create energy.pdf, sigma is 0." << std::endl;
-    else
-    {
-      double     minEnergy = std::min(0., -2. * pSumEnergySq[p]);
-      RooRealVar rooEnergy("Energy", "Energy loss", minEnergy, 500. * CLHEP::MeV, "MeV");
-      RooDataSet rooEnergyData("data", "data", RooArgSet(rooEnergy));
-      for (unsigned int i = 0; i < pCounts[p]; i++)
-      {
-        rooEnergy = energies[p][i] / CLHEP::MeV;
-        rooEnergyData.add(RooArgSet(rooEnergy));
-      }
-
-      TCanvas   tEnergyCanvas("energyCanvas", "Energy canvas", 0, 0, 1000, 500);
-      RooPlot * rooEnergyPlot =
-        rooEnergy.frame(pSumEnergy[p] - 2 * pSumEnergySq[p], pSumEnergy[p] + 2 * pSumEnergySq[p]);
-      rooEnergyData.plotOn(rooEnergyPlot);
-
-      RooRealVar rooMeanEnergy("rooMeanEnergy", "mean of energy gaussian", pSumEnergy[p], minEnergy, 500. * CLHEP::MeV);
-      RooRealVar rooSigmaEnergy(
-        "rooSigmaEnergy", "width of energy gaussian", pSumEnergySq[p] / args_info.energycut_arg, 0., 500. * CLHEP::MeV);
-      RooGaussian rooGaussEnergy("rooGaussEnergy", "energy gaussian PDF", rooEnergy, rooMeanEnergy, rooSigmaEnergy);
-
-      rooGaussEnergy.plotOn(rooEnergyPlot, RooFit::LineColor(kBlue));
-      // rooGaussEnergy.fitTo(rooEnergyData);
-      // rooGaussEnergy.plotOn(rooEnergyPlot, LineColor(kRed));
-
-      rooEnergyPlot->Draw();
-      tEnergyCanvas.SaveAs("energy.pdf");
-    }
-
-    // Angle plot
-    if (pSumAngleSq[p] == 0.)
-      std::cout << "Can not create angle.pdf, sigma is 0." << std::endl;
-    else
-    {
-      RooRealVar rooAngle("Angle", "Angle deviation", 0., 2. * itk::Math::pi, "rad");
-      RooDataSet rooAngleData("data", "data", RooArgSet(rooAngle));
-      for (unsigned int i = 0; i < angles[p].size(); i++)
-      {
-        rooAngle = angles[p][i];
-        rooAngleData.add(RooArgSet(rooAngle));
-      }
-
-      TCanvas   tAngleCanvas("angleCanvas", "Angle canvas", 0, 0, 1000, 500);
-      RooPlot * rooAnglePlot = rooAngle.frame(0., 2 * pSumAngleSq[p]);
-      rooAngleData.plotOn(rooAnglePlot);
-
-      RooRealVar rooMeanAngle("rooMeanAngle", "mean of angle gaussian", 0., 0., 500. * CLHEP::MeV);
-      RooRealVar rooSigmaAngle(
-        "rooSigmaAngle", "width of angle gaussian", pSumAngleSq[p] / args_info.anglecut_arg, 0., 500. * CLHEP::MeV);
-      RooGaussian rooGaussAngle("rooGaussAngle", "angle gaussian PDF", rooAngle, rooMeanAngle, rooSigmaAngle);
-
-      rooGaussAngle.plotOn(rooAnglePlot, RooFit::LineColor(kBlue));
-      // rooGaussAngle.fitTo(rooAngleData);
-      // rooGaussAngle.plotOn(rooAnglePlot, LineColor(kRed));
-
-      rooAnglePlot->Draw();
-      tAngleCanvas.SaveAs("angle.pdf");
-    }
-  }
-#endif
 
   return EXIT_SUCCESS;
 }
