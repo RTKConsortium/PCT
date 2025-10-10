@@ -18,7 +18,7 @@
 
 struct ParticleData
 {
-  float                 wepl;
+  float                 wepl, time;
   itk::Vector<float, 3> position0;
   itk::Vector<float, 3> position1;
   itk::Vector<float, 3> position2;
@@ -66,7 +66,7 @@ BranchParticleToPhaseSpace(struct ParticleInfo & piInput, struct ParticleData & 
   SetTreeBranch(tree, "projection_angle", &piInput.runID);
   ;
   SetTreeBranch(tree, "calculated_WEPL", &pdInput.wepl);
-
+  SetTreeBranch(tree, "timestamp", &pdInput.time);
 
   // WARNING: X and Z are purposely swap...
   SetTreeBranch(tree, "v_hit0", pdInput.position0.GetDataPointer() + 1);
@@ -207,7 +207,7 @@ main(int argc, char * argv[])
     pdIn.wepl = 0.;
     pdOut.wepl = pd.wepl;
     pdIn.time = 0.;
-    pdOut.time = 0.;
+    pdOut.time = pd.time;
 
 
 #if 0
@@ -244,9 +244,9 @@ main(int argc, char * argv[])
     if (pairs[i].size())
     {
       std::ostringstream os;
-      os << itksys::SystemTools::GetFilenameWithoutLastExtension(args_info.output_arg) << std::setw(4)
-         << std::setfill('0') << i << itksys::SystemTools::GetFilenameLastExtension(args_info.output_arg);
-      std::cout << "Writing into file:" << os.str() << std::endl;
+      os << itksys::SystemTools::GetFilenamePath(args_info.output_arg) << "/"
+         << itksys::SystemTools::GetFilenameWithoutLastExtension(args_info.output_arg) std::cout
+         << "Writing into file:" << os.str() << std::endl;
       WritePairs(pairs[i], os.str());
     }
   }

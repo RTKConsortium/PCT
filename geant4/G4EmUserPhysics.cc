@@ -44,7 +44,7 @@
 #include "G4LossTableManager.hh"
 #include "G4VEnergyLossProcess.hh"
 #include "G4VProcess.hh"
-#include "G4EmProcessOptions.hh"
+// #include "G4EmProcessOptions.hh" // GD: obsolete in 11.3
 #include "G4AntiProton.hh"
 #include "G4ProcessManager.hh"
 #include "G4ProcessVector.hh"
@@ -95,8 +95,8 @@ G4EmUserPhysics::ConstructProcess()
     }
   }
 
-  G4EmProcessOptions opt;
-  opt.SetVerbose(fVerbose);
+  //  G4EmProcessOptions opt;
+  //  opt.SetVerbose(fVerbose);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

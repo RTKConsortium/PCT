@@ -27,6 +27,11 @@ FDKDDWeightProjectionFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateDa
       const double rampFactor = sdd / (2. * sid);
       m_AngularWeightsAndRampFactor[k] *= rampFactor;
     }
+    if (this->m_VarianceReconstruction)
+    {
+      // square if in variance mode
+      m_AngularWeightsAndRampFactor[k] = m_AngularWeightsAndRampFactor[k] * m_AngularWeightsAndRampFactor[k];
+    }
   }
 }
 

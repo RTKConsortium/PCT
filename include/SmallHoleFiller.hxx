@@ -51,7 +51,7 @@ SmallHoleFiller<TImage>::Fill()
   // Initialize by setting the output image to the input image.
   DeepCopy<TImage>(this->Image, this->Output);
   unsigned int numberOfIterations = 0;
-  while (HasEmptyPixels())
+  while (HasEmptyPixels() && numberOfIterations < 20)
   {
     std::cout << "Iteration " << numberOfIterations << "..." << std::endl;
     Iterate();
