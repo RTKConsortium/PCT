@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.16.3)
 project(PCT)
 
+## PCT Version
+set(PCT_VERSION_MAJOR "0")
+set(PCT_VERSION_MINOR "1")
+set(PCT_VERSION_PATCH "0")
+set(PCT_VERSION_STRING "${PCT_VERSION_MAJOR}.${PCT_VERSION_MINOR}")
+
 set(PCT_LIBRARIES PCT)
 
 if(NOT ITK_SOURCE_DIR)
