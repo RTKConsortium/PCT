@@ -1,3 +1,5 @@
 itk_wrap_class("pct::DDParkerShortScanImageFilter" POINTER)
-  itk_wrap_template("IF4IF4" "itk::Image<${ITKT_F}, 4>, itk::Image<${ITKT_F}, 4>")
+  foreach(t ${WRAP_ITK_REAL})
+    itk_wrap_template("I${ITKM_${t}}4" "itk::Image<${ITKT_${t}}, 4>")
+  endforeach()
 itk_end_wrap_class()
