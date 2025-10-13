@@ -20,6 +20,7 @@ for mod_name in pct_submodules:
 _app_modules = [
     "pctfdktwodweights",
     "pctpairprotons",
+    "pctweplfit",
 ]
 
 # Dynamically access make_application_func from pctExtras

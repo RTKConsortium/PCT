@@ -41,6 +41,7 @@ dependencies = [
 [project.scripts]
 pctfdktwodweights = "itk.pctfdktwodweights:main"
 pctpairprotons = "itk.pctpairprotons:main"
+pctweplfit = "itk.pctweplfit:main"
 
 
 [project.urls]
