@@ -145,8 +145,9 @@ DetectorConstruction::Construct()
          << "  Total Length(mm)= " << 2.0 * targetZ / mm << "  ###" << G4endl;
 
   // colors
-  G4VisAttributes zero = G4VisAttributes::Invisible;
-  fLogicWorld->SetVisAttributes(&zero);
+  // GD: The two lines below are not compatible with Geant4.11
+  //  G4VisAttributes zero = G4VisAttributes::Invisible;
+  //  fLogicWorld->SetVisAttributes(&zero);
 
   G4VisAttributes regWcolor(G4Colour(0.3, 0.3, 0.3));
   fLogicCheck->SetVisAttributes(&regWcolor);

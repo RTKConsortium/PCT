@@ -41,8 +41,8 @@ main(int argc, char * argv[])
     {
       os << E / CLHEP::MeV;
       os << ',';
-      os << bb.GetValue(E * CLHEP::MeV, args_info.ionpot_arg * CLHEP::eV) / (1000. * CLHEP::kg / CLHEP::m3) * CLHEP::g /
-              (CLHEP::MeV * CLHEP::cm2);
+      os << bb.GetValue(E * CLHEP::MeV, args_info.ionpot_arg * CLHEP::eV, "proton") / (1000. * CLHEP::kg / CLHEP::m3) *
+              CLHEP::g / (CLHEP::MeV * CLHEP::cm2);
       os << std::endl;
     }
     os.close();
