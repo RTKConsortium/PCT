@@ -47,8 +47,8 @@ public:
   itkOverrideGetNameOfClassMacro(DDParkerShortScanImageFilter);
 
   /** Get / Set the object pointer to projection geometry */
-  itkGetMacro(Geometry, GeometryPointer);
-  itkSetMacro(Geometry, GeometryPointer);
+  itkGetConstObjectMacro(Geometry, GeometryType);
+  itkSetObjectMacro(Geometry, GeometryType);
 
 protected:
   DDParkerShortScanImageFilter() { this->SetInPlace(true); }

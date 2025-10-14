@@ -43,8 +43,8 @@ public:
   itkOverrideGetNameOfClassMacro(FDKDDWeightProjectionFilter);
 
   /** Get/ Set geometry structure */
-  itkGetMacro(Geometry, rtk::ThreeDCircularProjectionGeometry::Pointer);
-  itkSetMacro(Geometry, rtk::ThreeDCircularProjectionGeometry::Pointer);
+  itkGetConstObjectMacro(Geometry, rtk::ThreeDCircularProjectionGeometry);
+  itkSetObjectMacro(Geometry, rtk::ThreeDCircularProjectionGeometry);
 
 protected:
   FDKDDWeightProjectionFilter() {}

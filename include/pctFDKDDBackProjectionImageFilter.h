@@ -36,8 +36,8 @@ public:
   GetDDProjection(const unsigned int iProj);
 
   /** Get / Set the stack of projection images */
-  itkGetMacro(ProjectionStack, ProjectionStackPointer);
-  itkSetMacro(ProjectionStack, ProjectionStackPointer);
+  itkGetModifiableObjectMacro(ProjectionStack, ProjectionStackType);
+  itkSetObjectMacro(ProjectionStack, ProjectionStackType);
 
   /** Creates the #iProj index to index projection matrix with current inputs
       instead of the physical point to physical point projection matrix provided by Geometry */
