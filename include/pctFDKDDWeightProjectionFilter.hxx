@@ -12,7 +12,7 @@ void
 FDKDDWeightProjectionFilter<TInputImage, TOutputImage>::BeforeThreadedGenerateData()
 {
   // Get angular weights from geometry
-  m_AngularWeightsAndRampFactor = this->GetGeometry()->GetAngularGaps(m_Geometry->GetGantryAngles());
+  m_AngularWeightsAndRampFactor = m_Geometry->GetAngularGaps(m_Geometry->GetGantryAngles());
 
   for (unsigned int k = 0; k < m_AngularWeightsAndRampFactor.size(); k++)
   {

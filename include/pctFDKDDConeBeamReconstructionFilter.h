@@ -46,10 +46,8 @@ public:
   itkOverrideGetNameOfClassMacro(FDKDDConeBeamReconstructionFilter);
 
   /** Get / Set the object pointer to projection geometry */
-  virtual rtk::ThreeDCircularProjectionGeometry::Pointer
-  GetGeometry();
-  virtual void
-  SetGeometry(const rtk::ThreeDCircularProjectionGeometry::Pointer _arg);
+  itkGetConstObjectMacro(Geometry, rtk::ThreeDCircularProjectionGeometry);
+  itkSetObjectMacro(Geometry, rtk::ThreeDCircularProjectionGeometry);
 
   /** Get pointer to the ramp filter used by the feldkamp reconstruction */
   typename RampFilterType::Pointer
@@ -62,8 +60,8 @@ public:
   PrintTiming(std::ostream & os) const;
 
   /** Get / Set the stack of projection images */
-  itkGetMacro(ProjectionStack, ProjectionStackPointer);
-  itkSetMacro(ProjectionStack, ProjectionStackPointer);
+  itkGetModifiableObjectMacro(ProjectionStack, ProjectionStackType);
+  itkSetObjectMacro(ProjectionStack, ProjectionStackType);
 
 protected:
   FDKDDConeBeamReconstructionFilter();
@@ -101,7 +99,8 @@ private:
   itk::TimeProbe m_FilterProbe;
   itk::TimeProbe m_BackProjectionProbe;
 
-  ProjectionStackPointer m_ProjectionStack;
+  ProjectionStackPointer                         m_ProjectionStack;
+  rtk::ThreeDCircularProjectionGeometry::Pointer m_Geometry;
 }; // end of class
 
 } // end namespace pct

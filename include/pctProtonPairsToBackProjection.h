@@ -71,22 +71,22 @@ public:
   itkSetMacro(MostLikelyPathPolynomialDegree, int);
 
   /** Get/Set the boundaries of the object. */
-  itkGetMacro(QuadricIn, RQIType::Pointer);
-  itkSetMacro(QuadricIn, RQIType::Pointer);
-  itkGetMacro(QuadricOut, RQIType::Pointer);
-  itkSetMacro(QuadricOut, RQIType::Pointer);
+  itkGetConstObjectMacro(QuadricIn, RQIType);
+  itkSetObjectMacro(QuadricIn, RQIType);
+  itkGetConstObjectMacro(QuadricOut, RQIType);
+  itkSetObjectMacro(QuadricOut, RQIType);
 
   /** Get/Set the count of proton pairs per pixel. */
-  itkGetMacro(Counts, CountImagePointer);
-  itkSetMacro(Counts, CountImagePointer);
+  itkGetModifiableObjectMacro(Counts, CountImageType);
+  itkSetObjectMacro(Counts, CountImageType);
 
   /** Get/Set the ionization potential used in the Bethe-Bloch equation. */
   itkGetMacro(IonizationPotential, double);
   itkSetMacro(IonizationPotential, double);
 
   /** Get / Set the object pointer to projection geometry */
-  itkGetMacro(Geometry, GeometryPointer);
-  itkSetMacro(Geometry, GeometryPointer);
+  itkGetConstObjectMacro(Geometry, GeometryType);
+  itkSetObjectMacro(Geometry, GeometryType);
 
   /** Get / Set the boolean desactivating rotation to bin in coordinate orientation. Default is off. */
   itkGetMacro(DisableRotation, bool);

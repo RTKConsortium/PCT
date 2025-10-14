@@ -70,19 +70,19 @@ public:
   itkSetMacro(MaterialBudget, double);
 
   /** Get/Set the boundaries of the object. */
-  itkGetMacro(QuadricIn, RQIType::Pointer);
-  itkSetMacro(QuadricIn, RQIType::Pointer);
-  itkGetMacro(QuadricOut, RQIType::Pointer);
-  itkSetMacro(QuadricOut, RQIType::Pointer);
+  itkGetConstObjectMacro(QuadricIn, RQIType);
+  itkSetObjectMacro(QuadricIn, RQIType);
+  itkGetConstObjectMacro(QuadricOut, RQIType);
+  itkSetObjectMacro(QuadricOut, RQIType);
 
   /** Get/Set the count of proton pairs per pixel. */
-  itkGetMacro(Count, CountImagePointer);
+  itkGetModifiableObjectMacro(Count, CountImageType);
 
   /** Get/Set the angle of proton pairs per pixel. */
-  itkGetMacro(Angle, AngleImagePointer);
+  itkGetModifiableObjectMacro(Angle, AngleImageType);
 
   /** Get/Set the angle of proton pairs per pixel. */
-  itkGetMacro(SquaredOutput, OutputImagePointer);
+  itkGetModifiableObjectMacro(SquaredOutput, OutputImageType);
 
   /** Get/Set the ionization potential used in the Bethe-Bloch equation. */
   itkGetMacro(IonizationPotential, double);
