@@ -45,6 +45,10 @@ FDKDDConeBeamReconstructionFilter<TInputImage, TOutputImage, TFFTPrecision>::Gen
 {
   const unsigned int Dimension = this->InputImageDimension;
 
+  // Propagate geometry to subfilters
+  m_WeightFilter->SetGeometry(m_Geometry);
+  m_BackProjectionFilter->SetGeometry(m_Geometry);
+
   // We only set the first sub-stack at that point, the rest will be
   // requested in the GenerateData function
   typename ExtractFilterType::InputImageRegionType projRegion;
@@ -108,27 +112,6 @@ FDKDDConeBeamReconstructionFilter<TInputImage, TOutputImage, TFFTPrecision>::Gen
     m_BackProjectionProbe.Stop();
   }
   Superclass::GraftOutput(m_BackProjectionFilter->GetOutput());
-}
-
-template <class TInputImage, class TOutputImage, class TFFTPrecision>
-rtk::ThreeDCircularProjectionGeometry::Pointer
-FDKDDConeBeamReconstructionFilter<TInputImage, TOutputImage, TFFTPrecision>::GetGeometry()
-{
-  return this->m_WeightFilter->GetGeometry();
-}
-
-template <class TInputImage, class TOutputImage, class TFFTPrecision>
-void
-FDKDDConeBeamReconstructionFilter<TInputImage, TOutputImage, TFFTPrecision>::SetGeometry(
-  const rtk::ThreeDCircularProjectionGeometry::Pointer _arg)
-{
-  itkDebugMacro("setting GeometryPointer to " << _arg);
-  if (this->GetGeometry() != _arg)
-  {
-    m_WeightFilter->SetGeometry(_arg);
-    m_BackProjectionFilter->SetGeometry(_arg.GetPointer());
-    this->Modified();
-  }
 }
 
 template <class TInputImage, class TOutputImage, class TFFTPrecision>
