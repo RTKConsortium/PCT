@@ -149,7 +149,7 @@ def process(args_info: argparse.Namespace):
 
     if args_info.verbose:
         print(f"It took {writerProbe.GetMean()} {writerProbe.GetUnit()}")
-        feldkamp.PrintTiming(itk.ostream)
+        feldkamp.PrintTiming()
 
 
 def main(argv=None):

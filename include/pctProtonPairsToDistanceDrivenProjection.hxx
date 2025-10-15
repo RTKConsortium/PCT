@@ -457,7 +457,7 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
   {
     std::cout << '\r' << region.GetSize(1) << " pairs of protons processed (100%) in thread 1" << std::endl;
 #ifdef MLP_TIMING
-    mlp->PrintTiming(std::cout);
+    mlp->PrintTiming();
 #endif
   }
 }

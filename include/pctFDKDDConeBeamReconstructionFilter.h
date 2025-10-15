@@ -57,7 +57,7 @@ public:
   }
 
   void
-  PrintTiming(std::ostream & os) const;
+  PrintTiming() const;
 
   /** Get / Set the stack of projection images */
   itkGetModifiableObjectMacro(ProjectionStack, ProjectionStackType);
