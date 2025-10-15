@@ -222,11 +222,11 @@ SchulteMLPFunction ::EvaluateError(const double u, itk::Matrix<double, 2, 2> & e
 
 #ifdef MLP_TIMING
 void
-SchulteMLPFunction ::PrintTiming(std::ostream & os)
+SchulteMLPFunction ::PrintTiming()
 {
-  os << "SchulteMLPFunction timing:" << std::endl;
-  os << "  EvaluateProbe1: " << m_EvaluateProbe1.GetTotal() << ' ' << m_EvaluateProbe1.GetUnit() << std::endl;
-  os << "  EvaluateProbe2: " << m_EvaluateProbe2.GetTotal() << ' ' << m_EvaluateProbe2.GetUnit() << std::endl;
+  std::cout << "SchulteMLPFunction timing:" << std::endl;
+  std::cout << "  EvaluateProbe1: " << m_EvaluateProbe1.GetTotal() << ' ' << m_EvaluateProbe1.GetUnit() << std::endl;
+  std::cout << "  EvaluateProbe2: " << m_EvaluateProbe2.GetTotal() << ' ' << m_EvaluateProbe2.GetUnit() << std::endl;
 }
 #endif
 

@@ -187,10 +187,10 @@ PolynomialMLPFunction ::EvaluateError(const double u, itk::Matrix<double, 2, 2> 
 
 #ifdef MLP_TIMING
 void
-PolynomialMLPFunction ::PrintTiming(std::ostream & os)
+PolynomialMLPFunction ::PrintTiming()
 {
-  os << "PolynomialMLPFunction timing:" << std::endl;
-  os << "  EvaluateProbe1: " << m_EvaluateProbe1.GetTotal() << ' ' << m_EvaluateProbe1.GetUnit() << std::endl;
+  std::cout << "PolynomialMLPFunction timing:" << std::endl;
+  std::cout << "  EvaluateProbe1: " << m_EvaluateProbe1.GetTotal() << ' ' << m_EvaluateProbe1.GetUnit() << std::endl;
   // os << "  EvaluateProbe2: " << m_EvaluateProbe2.GetTotal()
   //    << ' ' << m_EvaluateProbe2.GetUnit() << std::endl;
 }

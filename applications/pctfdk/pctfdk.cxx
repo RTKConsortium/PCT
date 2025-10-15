@@ -86,7 +86,7 @@ main(int argc, char * argv[])
   if (args_info.verbose_flag)
   {
     std::cout << "It took " << writerProbe.GetMean() << ' ' << writerProbe.GetUnit() << std::endl;
-    feldkamp->PrintTiming(std::cout);
+    feldkamp->PrintTiming();
   }
 
   return EXIT_SUCCESS;
