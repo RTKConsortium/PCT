@@ -116,12 +116,14 @@ FDKDDConeBeamReconstructionFilter<TInputImage, TOutputImage, TFFTPrecision>::Gen
 
 template <class TInputImage, class TOutputImage, class TFFTPrecision>
 void
-FDKDDConeBeamReconstructionFilter<TInputImage, TOutputImage, TFFTPrecision>::PrintTiming(std::ostream & os) const
+FDKDDConeBeamReconstructionFilter<TInputImage, TOutputImage, TFFTPrecision>::PrintTiming() const
 {
-  os << "FDKDDConeBeamReconstructionFilter timing:" << std::endl;
-  os << "  Prefilter operations: " << m_PreFilterProbe.GetTotal() << ' ' << m_PreFilterProbe.GetUnit() << std::endl;
-  os << "  Ramp filter: " << m_FilterProbe.GetTotal() << ' ' << m_FilterProbe.GetUnit() << std::endl;
-  os << "  Backprojection: " << m_BackProjectionProbe.GetTotal() << ' ' << m_BackProjectionProbe.GetUnit() << std::endl;
+  std::cout << "FDKDDConeBeamReconstructionFilter timing:" << std::endl;
+  std::cout << "  Prefilter operations: " << m_PreFilterProbe.GetTotal() << ' ' << m_PreFilterProbe.GetUnit()
+            << std::endl;
+  std::cout << "  Ramp filter: " << m_FilterProbe.GetTotal() << ' ' << m_FilterProbe.GetUnit() << std::endl;
+  std::cout << "  Backprojection: " << m_BackProjectionProbe.GetTotal() << ' ' << m_BackProjectionProbe.GetUnit()
+            << std::endl;
 }
 
 } // end namespace pct

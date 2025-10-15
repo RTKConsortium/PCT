@@ -307,7 +307,7 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>::GenerateData()
               << m_ProtonPairs->GetLargestPossibleRegion().GetSize(1)
               << " pairs of protons processed (100%) in all threads." << std::endl;
 #ifdef MLP_TIMING
-    mlp->PrintTiming(std::cout);
+    mlp->PrintTiming();
 #endif
   }
   this->AfterThreadedGenerateData();

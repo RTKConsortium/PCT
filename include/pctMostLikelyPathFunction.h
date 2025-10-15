@@ -85,7 +85,7 @@ public:
 #ifdef MLP_TIMING
   /** Print timing information */
   virtual void
-  PrintTiming(std::ostream & os)
+  PrintTiming()
   {}
 #endif
 

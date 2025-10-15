@@ -169,7 +169,7 @@ public:
 #ifdef MLP_TIMING
   /** Print timing information */
   virtual void
-  PrintTiming(std::ostream & os) override;
+  PrintTiming() override;
 #endif
 
 protected:
