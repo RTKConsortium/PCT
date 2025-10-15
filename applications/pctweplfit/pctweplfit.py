@@ -4,22 +4,11 @@ import json
 import sys
 from multiprocessing import Pool, Manager
 
-import matplotlib.pyplot as plt
-import opengate as gate
-import uproot
 import numpy as np
 import itk
 from itk import PCT as pct
 
 epsilon_mm = 1e-5
-
-# Units
-nm = gate.g4_units.nm
-mm = gate.g4_units.mm
-cm = gate.g4_units.cm
-m = gate.g4_units.m
-sec = gate.g4_units.second
-MeV = gate.g4_units.MeV
 
 
 def pv(verbose, *args, **kwargs):
@@ -39,6 +28,10 @@ def tof_fit_mc(
     visu,
     verbose,
 ):
+    import opengate as gate
+
+    u = gate.g4_units
+    nm, mm, cm, m, sec, MeV = u.nm, u.mm, u.cm, u.m, u.second, u.MeV
 
     pv(verbose, "Starting simulation with following parameters: " + str(locals()))
 
@@ -96,7 +89,6 @@ def tof_fit_mc(
     sim.physics_manager.physics_list_name = "G4EmStandardPhysics_option4"
 
     # Phase spaces
-
     def add_detector(name, translation, attach_to_phantom=False):
         plane = sim.add_volume("Box", "PlanePhaseSpace" + name)
         plane.size = [phantom_width_cm * cm, phantom_width_cm * cm, 1 * nm]
@@ -149,6 +141,8 @@ def process_phantom_length(
     elosses,
     verbose,
 ):
+    import uproot
+
     tofs_phantom_length = []
     wepls_phantom_length = []
     elosses_phantom_length = []
@@ -304,6 +298,8 @@ def tof_fit(
                 f.write(f"{xpoint} {ypoint}\n")
 
         if display or savefig:
+            import matplotlib.pyplot as plt
+
             plt.figure()
             plt.plot(xmedians, ymedians, "+", label="Medians")
 
