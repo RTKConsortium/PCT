@@ -1,11 +1,11 @@
-#ifndef __pctZengBackProjectionImageFilter_h
-#define __pctZengBackProjectionImageFilter_h
+#ifndef __pctZengWeightedBackProjectionImageFilter_h
+#define __pctZengWeightedBackProjectionImageFilter_h
 
 #include <itkImageToImageFilter.h>
 #include <rtkThreeDCircularProjectionGeometry.h>
 #include "rtkConfiguration.h"
 
-/** \class ZengBackProjectionImageFilter
+/** \class ZengWeightedBackProjectionImageFilter
  * \ingroup PCT
  * From an input 4D image where the 4th dimension is the angle, computes
  * the weighted backprojection for DBP described in [Zeng, Med Phys, 2007].
@@ -17,11 +17,12 @@ namespace pct
 
 template <class TInputImage,
           class TOutputImage = itk::Image<typename TInputImage::PixelType, TInputImage::ImageDimension - 1>>
-class ITK_TEMPLATE_EXPORT ZengBackProjectionImageFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
+class ITK_TEMPLATE_EXPORT ZengWeightedBackProjectionImageFilter
+  : public itk::ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
   /** Standard class typedefs. */
-  using Self = ZengBackProjectionImageFilter;
+  using Self = ZengWeightedBackProjectionImageFilter;
   using Superclass = itk::ImageToImageFilter<TInputImage, TOutputImage>;
   using Pointer = itk::SmartPointer<Self>;
   using ConstPointer = itk::SmartPointer<const Self>;
@@ -35,11 +36,11 @@ public:
   itkNewMacro(Self);
 
   /** Runtime information support. */
-  itkOverrideGetNameOfClassMacro(ZengBackProjectionImageFilter);
+  itkOverrideGetNameOfClassMacro(ZengWeightedBackProjectionImageFilter);
 
 protected:
-  ZengBackProjectionImageFilter();
-  ~ZengBackProjectionImageFilter() {}
+  ZengWeightedBackProjectionImageFilter();
+  ~ZengWeightedBackProjectionImageFilter() {}
 
   virtual void
   GenerateOutputInformation() override;
@@ -51,7 +52,7 @@ protected:
   MakeOutput(itk::ProcessObject::DataObjectPointerArraySizeType idx) override;
 
 private:
-  ZengBackProjectionImageFilter(const Self &); // purposely not implemented
+  ZengWeightedBackProjectionImageFilter(const Self &); // purposely not implemented
   void
   operator=(const Self &); // purposely not implemented
 }; // end of class
@@ -59,7 +60,7 @@ private:
 } // end namespace pct
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#  include "pctZengBackProjectionImageFilter.hxx"
+#  include "pctZengWeightedBackProjectionImageFilter.hxx"
 #endif
 
 #endif

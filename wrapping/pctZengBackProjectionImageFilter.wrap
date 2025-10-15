@@ -1,4 +1,4 @@
-itk_wrap_class("pct::ZengBackProjectionImageFilter" POINTER)
+itk_wrap_class("pct::ZengWeightedBackProjectionImageFilter" POINTER)
   foreach(t ${WRAP_ITK_REAL})
     itk_wrap_template("I${ITKM_${t}}4" "itk::Image<${ITKT_${t}}, 4>")
   endforeach()

@@ -11,7 +11,7 @@ pct.SmallHoleFiller[imageType]()
 imageType = itk.Image[itk.F, 4]
 pct.DDParkerShortScanImageFilter[imageType, imageType].New()
 pct.ProtonPairsToBackProjection[imageType, imageType].New()
-pct.ZengBackProjectionImageFilter[imageType].New()
+pct.ZengWeightedBackProjectionImageFilter[imageType].New()
 pct.SmallHoleFiller[imageType]()
 
 pct.ThirdOrderPolynomialMLPFunction[itk.D].New()

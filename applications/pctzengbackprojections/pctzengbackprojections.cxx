@@ -3,7 +3,7 @@
 #include <rtkMacro.h>
 #include <rtkGgoFunctions.h>
 
-#include "pctZengBackProjectionImageFilter.h"
+#include "pctZengWeightedBackProjectionImageFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -21,7 +21,7 @@ main(int argc, char * argv[])
   reader->SetFileName(args_info.input_arg);
   TRY_AND_EXIT_ON_ITK_EXCEPTION(reader->Update())
 
-  using ZengFilterType = pct::ZengBackProjectionImageFilter<InputImageType>;
+  using ZengFilterType = pct::ZengWeightedBackProjectionImageFilter<InputImageType>;
   ZengFilterType::Pointer zeng;
   zeng = ZengFilterType::New();
   zeng->SetInput(reader->GetOutput());
