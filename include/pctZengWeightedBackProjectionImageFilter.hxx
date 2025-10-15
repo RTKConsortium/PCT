@@ -1,5 +1,5 @@
-#ifndef __pctZengBackProjectionImageFilter_hxx
-#define __pctZengBackProjectionImageFilter_hxx
+#ifndef __pctZengWeightedBackProjectionImageFilter_hxx
+#define __pctZengWeightedBackProjectionImageFilter_hxx
 
 #include <itkImageRegionConstIteratorWithIndex.h>
 #include <itkMacro.h>
@@ -9,7 +9,7 @@ namespace pct
 {
 
 template <class TInputImage, class TOutputImage>
-ZengBackProjectionImageFilter<TInputImage, TOutputImage>::ZengBackProjectionImageFilter()
+ZengWeightedBackProjectionImageFilter<TInputImage, TOutputImage>::ZengWeightedBackProjectionImageFilter()
 {
   this->SetNumberOfRequiredOutputs(2);
   this->SetNthOutput(0, this->MakeOutput(0));
@@ -18,7 +18,7 @@ ZengBackProjectionImageFilter<TInputImage, TOutputImage>::ZengBackProjectionImag
 
 template <class TInputImage, class TOutputImage>
 void
-ZengBackProjectionImageFilter<TInputImage, TOutputImage>::GenerateOutputInformation()
+ZengWeightedBackProjectionImageFilter<TInputImage, TOutputImage>::GenerateOutputInformation()
 {
   typename OutputImageType::RegionType  region;
   typename OutputImageType::PointType   origin;
@@ -42,7 +42,7 @@ ZengBackProjectionImageFilter<TInputImage, TOutputImage>::GenerateOutputInformat
 
 template <class TInputImage, class TOutputImage>
 void
-ZengBackProjectionImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
+ZengWeightedBackProjectionImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerateData(
   const OutputImageRegionType & outputRegionForThread)
 {
   typename TInputImage::IndexType idxIn;
@@ -90,7 +90,7 @@ ZengBackProjectionImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerat
 
 template <class TInputImage, class TOutputImage>
 itk::DataObject::Pointer
-ZengBackProjectionImageFilter<TInputImage, TOutputImage>::MakeOutput(
+ZengWeightedBackProjectionImageFilter<TInputImage, TOutputImage>::MakeOutput(
   itk::ProcessObject::DataObjectPointerArraySizeType idx)
 {
   itk::DataObject::Pointer output;
