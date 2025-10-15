@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 import argparse
 import json
-import uproot
 import itk
 from itk import PCT as pct
-
 import numpy as np
 import numpy.lib.recfunctions as rfn
 
@@ -78,6 +76,8 @@ def build_parser():
 
 
 def process(args_info: argparse.Namespace):
+    import uproot
+
     if args_info.verbose:
 
         def verbose(message):
