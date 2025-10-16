@@ -19,7 +19,6 @@ for mod_name in pct_submodules:
 # Application modules
 _app_modules = [
     "pctfdk",
-    "pctfdktwodweights",
     "pctpairprotons",
     "pctweplfit",
 ]
