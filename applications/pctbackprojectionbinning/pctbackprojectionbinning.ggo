@@ -2,7 +2,6 @@ package "pct"
 version "Backprojects the proton pairs according to mlp before applying mlp"
 
 option "verbose"     v "Verbose execution"                                        flag            off
-option "config"      - "Config file"                                              string          no
 option "path"        p "Path containing pair files"                               string          yes
 option "regexp"      r "Regular expression to select pair files in path"          string          yes
 option "output"      o "Output file name"                                         string          yes
