@@ -10,12 +10,12 @@ public:
 
   // Inputs
   void
-  SetImage(typename TImage::Pointer image);
+  SetImage(const TImage * image);
   void
   SetHolePixel(typename TImage::PixelType pixel);
 
   // Outputs
-  typename TImage::Pointer
+  TImage *
   GetOutput();
 
   // This is the main loop. It simply calls Iterate() until complete.
@@ -33,7 +33,7 @@ public:
 
 private:
   // The input image.
-  typename TImage::Pointer Image;
+  typename TImage::ConstPointer Image;
 
   // The intermediate and eventually output image.
   typename TImage::Pointer Output;
@@ -45,7 +45,7 @@ private:
 // This function copies the data from 'input' to 'output'
 template <typename TImage>
 void
-DeepCopy(typename TImage::Pointer input, typename TImage::Pointer output);
+DeepCopy(const TImage * input, TImage * output);
 
 #ifndef ITK_MANUAL_INSTANTIATION
 #  include "SmallHoleFiller.hxx"

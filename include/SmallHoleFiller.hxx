@@ -18,7 +18,7 @@ SmallHoleFiller<TImage>::SmallHoleFiller()
 
 template <typename TImage>
 void
-SmallHoleFiller<TImage>::SetImage(typename TImage::Pointer image)
+SmallHoleFiller<TImage>::SetImage(const TImage * image)
 {
   this->Image = image;
   this->Output = TImage::New();
@@ -32,10 +32,10 @@ SmallHoleFiller<TImage>::SetHolePixel(typename TImage::PixelType pixel)
 }
 
 template <typename TImage>
-typename TImage::Pointer
+TImage *
 SmallHoleFiller<TImage>::GetOutput()
 {
-  return this->Output;
+  return this->Output.GetPointer();
 }
 
 template <typename TImage>
@@ -153,7 +153,7 @@ SmallHoleFiller<TImage>::HasEmptyPixels()
 /** Copy the input to the output*/
 template <typename TImage>
 void
-DeepCopy(typename TImage::Pointer input, typename TImage::Pointer output)
+DeepCopy(const TImage * input, TImage * output)
 {
   output->SetRegions(input->GetLargestPossibleRegion());
   output->Allocate();
