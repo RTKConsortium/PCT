@@ -18,6 +18,7 @@ for mod_name in pct_submodules:
 
 # Application modules
 _app_modules = [
+    "pctbinning",
     "pctfdk",
     "pctpairprotons",
     "pctweplfit",
