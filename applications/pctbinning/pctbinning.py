@@ -36,7 +36,6 @@ def build_parser():
     parser.add_argument(
         "-v", "--verbose", help="Verbose execution", action="store_true", default=False
     )
-    parser.add_argument("--config", help="Config file")
 
     parser.add_argument(
         "-s", "--source", help="Source position", type=float, default=0.0
