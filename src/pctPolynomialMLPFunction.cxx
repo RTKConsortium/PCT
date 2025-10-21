@@ -26,7 +26,8 @@ PolynomialMLPFunction ::PolynomialMLPFunction()
   // We operate a change of origin, u0 is always 0
   m_u0 = 0.;
   m_CanBeVectorised = true;
-  SetPolynomialDegree(5);
+  m_PolynomialDegree = 5;
+  m_PolynomialDegreePlusThree = m_PolynomialDegree + 3;
 }
 
 PolynomialMLPFunction ::PolynomialMLPFunction(const int polydeg)
@@ -77,11 +78,35 @@ PolynomialMLPFunction ::SetPolynomialDegree(const int polydeg)
 }
 
 void
+PolynomialMLPFunction ::SetCoefficients(const std::vector<double> & coeffs)
+{
+  m_bm = coeffs;
+  m_PolynomialDegree = m_bm.size() - 1;
+
+  m_PolynomialDegreePlusThree = m_PolynomialDegree + 3;
+}
+
+std::vector<double>
+PolynomialMLPFunction ::GetCoefficients() const
+{
+  return m_bm;
+}
+
+void
 PolynomialMLPFunction ::Init(const VectorType posIn,
                              const VectorType posOut,
                              const VectorType dirIn,
                              const VectorType dirOut)
 {
+  // Ensure we have coefficient values: if the user supplied custom
+  // coefficients via SetCoefficients(), m_bm will be non-empty and we'll
+  // keep them. Otherwise populate built-in coefficients for the current
+  // polynomial degree.
+  if (m_bm.empty())
+  {
+    SetPolynomialDegree(m_PolynomialDegree);
+  }
+
   m_uOrigin = posIn[2];
   m_u2 = posOut[2] - m_uOrigin;
 
