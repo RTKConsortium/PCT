@@ -7,12 +7,16 @@ set(
   PCTTests
   pctProtonPairsToDistanceDrivenProjectionTest.cxx
   pctHoleFillingImageFilterTest.cxx
+  pctPolynomialMLPFunctionTest.cxx
 )
 
 createtestdriver(PCT "${PCT-Test_LIBRARIES}" "${PCTTests}")
 
 itk_add_test(NAME pctProtonPairsToDistanceDrivenProjectionTest
   COMMAND PCTTestDriver pctProtonPairsToDistanceDrivenProjectionTest
+)
+itk_add_test(NAME pctPolynomialMLPFunctionTest
+  COMMAND PCTTestDriver pctPolynomialMLPFunctionTest
 )
 
 itk_add_test(NAME pctHoleFillingImageFilterTest COMMAND PCTTestDriver pctHoleFillingImageFilterTest)
