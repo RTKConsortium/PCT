@@ -26,13 +26,13 @@ PolynomialMLPFunction ::PolynomialMLPFunction()
   // We operate a change of origin, u0 is always 0
   m_u0 = 0.;
   m_CanBeVectorised = true;
+  SetPolynomialDegree(5);
 }
 
 PolynomialMLPFunction ::PolynomialMLPFunction(const int polydeg)
+  : PolynomialMLPFunction()
 {
-  // We operate a change of origin, u0 is always 0
-  PolynomialMLPFunction();
-  m_PolynomialDegree = polydeg;
+  SetPolynomialDegree(polydeg);
 }
 
 void
@@ -40,6 +40,7 @@ PolynomialMLPFunction ::SetPolynomialDegree(const int polydeg)
 {
   m_PolynomialDegree = polydeg;
   m_PolynomialDegreePlusThree = m_PolynomialDegree + 3;
+  m_bm.clear();
 
   switch (polydeg)
   {
