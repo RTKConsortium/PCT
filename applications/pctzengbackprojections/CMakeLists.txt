@@ -6,6 +6,14 @@ add_executable(
 )
 target_link_libraries(pctzengbackprojections PCT)
 
+# Ensure binary is placed in the central PCT binary dir
+set_target_properties(
+  pctzengbackprojections
+  PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY
+      "${PCT_BINARY_DIR}/bin"
+)
+
 # Installation code
 install(
   TARGETS
