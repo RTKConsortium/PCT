@@ -3,13 +3,19 @@ itk_module_test()
 #-----------------------------------------------------------------------------
 # CXX tests
 
-set(PCTTests pctProtonPairsToDistanceDrivenProjectionTest.cxx)
+set(
+  PCTTests
+  pctProtonPairsToDistanceDrivenProjectionTest.cxx
+  pctHoleFillingImageFilterTest.cxx
+)
 
 createtestdriver(PCT "${PCT-Test_LIBRARIES}" "${PCTTests}")
 
 itk_add_test(NAME pctProtonPairsToDistanceDrivenProjectionTest
   COMMAND PCTTestDriver pctProtonPairsToDistanceDrivenProjectionTest
 )
+
+itk_add_test(NAME pctHoleFillingImageFilterTest COMMAND PCTTestDriver pctHoleFillingImageFilterTest)
 
 #-----------------------------------------------------------------------------
 # Python tests
