@@ -24,27 +24,3 @@ add_subdirectory(pctpaircuts)
 add_subdirectory(pctpairgeometry)
 add_subdirectory(pctprojections)
 add_subdirectory(pctzengbackprojections)
-
-# Centralize runtime output location for application targets so we don't rely
-# on the global CMAKE_RUNTIME_OUTPUT_DIRECTORY which can be overridden by ITK
-set(
-  PCT_APPS
-  pctbackprojectionbinning
-  pctbinning
-  pctfdk
-  pctpaircuts
-  pctpairgeometry
-  pctprojections
-  pctzengbackprojections
-)
-
-foreach(APP IN LISTS PCT_APPS)
-  if(TARGET ${APP})
-    set_target_properties(
-      ${APP}
-      PROPERTIES
-        RUNTIME_OUTPUT_DIRECTORY
-          "${PCT_BINARY_DIR}/bin"
-    )
-  endif()
-endforeach()
