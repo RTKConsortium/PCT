@@ -6,7 +6,7 @@
 #include <rtkThreeDCircularProjectionGeometryXMLFile.h>
 
 #include "pctProtonPairsToBackProjection.h"
-#include "SmallHoleFiller.h"
+#include "pctHoleFillingImageFilter.h"
 
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -124,17 +124,16 @@ main(int argc, char * argv[])
 
   TRY_AND_EXIT_ON_ITK_EXCEPTION(projection->Update());
 
-  SmallHoleFiller<OutputImageType> filler;
+  auto holeFilter = pct::HoleFillingImageFilter<OutputImageType>::New();
   if (args_info.fill_flag)
   {
-    filler.SetImage(projection->GetOutput());
-    filler.SetHolePixel(0.);
-    filler.Fill();
+    holeFilter->SetInput(projection->GetOutput());
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(holeFilter->Update());
   }
 
   auto cii = itk::ChangeInformationImageFilter<OutputImageType>::New();
   if (args_info.fill_flag)
-    cii->SetInput(filler.GetOutput());
+    cii->SetInput(holeFilter->GetOutput());
   else
     cii->SetInput(projection->GetOutput());
   cii->ChangeOriginOn();
