@@ -166,6 +166,12 @@ public:
   void
   SetPolynomialDegree(const int polydeg);
 
+  void
+  SetCoefficients(const std::vector<double> & coeffs);
+
+  std::vector<double>
+  GetCoefficients() const;
+
 #ifdef MLP_TIMING
   /** Print timing information */
   virtual void
