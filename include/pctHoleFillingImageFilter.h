@@ -1,54 +1,63 @@
-#ifndef __SmallHoleFiller_h
-#define __SmallHoleFiller_h
+#ifndef __pctHoleFillingImageFilter_h
+#define __pctHoleFillingImageFilter_h
 
-template <typename TImage>
-class SmallHoleFiller
+#include <itkImageToImageFilter.h>
+#include <itkSmartPointer.h>
+#include <itkNumericTraits.h>
+
+namespace pct
+{
+/**
+ *
+ * A simple iterative hole filling filter. A pixel equal to the HolePixel is
+ * considered a hole. On each iteration, every hole pixel is replaced by the
+ * average of its non-hole neighbors in a radius=1 neighborhood (center
+ * excluded). Iterations repeat until no hole pixels remain or MaxIterations
+ * is reached or an iteration makes no progress.
+ *
+ * This filter reproduces the behavior of the project's SmallHoleFiller
+ * helper. For the original reference see:
+ * https://www.insight-journal.org/browse/publication/835/
+ */
+
+template <typename TInputImage, typename TOutputImage = TInputImage>
+class HoleFillingImageFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
 {
 public:
-  // Constructor
-  SmallHoleFiller();
+  using Self = HoleFillingImageFilter;
+  using Superclass = itk::ImageToImageFilter<TInputImage, TOutputImage>;
+  using Pointer = itk::SmartPointer<Self>;
+  using ConstPointer = itk::SmartPointer<const Self>;
 
-  // Inputs
+  itkNewMacro(Self);
+  itkTypeMacro(HoleFillingImageFilter, ImageToImageFilter);
+
+  using InputImageType = TInputImage;
+  using OutputImageType = TOutputImage;
+  using PixelType = typename OutputImageType::PixelType;
+
+  itkSetMacro(HolePixelValue, PixelType);
+  itkGetConstMacro(HolePixelValue, PixelType);
+  itkSetMacro(MaximumNumberOfIterations, unsigned int);
+  itkGetConstMacro(MaximumNumberOfIterations, unsigned int);
+
+protected:
+  HoleFillingImageFilter() = default;
+  ~HoleFillingImageFilter() override = default;
+
   void
-  SetImage(const TImage * image);
-  void
-  SetHolePixel(typename TImage::PixelType pixel);
-
-  // Outputs
-  TImage *
-  GetOutput();
-
-  // This is the main loop. It simply calls Iterate() until complete.
-  void
-  Fill();
-
-  // This is the core functionality.
-  void
-  Iterate();
-
-  // This function returns true if any of the Output pixels match the HolePixel. This indicates there is more work to be
-  // done.
-  bool
-  HasEmptyPixels();
+  GenerateData() override;
 
 private:
-  // The input image.
-  typename TImage::ConstPointer Image;
-
-  // The intermediate and eventually output image.
-  typename TImage::Pointer Output;
-
-  // The value of a pixel to be considered a hole (to be filled).
-  typename TImage::PixelType HolePixel;
+  ITK_DISALLOW_COPY_AND_MOVE(HoleFillingImageFilter);
+  PixelType    m_HolePixelValue = itk::NumericTraits<PixelType>::Zero;
+  unsigned int m_MaximumNumberOfIterations = 20;
 };
 
-// This function copies the data from 'input' to 'output'
-template <typename TImage>
-void
-DeepCopy(const TImage * input, TImage * output);
+} // namespace pct
 
 #ifndef ITK_MANUAL_INSTANTIATION
-#  include "SmallHoleFiller.hxx"
+#  include "pctHoleFillingImageFilter.hxx"
 #endif
 
 #endif
