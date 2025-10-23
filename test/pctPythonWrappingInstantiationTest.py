@@ -8,13 +8,13 @@ def test_python_wrapping_instantiation():
     pct.FDKDDConeBeamReconstructionFilter[imageType].New()
     pct.FDKDDBackProjectionImageFilter[imageType, imageType].New()
     pct.ProtonPairsToDistanceDrivenProjection[imageType, imageType].New()
-    pct.SmallHoleFiller[imageType]()
+    pct.HoleFillingImageFilter[imageType].New()
 
     imageType = itk.Image[itk.F, 4]
     pct.DDParkerShortScanImageFilter[imageType, imageType].New()
     pct.ProtonPairsToBackProjection[imageType, imageType].New()
     pct.ZengWeightedBackProjectionImageFilter[imageType].New()
-    pct.SmallHoleFiller[imageType]()
+    pct.HoleFillingImageFilter[imageType].New()
 
     pct.ThirdOrderPolynomialMLPFunction[itk.D].New()
     pct.ThirdOrderPolynomialMLPFunction[itk.F].New()
