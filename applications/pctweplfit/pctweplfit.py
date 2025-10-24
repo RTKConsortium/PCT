@@ -107,6 +107,7 @@ def tof_fit_mc(
             "EventID",
             "TrackID",
             "Position",
+            "Direction",
             "PreGlobalTime",
             "KineticEnergy",
         ]
@@ -139,6 +140,7 @@ def process_phantom_length(
     tofs,
     wepls,
     elosses,
+    angles,
     verbose,
 ):
     import uproot
@@ -146,6 +148,7 @@ def process_phantom_length(
     tofs_phantom_length = []
     wepls_phantom_length = []
     elosses_phantom_length = []
+    angles_phantom_length = []
 
     data = uproot.concatenate(f"{output}/l{int(phantom_length)}_*.root", library="np")
     pv(
@@ -177,15 +180,20 @@ def process_phantom_length(
         ):
             continue
 
+        us = data["Position_X"][event_mask]
+        vs = data["Position_Y"][event_mask]
+        ws = data["Position_Z"][event_mask]
+        dus = data["Direction_X"][event_mask]
+        dvs = data["Direction_Y"][event_mask]
+        dws = data["Direction_Z"][event_mask]
+
         times = data["PreGlobalTime"][event_mask]
+
         tof = times[-1] - times[0]
 
         if phantom_length == 0.0:
             wepl = 0.0
         else:
-            us = data["Position_X"][event_mask]
-            vs = data["Position_Y"][event_mask]
-            ws = data["Position_Z"][event_mask]
             if path_type == "phantom_length":
                 # Length of the phantom
                 wepl = phantom_length
@@ -215,13 +223,38 @@ def process_phantom_length(
             data["KineticEnergy"][event_mask][0] - data["KineticEnergy"][event_mask][-1]
         )
 
+        d_in_uw = np.array([dus[0], dws[0]])
+        d_in_vw = np.array([dvs[0], dws[0]])
+        d_out_uw = np.array([dus[-1], dws[-1]])
+        d_out_vw = np.array([dvs[-1], dws[-1]])
+        angle = [
+            np.arccos(
+                np.minimum(
+                    1.0,
+                    d_in_uw
+                    @ d_out_uw
+                    / (np.sqrt(d_in_uw @ d_in_uw) * np.sqrt(d_out_uw @ d_out_uw)),
+                )
+            ),
+            np.arccos(
+                np.minimum(
+                    1.0,
+                    d_in_vw
+                    @ d_out_vw
+                    / (np.sqrt(d_in_vw @ d_in_vw) * np.sqrt(d_out_vw @ d_out_vw)),
+                )
+            ),
+        ]
+
         tofs_phantom_length.append(tof)
         wepls_phantom_length.append(wepl)
         elosses_phantom_length.append(eloss)
+        angles_phantom_length += angle
 
     tofs[phantom_length] = tofs_phantom_length
     wepls[phantom_length] = wepls_phantom_length
     elosses[phantom_length] = elosses_phantom_length
+    angles[phantom_length] = angles_phantom_length
 
 
 def tof_fit(
@@ -240,6 +273,7 @@ def tof_fit(
     tofs = manager.dict()
     wepls = manager.dict()
     elosses = manager.dict()
+    angles = manager.dict()
 
     results = []
     with Pool() as pool:
@@ -254,6 +288,7 @@ def tof_fit(
                     tofs,
                     wepls,
                     elosses,
+                    angles,
                     verbose,
                 ),
             )
@@ -263,9 +298,11 @@ def tof_fit(
     for result in results:
         result.get()
 
-    def fit(xs, ys, xlabel, ylabel):
+    def fit(xs, ys, xlabel, ylabel, xreduction=np.median):
 
-        xmedians = [np.median(xs[phantom_length]) for phantom_length in phantom_lengths]
+        xmedians = [
+            xreduction(xs[phantom_length]) for phantom_length in phantom_lengths
+        ]
         ymedians = [np.median(ys[phantom_length]) for phantom_length in phantom_lengths]
         xpercentile25 = [
             np.percentile(xs[phantom_length], 25) for phantom_length in phantom_lengths
@@ -301,17 +338,14 @@ def tof_fit(
             import matplotlib.pyplot as plt
 
             plt.figure()
-            plt.plot(xmedians, ymedians, "+", label="Medians")
+            plt.plot(xmedians, ymedians, "+")
 
             tof_xs = np.linspace(np.min(xmedians), np.max(xmedians), 100)
             for d, p in ps.items():
-                plt.plot(
-                    tof_xs, np.polyval(p, tof_xs), label=f"Polynomial fit (degree {d})"
-                )
+                plt.plot(tof_xs, np.polyval(p, tof_xs))
 
             plt.xlabel(xlabel)
             plt.ylabel(ylabel)
-            plt.legend()
 
             if savefig:
                 plt.savefig(f"{output}/{xlabel}_to_{ylabel}_fit.pdf")
@@ -326,6 +360,7 @@ def tof_fit(
 
     fit(tofs, wepls, "tof", "wepl")
     fit(elosses, wepls, "eloss", "wepl")
+    fit(angles, wepls, xlabel="angle", ylabel="wepl", xreduction=np.std)
 
 
 def pctweplfit(
