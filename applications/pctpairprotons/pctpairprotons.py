@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import argparse
 import json
-import sys
 import itk
 from itk import PCT as pct
 import numpy as np
@@ -73,94 +72,7 @@ def build_parser():
         "--psout", help="Name of tree in output phase space", default="PhaseSpace"
     )
 
-    data_noise_group = parser.add_argument_group("Data noise")
-    data_noise_group.add_argument('--noise-measurements', help="Standard deviation of the Gaussian noise on the measurements (energy or time)", type=float)
-    data_noise_group.add_argument('--noise-position', help="Standard deviation of the Gaussian noise on the position", type=float)
-    data_noise_group.add_argument('--tracker-distance', help="Distance between the two trackers of the upstream and downstream detectors, used to calculate noise on directions", type=float)
-    data_noise_group.add_argument('--seed', help="Random number generator seed", type=int)
-
     return parser
-
-def add_noise(pairs, measurement_column, noise_measurements, noise_position, tracker_distance, seed):
-
-    rng = np.random.default_rng(seed)
-
-    if noise_measurements is not None:
-        measurement_in = pairs[measurement_column + "_in"]
-        measurement_out = pairs[measurement_column + "_out"]
-        measurement_in += rng.normal(scale=noise_measurements, size=len(measurement_in))
-        measurement_out += rng.normal(scale=noise_measurements, size=len(measurement_out))
-
-    if noise_position is not None:
-
-        u_in = pairs["u_in"]
-        u_out = pairs["u_out"]
-        v_in = pairs["v_in"]
-        v_out = pairs["v_out"]
-
-        noise_u_in = u_in + rng.normal(scale=noise_position, size=len(u_in))
-        noise_u_out = u_out + rng.normal(scale=noise_position, size=len(u_out))
-        noise_v_in = v_in + rng.normal(scale=noise_position, size=len(v_in))
-        noise_v_out = v_out + rng.normal(scale=noise_position, size=len(v_out))
-
-        if tracker_distance is None:
-            print("Warning: noise on position was provided, but tracker distance is unspecified. No noise on directions will be applied.", file=sys.stderr)
-        else:
-            # Recover the point on the second tracker in each detector
-            w_in = pairs["w_in"]
-            w_out = pairs["w_out"]
-            du_in = pairs["du_in"]
-            du_out = pairs["du_out"]
-            dv_in = pairs["dv_in"]
-            dv_out = pairs["dv_out"]
-            dw_in = pairs["dw_in"]
-            dw_out = pairs["dw_out"]
-
-            w_in_2 = w_in - tracker_distance
-            slope_in = (w_in_2 - w_in) / dw_in
-            u_in_2 = u_in + slope_in * du_in
-            v_in_2 = v_in + slope_in * dv_in
-
-            w_out_2 = w_out + tracker_distance
-            slope_out = (w_out_2 - w_out) / dw_out
-            u_out_2 = u_out + slope_out * du_out
-            v_out_2 = v_out + slope_out * dv_out
-
-            # Add noise to the point on the second tracker
-            noise_u_in_2 = u_in_2 + rng.normal(scale=noise_position, size=len(u_in_2))
-            noise_v_in_2 = v_in_2 + rng.normal(scale=noise_position, size=len(v_in_2))
-            noise_u_out_2 = u_out_2 + rng.normal(scale=noise_position, size=len(u_out_2))
-            noise_v_out_2 = v_out_2 + rng.normal(scale=noise_position, size=len(v_out_2))
-
-            # Build a direction from these noisy points
-            noise_du_in = noise_u_in - noise_u_in_2
-            noise_dv_in = noise_v_in - noise_v_in_2
-            noise_dw_in = tracker_distance
-            noise_du_out = noise_u_out_2 - noise_u_out
-            noise_dv_out = noise_v_out_2 - noise_v_out
-            noise_dw_out = tracker_distance
-
-            norm_in = np.sqrt(noise_du_in**2 + noise_dv_in**2 + noise_dw_in**2)
-            norm_out = np.sqrt(noise_du_out**2 + noise_dv_out**2 + noise_dw_out**2)
-
-            noise_du_in /= norm_in
-            noise_dv_in /= norm_in
-            noise_dw_in /= norm_in
-            noise_du_out /= norm_out
-            noise_dv_out /= norm_out
-            noise_dw_out /= norm_out
-
-            pairs["du_in"] = noise_du_in
-            pairs["du_out"] = noise_du_out
-            pairs["dv_in"] = noise_dv_in
-            pairs["dv_out"] = noise_dv_out
-            pairs["dw_in"] = noise_dw_in
-            pairs["dw_out"] = noise_dw_out
-
-        pairs["u_in"] = noise_u_in
-        pairs["v_in"] = noise_v_in
-        pairs["u_out"] = noise_u_out
-        pairs["v_out"] = noise_v_out
 
 
 def process(args_info: argparse.Namespace):
@@ -176,7 +88,7 @@ def process(args_info: argparse.Namespace):
         def verbose(message):
             pass
 
-    measurement_column = "PreGlobalTime" if args_info.store_time else "KineticEnergy"
+    measurement_column = "LocalTime" if args_info.store_time else "KineticEnergy"
 
     def load_tree_as_df(root_file, tree_name):
 
@@ -273,10 +185,6 @@ def process(args_info: argparse.Namespace):
         pairs = rfn.stack_arrays(pairs_list, asrecarray=True)
         np.recarray.sort(pairs, order=["RunID", "EventID", "TrackID_in", "TrackID_out"])
     verbose("Merged input and output phase spaces.")
-
-    if args_info.noise_measurements is not None or args_info.noise_position is not None:
-        verbose("Adding noise…")
-        add_noise(pairs, measurement_column, args_info.noise_measurements, args_info.noise_position, args_info.tracker_distance, args_info.seed)
 
     if args_info.fit is not None:
         verbose("Converting energy loss or TOF to WEPL…")
