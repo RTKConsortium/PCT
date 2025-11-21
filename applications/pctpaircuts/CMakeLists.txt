@@ -11,7 +11,7 @@ set_target_properties(
   pctpaircuts
   PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY
-      "${PCT_BINARY_DIR}/bin"
+      "${CMAKE_BINARY_DIR}/bin"
 )
 
 # Installation code
