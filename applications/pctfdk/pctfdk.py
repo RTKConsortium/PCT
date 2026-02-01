@@ -113,7 +113,9 @@ def process(args_info: argparse.Namespace):
     geometryReader.GenerateOutputInformation()
 
     # Short scan image filter
-    pssf = pct.DDParkerShortScanImageFilter[ProjectionImageType].New()
+    pssf = pct.DDParkerShortScanImageFilter[
+        ProjectionImageType, ProjectionImageType
+    ].New()
     pssf.SetInput(reader.GetOutput())
     pssf.SetGeometry(geometryReader.GetOutputObject())
     pssf.InPlaceOff()
