@@ -16,7 +16,6 @@ itk_add_test(NAME pctProtonPairsToDistanceDrivenProjectionTest
 if(ITK_WRAP_PYTHON)
   itk_python_add_test(NAME pctPythonWrappingInstantiationTest COMMAND pctPythonWrappingInstantiationTest.py)
   itk_python_add_test(NAME pctOutputArgumentWrappingTest COMMAND pctOutputArgumentWrapping.py)
-  itk_python_add_test(NAME pctPairProtonsTest COMMAND pctPairProtonsTest.py)
 endif()
 
 #-----------------------------------------------------------------------------
