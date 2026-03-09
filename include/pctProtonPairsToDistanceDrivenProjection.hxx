@@ -628,6 +628,8 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::AfterThreadedG
   m_Angles.resize(0);
   m_AnglesSq.resize(0);
   m_AnglesVectors.resize(0);
+
+  delete m_ConvFunc;
 }
 
 } // namespace pct
