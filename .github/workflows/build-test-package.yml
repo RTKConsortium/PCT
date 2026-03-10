@@ -19,6 +19,6 @@ jobs:
       cmake-options: '-DRTK_BUILD_APPLICATIONS:BOOL=OFF'
       python3-minor-versions: ${{ github.event_name == 'pull_request' && '["11"]' || '["9","10","11"]' }}
       itk-python-package-tag: 'release-5.4'
-      itk-module-deps: RTKConsortium/RTK@main
+      itk-module-deps: axel-grc/RTK@lpsolve
     secrets:
       pypi_password: ${{ secrets.pypi_password }}
