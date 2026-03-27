@@ -4,9 +4,12 @@ import importlib
 itk_module = sys.modules["itk"]
 pct_module = getattr(itk_module, "PCT")
 
+# Load the CMake-generated version and assign it to `itk.PCT.__version__`.
+pct_version = importlib.import_module("itk.pctConfig").PCT_GLOBAL_VERSION_STRING
+setattr(pct_module, "__version__", pct_version)
+
 # Import PCT submodules
 pct_submodules = [
-    "itk.pctversion",
     "itk.pctargumentparser",
     "itk.pctExtras",
 ]

@@ -12,6 +12,16 @@ set(PCT_LIBRARIES PCT)
 if(NOT ITK_SOURCE_DIR)
   find_package(ITK REQUIRED)
   list(APPEND CMAKE_MODULE_PATH ${ITK_CMAKE_DIR})
+endif()
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+if(GIT_SHA1 MATCHES ".*NOTFOUND")
+  set(PCT_VERSION_HASH "")
+else()
+  set(PCT_VERSION_HASH ", git hash ${GIT_SHA1}")
+endif()
+
+if(NOT ITK_SOURCE_DIR)
   include(ITKModuleExternal)
 else()
   set(ITK_DIR ${CMAKE_BINARY_DIR})
@@ -39,16 +49,6 @@ option(
 )
 if(PCT_BUILD_APPLICATIONS)
   add_subdirectory(applications)
-endif()
-
-#-----------------------------------------------------------------------------
-# Common revision info between applications
-include(GetGitRevisionDescription)
-get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-if(GIT_SHA1 MATCHES ".*NOTFOUND")
-  set(PCT_VERSION_HASH "")
-else()
-  set(PCT_VERSION_HASH ", git hash ${GIT_SHA1}")
 endif()
 
 #=========================================================

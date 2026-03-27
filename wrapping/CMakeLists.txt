@@ -2,10 +2,9 @@ itk_wrap_module(PCT)
 itk_auto_load_submodules()
 itk_end_wrap_module()
 
-set(PCT_VERSION_SCRIPT "${PCT_BINARY_DIR}/applications/pctversion.py")
 configure_file(
-  ${PCT_SOURCE_DIR}/applications/pctversion.py.in
-  ${PCT_VERSION_SCRIPT}
+  ${PCT_SOURCE_DIR}/wrapping/pctConfig.py.in
+  ${PCT_BINARY_DIR}/Wrapping/Generators/Python/pctConfig.py
 )
 
 file(
@@ -17,9 +16,9 @@ file(
 wrap_itk_python_bindings_install(/itk "PCT"
   __init_pct__.py
   ${PCT_PYTHON_APP}
-  ${PCT_VERSION_SCRIPT}
   ${PCT_SOURCE_DIR}/wrapping/pctExtras.py
   ${PCT_SOURCE_DIR}/applications/pctargumentparser.py
+  ${PCT_BINARY_DIR}/Wrapping/Generators/Python/pctConfig.py
 )
 
 # Copy python applications to the ITK wrapping directory to ensure they can be imported in tests.
