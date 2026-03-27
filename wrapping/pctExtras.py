@@ -42,7 +42,7 @@ def make_application_func(app_name):
     options = _parser.format_help()
     idx = options.lower().find("options:")
     opt_text = options[idx:].strip()
-    parts = [pct.version(), description, examples, opt_text]
+    parts = [pct.__version__, description, examples, opt_text]
     app_func.__doc__ = "\n\n".join(parts)
 
     return app_func

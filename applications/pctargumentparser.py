@@ -12,7 +12,7 @@ __all__ = ["PCTArgumentParser"]
 class PCTHelpFormatter(argparse.ArgumentDefaultsHelpFormatter):
     def _format_usage(self, usage, actions, groups, prefix=None):
         if prefix is None:
-            prefix = pct.version() + "\n\nusage: "
+            prefix = pct.__version__ + "\n\nusage: "
         return super()._format_usage(usage, actions, groups, prefix)
 
 
@@ -22,7 +22,7 @@ class PCTArgumentParser(argparse.ArgumentParser):
         self.formatter_class = PCTHelpFormatter
         # allow negative numeric tokens to be treated as values, not options. This mirrors CPython behavior in python 3.14
         self._negative_number_matcher = re.compile(r"-\.?\d")
-        self.add_argument("-V", "--version", action="version", version=pct.version())
+        self.add_argument("-V", "--version", action="version", version=pct.__version__)
 
     def build_signature(self) -> inspect.Signature:
         """Build a compact Python signature: only required kwargs + **kwargs."""
