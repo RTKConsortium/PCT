@@ -25,6 +25,7 @@ _app_modules = [
     "pctfdk",
     "pctpairprotons",
     "pctweplfit",
+    "pctlomalinda",
 ]
 
 # Dynamically access make_application_func from pctExtras
