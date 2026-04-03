@@ -45,7 +45,7 @@ pctbinning = "itk.pctbinning:main"
 pctfdk = "itk.pctfdk:main"
 pctpairprotons = "itk.pctpairprotons:main"
 pctweplfit = "itk.pctweplfit:main"
-
+pctlomalinda = "itk.pctlomalinda:main"
 
 [project.urls]
 Download = "https://github.com/RTKConsortium/PCT"
