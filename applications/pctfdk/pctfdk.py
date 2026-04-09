@@ -17,16 +17,6 @@ def build_parser():
         "--geometry", "-g", help="XML geometry file name", type=str, required=True
     )
     parser.add_argument(
-        "--path", "-p", help="Path containing projections", type=str, required=True
-    )
-    parser.add_argument(
-        "--regexp",
-        "-r",
-        help="Regular expression to select projection files in path",
-        type=str,
-        required=True,
-    )
-    parser.add_argument(
         "--output", "-o", help="Output file name", type=str, required=True
     )
     parser.add_argument(
@@ -34,12 +24,6 @@ def build_parser():
         "-l",
         help="Load only one projection per thread in memory",
         action="store_true",
-    )
-    parser.add_argument(
-        "--wpc",
-        help="Water precorrection coefficients (default is no correction)",
-        type=float,
-        nargs="+",
     )
 
     # Ramp filter
@@ -81,29 +65,21 @@ def build_parser():
         help="Copy info from image (origin, size, spacing, direction)",
         type=str,
     )
+
+    pct.add_pctinputprojections_group(parser)
+
     return parser
 
 
 def process(args_info: argparse.Namespace):
     from itk import RTK as rtk
 
-    # Generate file names
-    names = itk.RegularExpressionSeriesFileNames.New()
-    names.SetDirectory(args_info.path)
-    names.SetNumericSort(False)
-    names.SetRegularExpression(args_info.regexp)
-    names.SetSubMatch(0)
-    if args_info.verbose:
-        print(f"Regular expression matches {len(names.GetFileNames())} file(s)...")
-
     # Projections reader
     OutputPixelType = itk.F
     ProjectionImageType = itk.Image[OutputPixelType, 4]
     ReaderType = rtk.ProjectionsReader[ProjectionImageType]
     reader = ReaderType.New()
-    reader.SetFileNames(names.GetFileNames())
-    if args_info.wpc:
-        reader.SetWaterPrecorrectionCoefficients([float(c) for c in args_info.wpc])
+    pct.SetProjectionsReaderFromArgParse(reader, args_info)
 
     # Geometry
     if args_info.verbose:

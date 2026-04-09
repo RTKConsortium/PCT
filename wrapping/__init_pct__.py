@@ -12,6 +12,7 @@ setattr(pct_module, "__version__", pct_version)
 pct_submodules = [
     "itk.pctargumentparser",
     "itk.pctExtras",
+    "itk.pctinputprojections_group",
 ]
 for mod_name in pct_submodules:
     mod = importlib.import_module(mod_name)
