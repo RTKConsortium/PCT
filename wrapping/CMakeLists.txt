@@ -9,24 +9,21 @@ configure_file(
 )
 
 file(
-  GLOB PCT_PYTHON_APP
+  GLOB PCT_GROUP_SCRIPTS
+  CONFIGURE_DEPENDS
+  "${PCT_SOURCE_DIR}/applications/pct*_group.py"
+)
+file(
+  GLOB PCT_APP_SCRIPTS
   CONFIGURE_DEPENDS
   "${PCT_SOURCE_DIR}/applications/pct*/pct*.py"
 )
 
 wrap_itk_python_bindings_install(/itk "PCT"
   __init_pct__.py
-  ${PCT_PYTHON_APP}
+  ${PCT_GROUP_SCRIPTS}
+  ${PCT_APP_SCRIPTS}
   ${PCT_VERSION_SCRIPT}
   ${PCT_SOURCE_DIR}/wrapping/pctExtras.py
   ${PCT_SOURCE_DIR}/applications/pctargumentparser.py
 )
-
-# Copy python applications to the ITK wrapping directory to ensure they can be imported in tests.
-# This directory is added to the PYTHONPATH by itk_python_add_test.
-if(ITK_DIR)
-  set(itk_wrap_python_binary_dir "${ITK_DIR}/Wrapping/Generators/Python")
-else()
-  set(itk_wrap_python_binary_dir "${ITK_BINARY_DIR}/Wrapping/Generators/Python")
-endif()
-file(COPY ${PCT_PYTHON_APP} DESTINATION "${itk_wrap_python_binary_dir}")
