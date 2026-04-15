@@ -89,3 +89,10 @@ in the user's `.bashrc` file. This allows to run PCT applications from anywhere 
 pip install opengate
 ```
 An example of proton CT GATE simulation can be found in [`gate/protonct.py`](https://github.com/RTKConsortium/PCT/blob/main/gate/protonct.py).
+
+### Uproot
+
+[Uproot](https://uproot.readthedocs.io/) is a library for reading and writing ROOT files in pure Python and NumPy. Some applications of PCT require Uproot, such as `pctpairprotons` and `pctweplfit`. The simplest way to install Uproot is by running
+```bash
+pip install uproot
+```
