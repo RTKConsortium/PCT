@@ -95,7 +95,15 @@ def process(args_info: argparse.Namespace):
         tree = uproot.open(root_file)[tree_name]
         branches = tree.arrays(library="np")
 
-        dtype = [(name, branch.dtype) for name, branch in branches.items()]
+        # Some versions of uproot return a dictionnary, and some others a numpy.ndarray
+        # We handle both cases here to generate the dtype
+        if isinstance(branches, dict):
+            dtype = [(name, branch.dtype) for name, branch in branches.items()]
+        elif isinstance(branches, np.ndarray):
+            dtype = branches.dtype.descr
+        else:
+            raise NotImplementedError
+
         ps = np.rec.recarray((len(branches["RunID"]),), dtype=dtype)
         for branch_name, _ in dtype:
             ps[branch_name] = branches[branch_name]
