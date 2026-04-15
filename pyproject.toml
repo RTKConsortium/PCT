@@ -37,6 +37,8 @@ requires-python = ">=3.8"
 dependencies = [
     "itk-rtk == 2.7.*"
 ]
+[dependency-groups]
+test = ["pytest", "uproot"]
 
 [project.scripts]
 pctbinning = "itk.pctbinning:main"

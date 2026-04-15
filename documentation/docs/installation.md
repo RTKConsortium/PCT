@@ -80,6 +80,23 @@ export PATH=<path to ITK build folder>/Wrapping/Generators/Python/itk/:${PATH}  
 ```
 in the user's `.bashrc` file. This allows to run PCT applications from anywhere on the computer.
 
+### Testing
+
+To run PCT Python tests with pytest, install the test dependencies from the directory containing `pyproject.toml`:
+
+```
+pip install --group test
+```
+
+This installs:
+* `pytest` - for running Python unit tests
+* `uproot` - for loading ROOT files
+
+After installing, run the tests with:
+```
+pytest test/*.py
+```
+
 ## Optional dependencies
 
 ### GATE
@@ -89,3 +106,10 @@ in the user's `.bashrc` file. This allows to run PCT applications from anywhere 
 pip install opengate
 ```
 An example of proton CT GATE simulation can be found in [`gate/protonct.py`](https://github.com/RTKConsortium/PCT/blob/main/gate/protonct.py).
+
+### Uproot
+
+[Uproot](https://uproot.readthedocs.io/) is a library for reading and writing ROOT files in pure Python and NumPy. Some applications of PCT require Uproot, such as `pctpairprotons` and `pctweplfit`. The simplest way to install Uproot is by running
+```bash
+pip install uproot
+```
