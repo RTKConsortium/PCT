@@ -80,6 +80,23 @@ export PATH=<path to ITK build folder>/Wrapping/Generators/Python/itk/:${PATH}  
 ```
 in the user's `.bashrc` file. This allows to run PCT applications from anywhere on the computer.
 
+### Testing
+
+To run PCT Python tests with pytest, install the test dependencies from the directory containing `pyproject.toml`:
+
+```
+pip install --group test
+```
+
+This installs:
+* `pytest` - for running Python unit tests
+* `uproot` - for loading ROOT files
+
+After installing, run the tests with:
+```
+pytest test/*.py
+```
+
 ## Optional dependencies
 
 ### GATE
