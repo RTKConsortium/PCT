@@ -136,6 +136,8 @@ The resulting image can be visualized by any MHD image viewer, such as [vv](http
 
 Note that to keep the running times in this guide fast enough, not enough statistics are generated to yield a nice output image. This is just an illustration of the PCT reconstruction workflow.
 
+PCT also provides Python functions that behave exactly like the applications described above. For illustration, the exact same simulation than the one described in this page is reimplemented in Python in the file [`examples/Reconstruction/Reconstruction.py`](https://github.com/RTKConsortium/PCT/tree/main/examples/Reconstruction/Reconstruction.py).
+
 ## Conclusion
 
 This guide gives an overview of a complete workflow that uses GATE to generate proton CT data, and PCT to process the data all the way to image reconstruction. To further familiarize yourself with PCT, you can explore the other applications offered by PCT, customize the current workflow with additional parameters using the `--help` flag, or implement your own simulation in GATE and try to produce a reconstruction.
