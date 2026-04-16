@@ -11,6 +11,7 @@ jobs:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-cxx.yml@v5.4.5
     with:
       itk-module-deps: RTK@main
+      itk-cmake-options: '-DRTK_BUILD_APPLICATIONS:BOOL=OFF'
 
   python-build-workflow:
     uses: InsightSoftwareConsortium/ITKRemoteModuleBuildTestPackageAction/.github/workflows/build-test-package-python.yml@v5.4.5
