@@ -5,6 +5,7 @@
 #include "rtkProjectionsReader.h"
 #include "pctDDParkerShortScanImageFilter.h"
 #include "pctFDKDDConeBeamReconstructionFilter.h"
+#include "pctFDKDDConeBeamVarianceReconstructionFilter.h"
 
 #include <itkRegularExpressionSeriesFileNames.h>
 #include <itkImageFileWriter.h>
@@ -62,7 +63,17 @@ main(int argc, char * argv[])
   rtk::SetConstantImageSourceFromGgo<ConstantImageSourceType, args_info_pctfdk>(constantImageSource, args_info);
 
   // FDK reconstruction filtering
-  auto feldkamp = pct::FDKDDConeBeamReconstructionFilter<OutputImageType>::New();
+  using FDKCPUType = pct::FDKDDConeBeamReconstructionFilter<OutputImageType>;
+  FDKCPUType::Pointer feldkamp = nullptr;
+  if (args_info.variance_flag)
+  {
+    feldkamp = pct::FDKDDConeBeamVarianceReconstructionFilter<OutputImageType>::New();
+  }
+  else
+  {
+    feldkamp = FDKCPUType::New();
+  }
+
   feldkamp->SetInput(0, constantImageSource->GetOutput());
   feldkamp->SetProjectionStack(pssf->GetOutput());
   feldkamp->SetGeometry(geometryReader->GetOutputObject());

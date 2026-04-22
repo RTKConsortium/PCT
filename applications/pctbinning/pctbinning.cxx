@@ -52,6 +52,8 @@ main(int argc, char * argv[])
   projection->SetRobust(args_info.robust_flag);
   projection->SetComputeScattering(args_info.scatwepl_given);
   projection->SetComputeNoise(args_info.noise_given);
+  projection->SetComputeVariance(args_info.variance_given);
+  projection->SetParticle(args_info.particle_arg);
 
   if (args_info.quadricIn_given)
   {
@@ -126,6 +128,37 @@ main(int argc, char * argv[])
     cwriter->SetFileName(args_info.count_arg);
     cwriter->SetInput(projection->GetCount());
     TRY_AND_EXIT_ON_ITK_EXCEPTION(cwriter->Update())
+  }
+
+  if (args_info.variance_given)
+  {
+
+    auto varianceHoleFilter = pct::HoleFillingImageFilter<OutputImageType>::New();
+    if (args_info.variance_given && args_info.fillvariance_flag)
+    {
+      varianceHoleFilter->SetInput(projection->GetVariance());
+      TRY_AND_EXIT_ON_ITK_EXCEPTION(varianceHoleFilter->Update());
+    }
+
+    typedef itk::ChangeInformationImageFilter<ProjectionFilter::VarianceImageType> CIIVarType;
+    CIIVarType::Pointer                                                            ciiVar = CIIVarType::New();
+    if (args_info.fillvariance_flag)
+      ciiVar->SetInput(varianceHoleFilter->GetOutput());
+    else
+      ciiVar->SetInput(projection->GetVariance());
+    ciiVar->ChangeOriginOn();
+    ciiVar->ChangeDirectionOn();
+    ciiVar->ChangeSpacingOn();
+    ciiVar->SetOutputDirection(projection->GetOutput()->GetDirection());
+    ciiVar->SetOutputOrigin(projection->GetOutput()->GetOrigin());
+    ciiVar->SetOutputSpacing(projection->GetOutput()->GetSpacing());
+
+    // Write
+    typedef itk::ImageFileWriter<ProjectionFilter::VarianceImageType> VarianceWriterType;
+    VarianceWriterType::Pointer                                       vwriter = VarianceWriterType::New();
+    vwriter->SetFileName(args_info.variance_arg);
+    vwriter->SetInput(ciiVar->GetOutput());
+    TRY_AND_EXIT_ON_ITK_EXCEPTION(vwriter->Update())
   }
 
   if (args_info.scatwepl_given)

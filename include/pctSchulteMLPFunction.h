@@ -37,6 +37,12 @@ static const double a2 = -9.986645e-08 * aunit / (CLHEP::cm2);
 static const double a3 = 2.026409e-08 * aunit / (CLHEP::cm3);
 static const double a4 = -1.420501e-09 * aunit / (CLHEP::cm3 * CLHEP::cm);
 static const double a5 = 3.899100e-11 * aunit / (CLHEP::cm3 * CLHEP::cm2);
+static const double a0He = 4.665553448715765888e-07 * aunit;
+static const double a1He = 2.817219469097221029e-08 * aunit / (CLHEP::cm);
+static const double a2He = -3.534701631484195519e-09 * aunit / (CLHEP::cm2);
+static const double a3He = 7.963860554062791474e-10 * aunit / (CLHEP::cm3);
+static const double a4He = -5.635546522420130709e-11 * aunit / (CLHEP::cm3 * CLHEP::cm);
+static const double a5He = 1.635484142530505741e-12 * aunit / (CLHEP::cm3 * CLHEP::cm2);
 #elif defined(NICO_COEFF)
 static const double a0 = 3.599e-06 * aunit;
 static const double a1 = 7.303e-08 * aunit / (CLHEP::cm);
@@ -69,6 +75,11 @@ public:
     double v = 1. + 0.038 * std::log((diffU)*invX0);
     return c * v * v;
   }
+  static double
+  GetValueHe(const double ux, const double uy)
+  {
+    return GetValue(ux, uy);
+  }
 };
 
 // [Schulte, Med Phys, 2008], integral for sigma in equation 8
@@ -86,6 +97,20 @@ public:
     static const double a3Theta = a3 / 4.;
     static const double a4Theta = a4 / 5.;
     static const double a5Theta = a5 / 6.;
+    return u * (a0Theta + u * (a1Theta + u * (a2Theta + u * (a3Theta + u * (a4Theta + u * a5Theta)))));
+  }
+
+  static double
+  GetValueHe(const double u)
+  {
+    // Multiplied with polynomial integral
+    // Table 2, (a) in [Williams, 2004] as well as numbers in [Li, 2006]
+    static const double a0Theta = a0He;
+    static const double a1Theta = a1He / 2.;
+    static const double a2Theta = a2He / 3.;
+    static const double a3Theta = a3He / 4.;
+    static const double a4Theta = a4He / 5.;
+    static const double a5Theta = a5He / 6.;
     return u * (a0Theta + u * (a1Theta + u * (a2Theta + u * (a3Theta + u * (a4Theta + u * a5Theta)))));
   }
 };
@@ -107,6 +132,20 @@ public:
     static const double a5TTheta = a5 / 7.;
     return u * u * (a0TTheta + u * (a1TTheta + u * (a2TTheta + u * (a3TTheta + u * (a4TTheta + u * a5TTheta)))));
   }
+
+  static double
+  GetValueHe(const double u)
+  {
+    // Multiplied with polynomial integral
+    // Table 2, (a) in [Williams, 2004] as well as numbers in [Li, 2006]
+    static const double a0TTheta = a0He / 2.;
+    static const double a1TTheta = a1He / 3.;
+    static const double a2TTheta = a2He / 4.;
+    static const double a3TTheta = a3He / 5.;
+    static const double a4TTheta = a4He / 6.;
+    static const double a5TTheta = a5He / 7.;
+    return u * u * (a0TTheta + u * (a1TTheta + u * (a2TTheta + u * (a3TTheta + u * (a4TTheta + u * a5TTheta)))));
+  }
 };
 
 // [Schulte, Med Phys, 2008], integral for sigma in equation 7
@@ -124,6 +163,20 @@ public:
     static const double a3T = a3 / 6.;
     static const double a4T = a4 / 7.;
     static const double a5T = a5 / 8.;
+    return u * u * u * (a0T + u * (a1T + u * (a2T + u * (a3T + u * (a4T + u * a5T)))));
+  }
+
+  static double
+  GetValueHe(const double u)
+  {
+    // Multiplied with polynomial integral
+    // Table 2, (a) in [Williams, 2004] as well as numbers in [Li, 2006]
+    static const double a0T = a0He / 3.;
+    static const double a1T = a1He / 4.;
+    static const double a2T = a2He / 5.;
+    static const double a3T = a3He / 6.;
+    static const double a4T = a4He / 7.;
+    static const double a5T = a5He / 8.;
     return u * u * u * (a0T + u * (a1T + u * (a2T + u * (a3T + u * (a4T + u * a5T)))));
   }
 };
@@ -175,6 +228,18 @@ public:
   /** Evaluate the error (x,y) (equation 27) at depth z. */
   void
   EvaluateError(const double u1, itk::Matrix<double, 2, 2> & error);
+
+  /** Get/Set the particle type. */
+  void
+  SetParticle(const std::string particle)
+  {
+    m_Particle = particle;
+  }
+  std::string
+  GetParticle()
+  {
+    return m_Particle;
+  }
 
 #ifdef MLP_TIMING
   /** Print timing information */
@@ -238,6 +303,8 @@ private:
   double m_IntForSigmaSqTTheta2;
   double m_IntForSigmaSqT2;
 
+  std::string m_Particle{ "proton" };
+
 #ifdef MLP_TIMING
   itk::TimeProbe m_EvaluateProbe1;
   itk::TimeProbe m_EvaluateProbe2;
@@ -245,6 +312,5 @@ private:
 };
 
 } // end namespace pct
-
 
 #endif
