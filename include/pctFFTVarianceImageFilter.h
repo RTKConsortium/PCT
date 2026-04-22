@@ -36,11 +36,9 @@ namespace pct
  * The filter code is based on FFTConvolutionImageFilter by Gaetan Lehmann
  * (see http://hdl.handle.net/10380/3154)
  *
- * \test rtkvariancefiltertest.cxx
- *
  * \author Simon Rit
  *
- * \ingroup ImageToImageFilter
+ * \ingroup PCT
  */
 
 template <class TInputImage, class TOutputImage = TInputImage, class TFFTPrecision = double>
