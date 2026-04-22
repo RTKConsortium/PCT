@@ -8,10 +8,12 @@
 #include <itkExtractImageFilter.h>
 #include <itkTimeProbe.h>
 
-/** \class FDKDDConeBeamReconstructionFilter
+/** \class FDKDDConeBeamVarianceReconstructionFilter
  * TODO
  *
  * \author Jannis Dickmann
+ *
+ * \ingroup PCT
  */
 namespace pct
 {
