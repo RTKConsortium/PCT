@@ -18,6 +18,7 @@ def build_parser():
     )
     parser.add_argument("--min-wepl", help="Minimum WEPL", type=float)
     parser.add_argument("--max-wepl", help="Maximum WEPL", type=float)
+    parser.add_argument("--seed", help="Random seed (for reproducibility)", type=int)
     parser.add_argument(
         "--verbose", "-v", help="Verbose execution", default=False, action="store_true"
     )
@@ -70,7 +71,7 @@ def process(args_info: argparse.Namespace):
     if args_info.fluence is not None:
         # Fluence filtering
         verbose("Applying fluence level…")
-        rng = np.random.default_rng()
+        rng = np.random.default_rng(args_info.seed)
         fluence_filter = rng.random(interception.shape)
         interception = np.logical_and(interception, fluence_filter < args_info.fluence)
 
