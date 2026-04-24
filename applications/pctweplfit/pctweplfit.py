@@ -10,6 +10,8 @@ from itk import PCT as pct
 
 epsilon_mm = 1e-5
 
+PROTON_RANGE = 260  # mm
+
 
 def pv(verbose, *args, **kwargs):
     if verbose:
@@ -124,7 +126,7 @@ def tof_fit_mc(
         for x in np.linspace(
             -phantom_length_mm / 2, phantom_length_mm / 2, number_of_detectors
         ):
-            add_detector(str(int(x)), [0 * mm, 0 * mm, x * mm], True)
+            add_detector(str(x), [0 * mm, 0 * mm, x * mm], True)
 
     # Particle stats
     stat = sim.add_actor("SimulationStatisticsActor", "stat")
@@ -346,7 +348,9 @@ def pctweplfit(
     savefig,
     verbose,
 ):
-    phantom_lengths = np.linspace(0.0, detector_distance, phantom_length_samples)
+    phantom_lengths = np.linspace(
+        0.0, min(PROTON_RANGE, detector_distance), phantom_length_samples
+    )
 
     results = []
     with Pool(maxtasksperchild=1) as pool:
