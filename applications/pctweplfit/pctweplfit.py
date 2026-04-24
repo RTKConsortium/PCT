@@ -110,10 +110,12 @@ def tof_fit_mc(
             "PreGlobalTime",
             "KineticEnergy",
         ]
-        particle_filter = sim.add_filter("ParticleFilter", "Filter" + name)
-        particle_filter.particle = "proton"
-
-        phase_space.filters.append(particle_filter)
+        if int(gate.utility.version("opengate").split(".")[1]) > 0:
+            F = gate.actors.filters.GateFilterBuilder()
+            phase_space.filter = F.ParticleName == "proton"
+        else:
+            particle_filter = sim.add_filter("ParticleFilter", "Filter" + name)
+            particle_filter.particle = "proton"
 
     add_detector("In", [0 * mm, 0 * mm, (-detector_distance_mm / 2 - epsilon_mm) * mm])
     add_detector("Out", [0 * mm, 0 * mm, (detector_distance_mm / 2 + epsilon_mm) * mm])
