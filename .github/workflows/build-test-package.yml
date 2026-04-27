@@ -51,7 +51,10 @@ jobs:
         echo "Installing wheel: $wheel"
         pip install $wheel
 
-        pip install pytest uproot
+        pip install pytest uproot opengate
+
+        # Force the installation of Geant4 data, required by opengate
+        opengate_info
 
         # Run tests with warning detection.
         # SWIG < 4.4 triggers the Py_LIMITED_API "builtin type swig…" warning when

@@ -3,6 +3,7 @@ import argparse
 import json
 import sys
 from multiprocessing import Pool, Manager
+import warnings
 
 import numpy as np
 import itk
@@ -28,6 +29,7 @@ def tof_fit_mc(
     path_type,
     number_of_detectors,
     visu,
+    seed,
     verbose,
 ):
     import opengate as gate
@@ -49,6 +51,7 @@ def tof_fit_mc(
     sim.g4_verbose = False
     sim.progress_bar = verbose
     sim.number_of_threads = 1
+    sim.random_seed = seed
 
     # Misc
     yellow = [1, 1, 0, 1]
@@ -89,6 +92,7 @@ def tof_fit_mc(
 
     # Physics list
     sim.physics_manager.physics_list_name = "G4EmStandardPhysics_option4"
+    sim.physics_manager.set_user_limits_particles(["proton"])
 
     # Phase spaces
     def add_detector(name, translation, attach_to_phantom=False):
@@ -346,35 +350,46 @@ def pctweplfit(
     visu,
     display,
     savefig,
+    seed,
     verbose,
 ):
     phantom_lengths = np.linspace(
         0.0, min(PROTON_RANGE, detector_distance), phantom_length_samples
     )
 
+    seed_seq = np.random.SeedSequence(seed)
+    seeds = seed_seq.generate_state(len(phantom_lengths))
+
     results = []
-    with Pool(maxtasksperchild=1) as pool:
-        for phantom_length in phantom_lengths:
-            result = pool.apply_async(
-                tof_fit_mc,
-                (
-                    phantom_length,
-                    output,
-                    phantom_width,
-                    detector_distance,
-                    number_of_particles,
-                    initial_energy,
-                    path_type,
-                    number_of_detectors,
-                    visu,
-                    verbose,
-                ),
-            )
-            results.append(result)
-        pool.close()
-        pool.join()
-    for result in results:
-        result.get()
+
+    # Catch DeprecationWarnings coming from opengate and making PCT tests fail
+    # To be removed once the warnings are gone from opengate
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+
+        with Pool(maxtasksperchild=1) as pool:
+            for phantom_length, seed_phantom_length in zip(phantom_lengths, seeds):
+                result = pool.apply_async(
+                    tof_fit_mc,
+                    (
+                        phantom_length,
+                        output,
+                        phantom_width,
+                        detector_distance,
+                        number_of_particles,
+                        initial_energy,
+                        path_type,
+                        number_of_detectors,
+                        visu,
+                        seed_phantom_length,
+                        verbose,
+                    ),
+                )
+                results.append(result)
+            pool.close()
+            pool.join()
+        for result in results:
+            result.get()
 
     tof_fit(
         phantom_lengths,
@@ -468,6 +483,7 @@ def build_parser():
         help="Write polynomial fit plot to disk",
         action="store_true",
     )
+    parser.add_argument("--seed", help="Seed for random number generator", type=int)
     parser.add_argument(
         "--verbose",
         "-v",
@@ -493,6 +509,7 @@ def process(args_info: argparse.Namespace):
         visu=args_info.visu,
         display=args_info.display,
         savefig=args_info.savefig,
+        seed=args_info.seed,
         verbose=args_info.verbose,
     )
 
