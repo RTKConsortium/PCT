@@ -28,6 +28,7 @@ def tof_fit_mc(
     path_type,
     number_of_detectors,
     visu,
+    seed,
     verbose,
 ):
     import opengate as gate
@@ -49,6 +50,7 @@ def tof_fit_mc(
     sim.g4_verbose = False
     sim.progress_bar = verbose
     sim.number_of_threads = 1
+    sim.random_seed = seed
 
     # Misc
     yellow = [1, 1, 0, 1]
@@ -346,15 +348,19 @@ def pctweplfit(
     visu,
     display,
     savefig,
+    seed,
     verbose,
 ):
     phantom_lengths = np.linspace(
         0.0, min(PROTON_RANGE, detector_distance), phantom_length_samples
     )
 
+    seed_seq = np.random.SeedSequence(seed)
+    seeds = seed_seq.generate_state(len(phantom_lengths))
+
     results = []
     with Pool(maxtasksperchild=1) as pool:
-        for phantom_length in phantom_lengths:
+        for phantom_length, seed_phantom_length in zip(phantom_lengths, seeds):
             result = pool.apply_async(
                 tof_fit_mc,
                 (
@@ -367,6 +373,7 @@ def pctweplfit(
                     path_type,
                     number_of_detectors,
                     visu,
+                    seed_phantom_length,
                     verbose,
                 ),
             )
@@ -468,6 +475,7 @@ def build_parser():
         help="Write polynomial fit plot to disk",
         action="store_true",
     )
+    parser.add_argument("--seed", help="Seed for random number generator", type=int)
     parser.add_argument(
         "--verbose",
         "-v",
@@ -493,6 +501,7 @@ def process(args_info: argparse.Namespace):
         visu=args_info.visu,
         display=args_info.display,
         savefig=args_info.savefig,
+        seed=args_info.seed,
         verbose=args_info.verbose,
     )
 
