@@ -105,7 +105,7 @@ def tof_fit_mc(
         phase_space = sim.add_actor("PhaseSpaceActor", "PhaseSpace" + name)
         phase_space.attached_to = plane.name
         phase_space.output_filename = (
-            f"{output}/l{int(phantom_length_mm)}_ps{name}.root"
+            f"{output}/output/l{int(phantom_length_mm)}_ps{name}.root"
         )
         phase_space.attributes = [
             "EventID",
@@ -130,10 +130,6 @@ def tof_fit_mc(
         ):
             add_detector(str(x), [0 * mm, 0 * mm, x * mm], True)
 
-    # Particle stats
-    stat = sim.add_actor("SimulationStatisticsActor", "stat")
-    stat.output_filename = f"{output}/wepl{int(phantom_length_mm)}_stats.txt"
-
     sim.run()
 
 
@@ -153,7 +149,9 @@ def process_phantom_length(
     wepls_phantom_length = []
     elosses_phantom_length = []
 
-    data = uproot.concatenate(f"{output}/l{int(phantom_length)}_*.root", library="np")
+    data = uproot.concatenate(
+        f"{output}/output/l{int(phantom_length)}_*.root", library="np"
+    )
     pv(
         verbose,
         "Loaded",
