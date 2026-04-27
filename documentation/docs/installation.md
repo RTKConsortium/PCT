@@ -21,6 +21,15 @@ If no error appears, then PCT was successfully installed.
 
 If you need to edit the source code of PCT, or tune the compilation process, then you need to manually compile PCT. PCT depends on [ITK](https://itk.org) and [RTK](https://openrtk.org), the first step is therefore to download and compile them.
 
+### Create a python virtual environment
+
+If you want to use PCT as a python module, it's preferable to create a new virtual environement. Numpy is also mandatory to compile ITK python wrapping:
+```bash
+python -m venv venv_pct
+source venv_pct/bin/activate
+pip install numpy
+```
+
 ### Compiling ITK and RTK
 
 RTK comes bundled as an ITK module, so it is enough to download ITK and compile it with an option that indicates that RTK is also required. First, clone ITK from GitHub:
@@ -30,22 +39,27 @@ git clone git@github.com:InsightSoftwareConsortium/ITK.git
 
 Then, create a compilation folder for ITK:
 ```
-mkdir itk-build
+mkdir itk-build itk-install
 cd itk-build
 ```
 
-ITK uses [CMake](https://cmake.org) as its building tool. Below is an example of how to configure ITK, but feel free to edit the options as needed.
+ITK uses [CMake](https://cmake.org) as its building tool. Below is an example of how to configure ITK, but feel free to edit the options as needed (works with ITK v6.0a1).
 ```bash
 cmake \
     -DITK_WRAP_PYTHON=ON \
     -DModule_RTK=ON \
+    -DModule_RTK_GIT_TAG=main \
+    -DModule_CudaCommon=ON \
+    -DModule_CudaCommon_GIT_TAG=ON \
+    -DCMAKE_INSTALL_PREFIX=<path-to>/itk-install \
     ../ITK
 ```
-`ITK_WRAP_PYTHON` mean that ITK will generate and compile Python wrapping for the C++ code, which is also supported by PCT. This option massively increases compilation time, so if Python wrappings are not needed, this option can be disabled. `Module_RTK` enables the compilation of RTK, which is required for PCT.
+`ITK_WRAP_PYTHON` mean that ITK will generate and compile Python wrapping for the C++ code, which is also supported by PCT. This option massively increases compilation time, so if Python wrappings are not needed, this option can be disabled. `Module_RTK` enables the compilation of RTK, which is required for PCT. And CudaCommon is necesary if you want to use your GPU.
 
-Once configuration finishes, the compilation is started using
+Once configuration finishes, the compilation is started using. The installation allows you to have access in your python virtual environment if it was activated before.
 ```
 cmake --build .
+make install
 ```
 Depending on your machine and whether `ITK_WRAP_PYTHON` is on, compiling ITK can take from few minutes up to several hours.
 
@@ -58,7 +72,7 @@ git clone https://github.com/RTKConsortium/PCT.git
 
 Then, create a build directory for PCT:
 ```bash
-mkdir pct-build
+mkdir pct-build pct-install
 cd pct-build
 ```
 
@@ -66,12 +80,14 @@ Similar to ITK, configuration and compilation is handled via [CMake](https://cma
 ```bash
 cmake \
     -DITK_DIR=<path to ITK build folder> \
+    -DCMAKE_INSTALL_PREFIX=<path-to>/pct-install
     -DPCT_BUILD_APPLICATIONS=ON \
     ../PCT
 ```
 Once configuration completes, the compilation can be achieved using
 ```bash
 cmake --build .
+make install
 ```
 
 Optionally, PCT can be added to the user's `$PATH` variable using for instance
