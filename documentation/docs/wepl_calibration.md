@@ -20,8 +20,8 @@ pctpairprotons \
     -o pairs.mhd \
     --plane-in -110 \
     --plane-out 110 \
-    --fit output/tof_to_wepl_fit_deg3.json \
-    --fit-kind tof
+    --fit output/eloss_to_wepl_fit_deg3.json \
+    --fit-kind energy
 ```
 
 The resulting pairs are directly associated to the corresponding WEPL following the convention explained in the [PCT data format](pct_format.md), that is that $e_\text{in}=0$ and $e_\text{out}=\text{WEPL}$.
