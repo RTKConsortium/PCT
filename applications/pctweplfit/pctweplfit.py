@@ -26,6 +26,7 @@ def tof_fit_mc(
     path_type,
     number_of_detectors,
     visu,
+    seed,
     verbose,
 ):
     import opengate as gate
@@ -47,6 +48,7 @@ def tof_fit_mc(
     sim.g4_verbose = False
     sim.progress_bar = verbose
     sim.number_of_threads = 1
+    sim.random_seed = seed
 
     # Misc
     yellow = [1, 1, 0, 1]
@@ -101,7 +103,7 @@ def tof_fit_mc(
         phase_space = sim.add_actor("PhaseSpaceActor", "PhaseSpace" + name)
         phase_space.attached_to = plane.name
         phase_space.output_filename = (
-            f"{output}/l{int(phantom_length_mm)}_ps{name}.root"
+            f"{output}/output/l{int(phantom_length_mm)}_ps{name}.root"
         )
         phase_space.attributes = [
             "EventID",
@@ -110,10 +112,12 @@ def tof_fit_mc(
             "PreGlobalTime",
             "KineticEnergy",
         ]
-        particle_filter = sim.add_filter("ParticleFilter", "Filter" + name)
-        particle_filter.particle = "proton"
-
-        phase_space.filters.append(particle_filter)
+        if int(gate.utility.version("opengate").split(".")[1]) > 0:
+            F = gate.actors.filters.GateFilterBuilder()
+            phase_space.filter = F.ParticleName == "proton"
+        else:
+            particle_filter = sim.add_filter("ParticleFilter", "Filter" + name)
+            particle_filter.particle = "proton"
 
     add_detector("In", [0 * mm, 0 * mm, (-detector_distance_mm / 2 - epsilon_mm) * mm])
     add_detector("Out", [0 * mm, 0 * mm, (detector_distance_mm / 2 + epsilon_mm) * mm])
@@ -122,11 +126,7 @@ def tof_fit_mc(
         for x in np.linspace(
             -phantom_length_mm / 2, phantom_length_mm / 2, number_of_detectors
         ):
-            add_detector(str(int(x)), [0 * mm, 0 * mm, x * mm], True)
-
-    # Particle stats
-    stat = sim.add_actor("SimulationStatisticsActor", "stat")
-    stat.output_filename = f"{output}/wepl{int(phantom_length_mm)}_stats.txt"
+            add_detector(str(x), [0 * mm, 0 * mm, x * mm], True)
 
     sim.run()
 
@@ -147,7 +147,9 @@ def process_phantom_length(
     wepls_phantom_length = []
     elosses_phantom_length = []
 
-    data = uproot.concatenate(f"{output}/l{int(phantom_length)}_*.root", library="np")
+    data = uproot.concatenate(
+        f"{output}/output/l{int(phantom_length)}_*.root", library="np"
+    )
     pv(
         verbose,
         "Loaded",
@@ -334,6 +336,7 @@ def pctweplfit(
     path_type,
     phantom_length_samples,
     phantom_width,
+    max_phantom_length,
     detector_distance,
     number_of_detectors,
     initial_energy,
@@ -342,13 +345,19 @@ def pctweplfit(
     visu,
     display,
     savefig,
+    seed,
     verbose,
 ):
-    phantom_lengths = np.linspace(0.0, detector_distance, phantom_length_samples)
+    phantom_lengths = np.linspace(
+        0.0, min(max_phantom_length, detector_distance), phantom_length_samples
+    )
+
+    seed_seq = np.random.SeedSequence(seed)
+    seeds = seed_seq.generate_state(len(phantom_lengths))
 
     results = []
     with Pool(maxtasksperchild=1) as pool:
-        for phantom_length in phantom_lengths:
+        for phantom_length, seed_phantom_length in zip(phantom_lengths, seeds):
             result = pool.apply_async(
                 tof_fit_mc,
                 (
@@ -361,6 +370,7 @@ def pctweplfit(
                     path_type,
                     number_of_detectors,
                     visu,
+                    seed_phantom_length,
                     verbose,
                 ),
             )
@@ -416,6 +426,13 @@ def build_parser():
         type=float,
     )
     parser.add_argument(
+        "-l",
+        "--max-phantom-length",
+        help="Maximum phantom length to consider (defaults to proton range in water)",
+        type=float,
+        default=260.0,
+    )
+    parser.add_argument(
         "-d",
         "--detector-distance",
         help="Distance between detectors",
@@ -462,6 +479,7 @@ def build_parser():
         help="Write polynomial fit plot to disk",
         action="store_true",
     )
+    parser.add_argument("--seed", help="Seed for random number generator", type=int)
     parser.add_argument(
         "--verbose",
         "-v",
@@ -479,6 +497,7 @@ def process(args_info: argparse.Namespace):
         path_type=args_info.path_type,
         phantom_length_samples=args_info.phantom_length_samples,
         phantom_width=args_info.phantom_width,
+        max_phantom_length=args_info.max_phantom_length,
         detector_distance=args_info.detector_distance,
         number_of_detectors=args_info.number_of_detectors,
         initial_energy=args_info.initial_energy,
@@ -487,6 +506,7 @@ def process(args_info: argparse.Namespace):
         visu=args_info.visu,
         display=args_info.display,
         savefig=args_info.savefig,
+        seed=args_info.seed,
         verbose=args_info.verbose,
     )
 
