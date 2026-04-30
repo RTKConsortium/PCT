@@ -11,8 +11,6 @@ from itk import PCT as pct
 
 epsilon_mm = 1e-5
 
-PROTON_RANGE = 260  # mm
-
 
 def pv(verbose, *args, **kwargs):
     if verbose:
@@ -340,6 +338,7 @@ def pctweplfit(
     path_type,
     phantom_length_samples,
     phantom_width,
+    max_phantom_length,
     detector_distance,
     number_of_detectors,
     initial_energy,
@@ -351,8 +350,13 @@ def pctweplfit(
     seed,
     verbose,
 ):
+    if detector_distance < max_phantom_length:
+        print(
+            f"Warning, detector distance of {detector_distance} mm is smaller than the maximum phantom length of {max_phantom_length} mm. A maximum phantom length of {max_phantom_length} will be used.",
+            file=sys.stderr,
+        )
     phantom_lengths = np.linspace(
-        0.0, min(PROTON_RANGE, detector_distance), phantom_length_samples
+        0.0, min(max_phantom_length, detector_distance), phantom_length_samples
     )
 
     seed_seq = np.random.SeedSequence(seed)
@@ -435,6 +439,13 @@ def build_parser():
         type=float,
     )
     parser.add_argument(
+        "-l",
+        "--max-phantom-length",
+        help="Maximum phantom length to consider (defaults to proton range in water)",
+        type=float,
+        default=260.0,
+    )
+    parser.add_argument(
         "-d",
         "--detector-distance",
         help="Distance between detectors",
@@ -499,6 +510,7 @@ def process(args_info: argparse.Namespace):
         path_type=args_info.path_type,
         phantom_length_samples=args_info.phantom_length_samples,
         phantom_width=args_info.phantom_width,
+        max_phantom_length=args_info.max_phantom_length,
         detector_distance=args_info.detector_distance,
         number_of_detectors=args_info.number_of_detectors,
         initial_energy=args_info.initial_energy,
