@@ -49,7 +49,7 @@ def test_pairprotons_application(
 def test_weplfit_application(tmp_path):
     output = tmp_path / "weplfit"
     pct.pctweplfit(
-        f"-o {output} --path-type phantom_length -d 220 -e 200 --seed 1234 -v"
+        f"-o {output} --path-type phantom_length -d 220 -e 200 -l 220 --seed 1234  -v"
     )
 
     with open(output / "tof_to_wepl_fit_deg3.json", encoding="utf-8") as f:
