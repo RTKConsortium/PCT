@@ -25,11 +25,12 @@ public:
   itkNewMacro(Self);
 
   /** Useful defines. */
+  using PointType = typename Superclass::PointType;
   using VectorType = typename Superclass::VectorType;
 
   /** Init the mlp parameters from the input and output directions and positions. */
   virtual void
-  Init(const VectorType posIn, const VectorType posOut, const VectorType dirIn, const VectorType dirOut) override;
+  Init(const PointType posIn, const PointType posOut, const VectorType dirIn, const VectorType dirOut) override;
 
   /** Evaluate the coordinates (x,y) at depth z. */
   virtual void

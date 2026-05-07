@@ -149,11 +149,12 @@ public:
   itkNewMacro(Self);
 
   /** Useful defines. */
+  using PointType = Superclass::PointType;
   using VectorType = Superclass::VectorType;
 
   /** Init the mlp parameters from the input and output directions and positions. */
   virtual void
-  Init(const VectorType posIn, const VectorType posOut, const VectorType dirIn, const VectorType dirOut) override;
+  Init(const PointType posIn, const PointType posOut, const VectorType dirIn, const VectorType dirOut) override;
 
   /* Vectorised version of Evaluate function. */
   virtual void

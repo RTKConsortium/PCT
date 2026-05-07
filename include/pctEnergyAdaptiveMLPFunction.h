@@ -113,12 +113,13 @@ public:
   itkNewMacro(Self);
 
   /** Useful defines. */
+  using PointType = Superclass::PointType;
   using VectorType = Superclass::VectorType;
 
   /* Initialize the MLP estimator */
   virtual void
-  Init(const VectorType posIn,
-       const VectorType posOut,
+  Init(const PointType  posIn,
+       const PointType  posOut,
        const VectorType dirIn,
        const VectorType dirOut,
        double           eIn,

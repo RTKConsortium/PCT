@@ -46,8 +46,8 @@ SchulteMLPFunction ::SchulteMLPFunction()
 
 // Initialize terms needed to include tracker uncertainties
 void
-SchulteMLPFunction ::InitUncertain(const VectorType posIn,
-                                   const VectorType posOut,
+SchulteMLPFunction ::InitUncertain(const PointType  posIn,
+                                   const PointType  posOut,
                                    const VectorType dirIn,
                                    const VectorType dirOut,
                                    double           dEntry,
@@ -97,8 +97,8 @@ SchulteMLPFunction ::InitUncertain(const VectorType posIn,
 
 // standard part of the Initialization
 void
-SchulteMLPFunction ::Init(const VectorType posIn,
-                          const VectorType posOut,
+SchulteMLPFunction ::Init(const PointType  posIn,
+                          const PointType  posOut,
                           const VectorType dirIn,
                           const VectorType dirOut)
 {
