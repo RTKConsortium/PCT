@@ -30,7 +30,7 @@ public:
   using ConstPointer = itk::SmartPointer<const Self>;
 
   itkNewMacro(Self);
-  itkTypeMacro(HoleFillingImageFilter, ImageToImageFilter);
+  itkOverrideGetNameOfClassMacro(HoleFillingImageFilter);
 
   using InputImageType = TInputImage;
   using OutputImageType = TOutputImage;
