@@ -4,7 +4,7 @@ add_executable(
   pctpairgeometry.cxx
   ${pctpairgeometry_GGO_C}
 )
-target_link_libraries(pctpairgeometry PCT)
+target_link_libraries(pctpairgeometry ${PCT_APPLICATION_TARGETS})
 
 # Ensure binary is placed in the central PCT binary dir
 set_target_properties(

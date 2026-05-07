@@ -4,7 +4,7 @@ add_executable(
   pctprojections.cxx
   ${pctprojections_GGO_C}
 )
-target_link_libraries(pctprojections PCT)
+target_link_libraries(pctprojections ${PCT_APPLICATION_TARGETS})
 
 # Ensure binary is placed in the central PCT binary dir
 set_target_properties(
