@@ -4,7 +4,7 @@ add_executable(
   pctbackprojectionbinning.cxx
   ${pctbackprojectionbinning_GGO_C}
 )
-target_link_libraries(pctbackprojectionbinning PCT)
+target_link_libraries(pctbackprojectionbinning ${PCT_APPLICATION_TARGETS})
 
 # Ensure binary is placed in the central PCT binary dir
 set_target_properties(

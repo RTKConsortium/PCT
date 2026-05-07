@@ -4,7 +4,7 @@ add_executable(
   pctpaircuts.cxx
   ${pctpaircuts_GGO_C}
 )
-target_link_libraries(pctpaircuts PCT)
+target_link_libraries(pctpaircuts ${PCT_APPLICATION_TARGETS})
 
 # Ensure binary is placed in the central PCT binary dir
 set_target_properties(

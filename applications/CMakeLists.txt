@@ -8,15 +8,23 @@ find_package(Gengetopt REQUIRED)
 if(NOT ITK_DIR)
   set(ITK_DIR ${ITK_BINARY_DIR}/CMakeTmp)
 endif()
-find_package(
-  ITK
-  REQUIRED
-  COMPONENTS
-    ${ITK_MODULE_PCT_DEPENDS}
-    ${ITK_MODULE_PCT-Test_DEPENDS}
-)
-include(${ITK_USE_FILE})
+find_package(ITK REQUIRED COMPONENTS ${ITK_MODULE_PCT_DEPENDS})
+include(itkVersion)
+if("${ITK_VERSION_MAJOR}" VERSION_LESS "6")
+  include(${ITK_USE_FILE})
+  set(PCT_APPLICATION_TARGETS ${PCT_LIBRARIES})
+else()
+  itk_generate_factory_registration()
+  set(
+    PCT_APPLICATION_TARGETS
+    ITK::PCTModule
+    ITK::ITKImageIO
+    ITK::ITKFFTImageFilterInit
+  )
+endif()
 
+#-----------------------------------------------------------------------------
+# Executables
 add_subdirectory(pctbackprojectionbinning)
 add_subdirectory(pctbinning)
 add_subdirectory(pctfdk)
