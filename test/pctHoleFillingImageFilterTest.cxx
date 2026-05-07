@@ -1,7 +1,7 @@
 #include "pctHoleFillingImageFilter.h"
 
 #include "itkImage.h"
-#include "itkImageRegionIterator.h"
+#include "itkImageRegionIteratorWithIndex.h"
 #include "itkTestingMacros.h"
 
 int
@@ -19,7 +19,7 @@ pctHoleFillingImageFilterTest(int argc, char * argv[])
   img->FillBuffer(42);
 
   // Insert some holes (use 0 as hole value)
-  itk::ImageRegionIterator<ImageType> it(img, region);
+  itk::ImageRegionIteratorWithIndex<ImageType> it(img, region);
   for (it.GoToBegin(); !it.IsAtEnd(); ++it)
   {
     ImageType::IndexType idx = it.GetIndex();

@@ -1,5 +1,5 @@
 #include <itkImageFileReader.h>
-#include <itkImageRegionIterator.h>
+#include <itkImageRegionIteratorWithIndex.h>
 
 #include "pctThirdOrderPolynomialMLPFunction.h"
 #include "pctSchulteMLPFunction.h"
@@ -169,9 +169,9 @@ ProtonPairsToDistanceDrivenProjection<TInputImage, TOutputImage>::ThreadedGenera
   using VectorType = itk::Vector<double, 3>;
 
   // Create zmm and magnitude lut (look up table)
-  itk::ImageRegionIterator<ProtonPairsImageType> it(m_ProtonPairs, region);
-  std::vector<double>                            zmm(imgSize[2]);
-  std::vector<double>                            zmag(imgSize[2]);
+  itk::ImageRegionIteratorWithIndex<ProtonPairsImageType> it(m_ProtonPairs, region);
+  std::vector<double>                                     zmm(imgSize[2]);
+  std::vector<double>                                     zmag(imgSize[2]);
   ++it;
   const double zPlaneOutInMM = it.Get()[2];
   --it;
