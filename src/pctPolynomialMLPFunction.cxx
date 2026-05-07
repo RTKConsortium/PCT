@@ -76,8 +76,8 @@ PolynomialMLPFunction ::SetPolynomialDegree(const int polydeg)
 }
 
 void
-PolynomialMLPFunction ::Init(const VectorType posIn,
-                             const VectorType posOut,
+PolynomialMLPFunction ::Init(const PointType  posIn,
+                             const PointType  posOut,
                              const VectorType dirIn,
                              const VectorType dirOut)
 {

@@ -3,8 +3,8 @@ namespace pct
 
 template <class TCoordRep>
 void
-ThirdOrderPolynomialMLPFunction<TCoordRep>::Init(const VectorType posIn,
-                                                 const VectorType posOut,
+ThirdOrderPolynomialMLPFunction<TCoordRep>::Init(const PointType  posIn,
+                                                 const PointType  posOut,
                                                  const VectorType dirIn,
                                                  const VectorType dirOut)
 {

@@ -10,6 +10,8 @@
 #  include <itkTimeProbe.h>
 #endif
 
+#include <rtkQuadricShape.h>
+
 namespace pct
 {
 
@@ -29,19 +31,21 @@ public:
   using ConstPointer = itk::SmartPointer<const Self>;
 
   /** Useful defines. */
+  // PointType definition based on rtk::QuadricShape to be compatible with RTK 2 and 3
+  using PointType = rtk::QuadricShape::PointType;
   using VectorType = itk::Vector<TCoordRep, 3>;
 
   /** Init the mlp parameters from the input and output directions and positions. */
   virtual void
-  Init(const VectorType posIn, const VectorType posOut, const VectorType dirIn, const VectorType dirOut)
+  Init(const PointType posIn, const PointType posOut, const VectorType dirIn, const VectorType dirOut)
   {
     itkGenericExceptionMacro("This version of the Init method not implemented for derived class.");
   }
 
   /** Init the mlp parameters from the input and output directions and positions, and energies. */
   virtual void
-  Init(const VectorType posIn,
-       const VectorType posOut,
+  Init(const PointType  posIn,
+       const PointType  posOut,
        const VectorType dirIn,
        const VectorType dirOut,
        double           eIn,
@@ -52,8 +56,8 @@ public:
 
   /** Init with additional parameters to consider tracker uncertainties */
   virtual void
-  InitUncertain(const VectorType posIn,
-                const VectorType posOut,
+  InitUncertain(const PointType  posIn,
+                const PointType  posOut,
                 const VectorType dirIn,
                 const VectorType dirOut,
                 double           dEntry,

@@ -165,9 +165,9 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>::GenerateData()
                       << 100 * it.GetIndex()[1] / outputRegionForThread.GetSize(1) << "%) in thread 1" << std::flush;
           }
 
-          VectorType pIn = it.Get();
+          RQIType::PointType pIn(it.Get());
           ++it;
-          VectorType pOut = it.Get();
+          RQIType::PointType pOut(it.Get());
           ++it;
           VectorType dIn = it.Get();
           ++it;
@@ -185,9 +185,9 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>::GenerateData()
           ++it;
 
           // Move straight to entrance and exit shapes
-          VectorType pSIn = pIn;
-          VectorType pSOut = pOut;
-          double     nearDistIn, nearDistOut, farDistIn, farDistOut;
+          RQIType::PointType pSIn = pIn;
+          RQIType::PointType pSOut = pOut;
+          double             nearDistIn, nearDistOut, farDistIn, farDistOut;
           if (m_QuadricIn.GetPointer() != NULL)
           {
             if (m_QuadricIn->IsIntersectedByRay(pIn, dIn, nearDistIn, farDistIn) &&

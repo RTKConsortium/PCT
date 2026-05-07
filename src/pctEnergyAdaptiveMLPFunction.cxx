@@ -29,8 +29,8 @@ EnergyAdaptiveMLPFunction ::EnergyAdaptiveMLPFunction()
 }
 
 void
-EnergyAdaptiveMLPFunction ::Init(const VectorType posIn,
-                                 const VectorType posOut,
+EnergyAdaptiveMLPFunction ::Init(const PointType  posIn,
+                                 const PointType  posOut,
                                  const VectorType dirIn,
                                  const VectorType dirOut,
                                  double           eIn,
