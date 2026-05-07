@@ -1,5 +1,5 @@
 #include <itkImageFileReader.h>
-#include <itkImageRegionIterator.h>
+#include <itkImageRegionIteratorWithIndex.h>
 
 #include <rtkHomogeneousMatrix.h>
 
@@ -155,7 +155,7 @@ ProtonPairsToBackProjection<TInputImage, TOutputImage>::GenerateData()
           zmm.push_back(zmm.back() + minSpacing);
 
         // Process pairs
-        itk::ImageRegionIterator<ProtonPairsImageType> it(m_ProtonPairs, outputRegionForThread);
+        itk::ImageRegionIteratorWithIndex<ProtonPairsImageType> it(m_ProtonPairs, outputRegionForThread);
         while (!it.IsAtEnd())
         {
           if (outputRegionForThread.GetIndex(1) == 0 && it.GetIndex()[1] % 1000 == 0)

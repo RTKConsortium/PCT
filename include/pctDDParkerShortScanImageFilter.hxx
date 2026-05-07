@@ -21,8 +21,8 @@ DDParkerShortScanImageFilter<TInputImage, TOutputImage>::DynamicThreadedGenerate
       maxAngularGapPos = iProj;
 
   // Input / ouput iterators
-  itk::ImageRegionConstIterator<InputImageType> itIn(this->GetInput(), outputRegionForThread);
-  itk::ImageRegionIterator<OutputImageType>     itOut(this->GetOutput(), outputRegionForThread);
+  itk::ImageRegionConstIteratorWithIndex<InputImageType> itIn(this->GetInput(), outputRegionForThread);
+  itk::ImageRegionIteratorWithIndex<OutputImageType>     itOut(this->GetOutput(), outputRegionForThread);
   itIn.GoToBegin();
   itOut.GoToBegin();
 
