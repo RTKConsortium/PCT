@@ -100,25 +100,3 @@ def test_lomalinda_application(
     reference_lomalinda = itk.array_from_image(itk.imread(baseline_lomalinda_mhd))
     assert np.array_equal(test_lomalinda, reference_lomalinda)
     return output0000
-
-
-baseline_filterprotons_mhd = download_file_fixture(
-    "69e89be4ed08a1c077afd0e5", "baseline_filterprotons.mhd")
-baseline_filterprotons_raw = download_file_fixture(
-    "69e89be5ed08a1c077afd0e8", "baseline_filterprotons.raw")
-
-
-def test_filterprotons_application(
-    tmp_path,
-    test_lomalinda_application,
-    baseline_filterprotons_mhd,
-    baseline_filterprotons_raw,
-):
-    output = tmp_path / "filterprotons.mhd"
-    pct.pctfilterprotons(
-        f"-i {test_lomalinda_application} -o {output} --roi-radius 200 --fluence .5 -v --min-wepl 70 --max-wepl 180 --seed 1234"
-    )
-    test_filterprotons = itk.array_from_image(itk.imread(output))
-    reference_filterprotons = itk.array_from_image(
-        itk.imread(baseline_filterprotons_mhd))
-    assert np.array_equal(test_filterprotons, reference_filterprotons)

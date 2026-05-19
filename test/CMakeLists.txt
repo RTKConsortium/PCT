@@ -38,4 +38,12 @@ if(PCT_BUILD_APPLICATIONS)
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/pctbinning
       -i DATA{Input/pairs0000.mhd,pairs0000.raw} -o ${ITK_TEST_OUTPUT_DIR}/projections.mhd --source 1000 --size=400,20,220
   )
+  itk_add_test(NAME pctapppaircutstest
+    COMMAND itkTestDriver
+      --compare
+      DATA{Baseline/baseline_paircuts.mhd,baseline_paircuts.raw}
+      ${ITK_TEST_OUTPUT_DIR}/paircuts.mhd
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/pctpaircuts
+      -i DATA{Input/input_paircuts.mhd,input_paircuts.raw} -o ${ITK_TEST_OUTPUT_DIR}/paircuts.mhd --roiradius 200 --minwepl 70 --maxwepl 180 --fluence .5 --seed 1234
+  )
 endif()

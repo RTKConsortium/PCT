@@ -8,6 +8,7 @@
 
 #include <itkImageFileWriter.h>
 #include <itkRegularExpressionSeriesFileNames.h>
+#include <itkMersenneTwisterRandomVariateGenerator.h>
 #include <itkTimeProbe.h>
 
 #define PAIRS_IN_RAM 1000000
@@ -46,6 +47,14 @@ main(int argc, char * argv[])
   const size_t                     npixels = sumEnergy->GetOutput()->GetBufferedRegion().GetNumberOfPixels();
   std::vector<std::vector<double>> energies(npixels);
   std::vector<std::vector<double>> angles(npixels);
+
+  // RNG for fluence
+  using GeneratorType = itk::Statistics::MersenneTwisterRandomVariateGenerator;
+  auto generator = GeneratorType::New();
+  if (args_info.seed_given)
+    generator->Initialize(args_info.seed_arg);
+  else
+    generator->Initialize();
 
   // Read pairs
   using VectorType = itk::Vector<float, 3>;
@@ -273,6 +282,41 @@ main(int argc, char * argv[])
       {
         nuclearinfo = it.Get();
         ++it;
+      }
+
+      // Fluence filtering
+      if (args_info.fluence_given)
+      {
+        if (generator->GetVariate() >= args_info.fluence_arg)
+          continue;
+      }
+
+      // Check ROI intersection
+      if (args_info.roiradius_given)
+      {
+        float radius = args_info.roiradius_arg;
+        float dx = pOut[0] - pIn[0];
+        float dz = pOut[2] - pIn[2];
+        float dr_sq = (dx * dx) + (dz * dz);
+        float d = (pIn[0] * pOut[2]) - (pOut[0] * pIn[2]);
+        float delta = (radius * radius * dr_sq) - (d * d);
+        if (delta < 0.)
+          continue;
+      }
+
+      // Filter low or high WEPLs
+      if (data[0] == 0.)
+      {
+        if ((args_info.minwepl_given && (data[1] < args_info.minwepl_arg)) ||
+            (args_info.maxwepl_given && (args_info.maxwepl_arg < data[1])))
+          continue;
+      }
+      else
+      {
+        if (args_info.minwepl_given || args_info.maxwepl_given)
+          std::cerr << "Cannot specify WEPL bounds because the input file does not contain WEPL data. Aborting."
+                    << std::endl;
+        return EXIT_FAILURE;
       }
 
       static double mag =
