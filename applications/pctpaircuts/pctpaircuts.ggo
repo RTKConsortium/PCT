@@ -11,7 +11,6 @@ option "robust"    r "Use robust estimation using 50/19.1 %ile."    flag      of
 option "robustopt" - "Use newer options for robust cut."            int       no   default="0"
 option "primaries" - "Consider only primary protons"                flag      off
 option "nonuclear" - "Consider only primary protons without nuclear interactions"                flag      off
-option "wet" - "Write WET instead of initial energy"                flag      off
 
 section "Projections parameters"
 option "origin"    - "Origin (default=centered)" double multiple no

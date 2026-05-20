@@ -5,10 +5,6 @@
 #include <rtkConstantImageSource.h>
 
 #include "pctProtonPairsToDistanceDrivenProjection.h"
-#include "pctThirdOrderPolynomialMLPFunction.h"
-#include "pctSchulteMLPFunction.h"
-#include "pctEnergyStragglingFunctor.h"
-#include "pctBetheBlochFunctor.h"
 
 #include <itkImageFileWriter.h>
 #include <itkRegularExpressionSeriesFileNames.h>
@@ -50,10 +46,6 @@ main(int argc, char * argv[])
   const size_t                     npixels = sumEnergy->GetOutput()->GetBufferedRegion().GetNumberOfPixels();
   std::vector<std::vector<double>> energies(npixels);
   std::vector<std::vector<double>> angles(npixels);
-
-  pct::Functor::IntegratedBetheBlochProtonStoppingPowerInverse<float, double> * ConvFunc;
-  ConvFunc = new pct::Functor::IntegratedBetheBlochProtonStoppingPowerInverse<float, double>(
-    68.9984 * CLHEP::eV, 600. * CLHEP::MeV, 0.1 * CLHEP::keV);
 
   // Read pairs
   using VectorType = itk::Vector<float, 3>;
@@ -312,17 +304,6 @@ main(int argc, char * argv[])
       const double angley = std::acos(std::min(1., dInY * dOutY / (dInY.GetNorm() * dOutY.GetNorm())));
       const double energy = (data[0] == 0.) ? data[1] : data[0] - data[1];
 
-      VectorType WET_data;
-      if (args_info.wet_flag)
-      {
-        WET_data[0] = ConvFunc->GetValue(data[1], data[0]);
-      }
-      else
-        WET_data[0] = data[0];
-
-      WET_data[1] = data[1];
-      WET_data[2] = data[2];
-
       if (anglex <= pSumAngleSq[idx] && angley <= pSumAngleSq[idx] &&
           std::abs(energy - pSumEnergy[idx]) <= pSumEnergySq[idx])
       {
@@ -332,7 +313,7 @@ main(int argc, char * argv[])
           pairs.push_back(pOut);
           pairs.push_back(dIn);
           pairs.push_back(dOut);
-          pairs.push_back(WET_data);
+          pairs.push_back(data);
           if (region.GetSize(0) == 6)
             pairs.push_back(nuclearinfo);
         }
@@ -342,7 +323,7 @@ main(int argc, char * argv[])
           pairs.push_back(pOut);
           pairs.push_back(dIn);
           pairs.push_back(dOut);
-          pairs.push_back(WET_data);
+          pairs.push_back(data);
           if (region.GetSize(0) == 6)
             pairs.push_back(nuclearinfo);
         }
@@ -352,7 +333,7 @@ main(int argc, char * argv[])
           pairs.push_back(pOut);
           pairs.push_back(dIn);
           pairs.push_back(dOut);
-          pairs.push_back(WET_data);
+          pairs.push_back(data);
           if (region.GetSize(0) == 6)
             pairs.push_back(nuclearinfo);
         }
