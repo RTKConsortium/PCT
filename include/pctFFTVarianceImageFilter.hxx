@@ -24,27 +24,13 @@ namespace pct
 
 template <class TInputImage, class TOutputImage, class TFFTPrecision>
 FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::FFTVarianceImageFilter()
-{
-  //  this->m_HannCutFrequency = 0.;
-  //  this->m_CosineCutFrequency = 0.;
-  //  this->m_HammingFrequency = 0.;
-  //  this->m_HannCutFrequency = 0.;
-  //  this->m_HannCutFrequencyY = 0.;
-  //  this->m_RamLakCutFrequency = 0.;
-  //  this->m_SheppLoganCutFrequency = 0.;
-}
+{}
 
 template <class TInputImage, class TOutputImage, class TFFTPrecision>
 void
 FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::UpdateFFTProjectionsConvolutionKernel(
   const SizeType s)
 {
-  // if(this->m_KernelFFT.GetPointer() != ITK_NULLPTR && s == this->m_PreviousKernelUpdateSize)
-  //   {
-  //   return;
-  //   }
-  // this->m_PreviousKernelUpdateSize = s;
-
   const int width = s[0];
   const int height = s[1];
 
@@ -71,19 +57,6 @@ FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::UpdateFFTProje
     kernel->SetPixel(ix, v);
     kernel->SetPixel(jx, v);
   }
-
-  //  /////////////////////////////////////////////////////////////////////////////////////////////
-  //  // DEBUG
-  //  typedef itk::ImageRegionIteratorWithIndex<FFTInputImageType> InverseIteratorType2;
-  //  InverseIteratorType2 itiK2(kernel, kernel->GetLargestPossibleRegion());
-  //  std::ofstream out0("kernel_real.csv");
-  //  itiK2.GoToBegin();
-  //  for(; !itiK2.IsAtEnd(); ++itiK2)
-  //  {
-  //    out0 << itiK2.Get() << std::endl;
-  //  }
-  //  out0.close();
-  //  // DEBUG
 
   // FFT kernel
   typedef itk::RealToHalfHermitianForwardFFTImageFilter<FFTInputImageType, FFTOutputImageType> FFTType;
@@ -157,17 +130,6 @@ FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::UpdateFFTProje
     itK.Set(itK.Get() * TFFTPrecision(0.));
   }
 
-  //  /////////////////////////////////////////////////////////////////////////////////////////////
-  //  // DEBUG
-  //  std::ofstream out1("kernel_fourier.csv");
-  //  itK.GoToBegin();
-  //  for(; !itK.IsAtEnd(); ++itK)
-  //  {
-  //    out1 << itK.Get().real() << " " << itK.Get().imag() << std::endl;
-  //  }
-  //  out1.close();
-  //  // DEBUG
-
   // iFFT kernel
   typedef itk::HalfHermitianToRealInverseFFTImageFilter<FFTOutputImageType, FFTInputImageType> IFFTType;
   typename IFFTType::Pointer                                                                   ifftK = IFFTType::New();
@@ -206,17 +168,6 @@ FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::UpdateFFTProje
   }
   finterp *= aprecision;
 
-  //  /////////////////////////////////////////////////////////////////////////////////////////////
-  //  // DEBUG
-  //  std::ofstream out9("kernel_window_real.csv");
-  //  itiK.GoToBegin();
-  //  for(; !itiK.IsAtEnd(); ++itiK)
-  //  {
-  //    out9 << itiK.Get() << std::endl;
-  //  }
-  //  out9.close();
-  //  // DEBUG
-
   // square kernel and multiply with finterp
   itiK.GoToBegin();
   for (; !itiK.IsAtEnd(); ++itiK)
@@ -224,35 +175,12 @@ FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::UpdateFFTProje
     itiK.Set(itiK.Get() * itiK.Get() * finterp);
   }
 
-  //  /////////////////////////////////////////////////////////////////////////////////////////////
-  //  // DEBUG
-  //  std::ofstream out2("kernel_sq_real.csv");
-  //  itiK.GoToBegin();
-  //  for(; !itiK.IsAtEnd(); ++itiK)
-  //  {
-  //    out2 << itiK.Get() << std::endl;
-  //  }
-  //  out2.close();
-  //  // DEBUG
-
   // FFT kernel
   typename FFTType::Pointer fftK2 = FFTType::New();
   fftK2->SetInput(ifftK->GetOutput());
   fftK2->SetNumberOfWorkUnits(this->GetNumberOfWorkUnits());
   fftK2->Update();
   this->m_KernelFFT = fftK2->GetOutput();
-
-  //  /////////////////////////////////////////////////////////////////////////////////////////////
-  //  // DEBUG
-  //  std::ofstream out3("kernel_sq_fourier.csv");
-  //  IteratorType itK2(this->m_KernelFFT, this->m_KernelFFT->GetLargestPossibleRegion() );
-  //  itK2.GoToBegin();
-  //  for(; !itK2.IsAtEnd(); ++itK2)
-  //  {
-  //    out3 << itK2.Get().real() << " " << itK2.Get().imag() << std::endl;
-  //  }
-  //  out3.close();
-  //  // DEBUG
 
   // Replicate and window if required
   if (this->GetHannCutFrequencyY() > 0.)
@@ -293,18 +221,6 @@ FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::UpdateFFTProje
   }
 
   this->m_KernelFFT->DisconnectPipeline();
-
-  //  //////////////////////////////////////////////////////////////////////////////////////////////
-  //  // DEBUG
-  //  std::ofstream out4("finterp.csv");
-  //  out4 << finterp << std::endl;
-  //  out4 << ratiogcg2 << std::endl;
-  //  out4.close();
-  //  std::cerr << std::endl << "finterp = " << finterp << std::endl;
-  //  std::cerr << "ratiogcg2 = " << ratiogcg2 << std::endl;
-  //  std::cerr << "Aborting here since filters were alrady written out." << std::endl;
-  //  exit(9);
-  //  // DEBUG
 }
 
 } // namespace pct
