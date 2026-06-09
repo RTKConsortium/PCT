@@ -20,8 +20,8 @@ itk_add_test(NAME pctHoleFillingImageFilterTest COMMAND PCTTestDriver pctHoleFil
 #-----------------------------------------------------------------------------
 # Python tests
 if(ITK_WRAP_PYTHON)
-  itk_python_add_test(NAME pctPythonWrappingInstantiationTest COMMAND pctPythonWrappingInstantiationTest.py)
-  itk_python_add_test(NAME pctOutputArgumentWrappingTest COMMAND pctOutputArgumentWrapping.py)
+  itk_python_add_test(NAME pctPythonWrappingInstantiationTest COMMAND pct_python_wrapping_instantiation_test.py)
+  itk_python_add_test(NAME pctOutputArgumentWrappingTest COMMAND pct_output_argument_wrapping_test.py)
 endif()
 
 #-----------------------------------------------------------------------------
