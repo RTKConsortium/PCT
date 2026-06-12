@@ -23,10 +23,6 @@ namespace pct
 {
 
 template <class TInputImage, class TOutputImage, class TFFTPrecision>
-FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::FFTVarianceImageFilter()
-{}
-
-template <class TInputImage, class TOutputImage, class TFFTPrecision>
 void
 FFTVarianceImageFilter<TInputImage, TOutputImage, TFFTPrecision>::UpdateFFTProjectionsConvolutionKernel(
   const SizeType s)
