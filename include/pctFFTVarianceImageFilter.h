@@ -72,7 +72,7 @@ public:
   itkOverrideGetNameOfClassMacro(FFTVarianceImageFilter);
 
 protected:
-  FFTVarianceImageFilter();
+  FFTVarianceImageFilter() = default;
   ~FFTVarianceImageFilter() {}
 
   /** Creates and return a pointer to one line of the variance kernel in Fourier space.
