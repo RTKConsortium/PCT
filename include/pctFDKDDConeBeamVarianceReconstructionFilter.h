@@ -9,7 +9,8 @@
 #include <itkTimeProbe.h>
 
 /** \class FDKDDConeBeamVarianceReconstructionFilter
- * TODO
+ * Implements variance reconstruction with distance-driven filtered backprojection reconstruction
+ * (doi:10.1118/1.4789589) from variance projections.
  *
  * \author Jannis Dickmann
  *
