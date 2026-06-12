@@ -7,19 +7,15 @@
 
 namespace pct
 {
-/**
- *
- * A simple iterative hole filling filter. A pixel equal to the HolePixel is
- * considered a hole. On each iteration, every hole pixel is replaced by the
- * average of its non-hole neighbors in a radius=1 neighborhood (center
- * excluded). Iterations repeat until no hole pixels remain or MaxIterations
- * is reached or an iteration makes no progress.
- *
- * This filter reproduces the behavior of the project's SmallHoleFiller
- * helper. For the original reference see:
- * https://www.insight-journal.org/browse/publication/835/
- */
 
+/** \class HoleFillingImageFilter
+ * \ingroup PCT
+ * A simple iterative hole filling filter. A pixel equal to the HolePixel is considered a hole. On each iteration, every
+ * hole pixel is replaced by the average of its non-hole neighbors in a radius=1 neighborhood (center excluded).
+ * Iterations repeat until no hole pixels remain or MaxIterations is reached or an iteration makes no progress. This
+ * filter reproduces the behavior of the project's SmallHoleFiller helper. For the original reference see:
+ * https://www.insight-journal.org/browse/publication/835/.
+ */
 template <typename TInputImage, typename TOutputImage = TInputImage>
 class HoleFillingImageFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
 {

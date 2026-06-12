@@ -222,7 +222,7 @@ SchulteMLPFunction ::Evaluate(const double u, double & x, double & y, double & d
   {
     // This version here is better than the previously implemented one
     // because it avoids inverting the matrices Sigma.
-    // See comment in [Krah 2018, PMB]
+    // See comment in [Krah, PMB, 2018]
     itk::Matrix<double, 2, 2> sum1(R1_Inv * m_Sigma2 + m_Sigma1 * m_R1T);
     InverseMatrix(sum1);
     itk::Matrix<double, 2, 2> sum2(m_R1 * m_Sigma1 + m_Sigma2 * R1T_Inv);

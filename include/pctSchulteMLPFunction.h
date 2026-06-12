@@ -59,7 +59,10 @@ static const double a4 = -2.215321e-08 * aunit / (CLHEP::cm3 * CLHEP::cm);
 static const double a5 = 5.398933e-10 * aunit / (CLHEP::cm3 * CLHEP::cm2);
 #endif
 
-// [Schulte, Med Phys, 2008], constant part of equations 7, 8 and 9
+/** \class ConstantPartOfIntegrals
+ * \ingroup PCT Functions
+ * Constant part of Eq. 7, 8 and 9 [Schulte, Med Phys, 2008].
+ */
 class ConstantPartOfIntegrals
 {
 public:
@@ -82,7 +85,10 @@ public:
   }
 };
 
-// [Schulte, Med Phys, 2008], integral for sigma in equation 8
+/** \class IntegralForSigmaSqTheta
+ * \ingroup PCT Functions
+ * Integral for sigma in equation 8 [Schulte, Med Phys, 2008].
+ */
 class IntegralForSigmaSqTheta
 {
 public:
@@ -115,7 +121,10 @@ public:
   }
 };
 
-// [Schulte, Med Phys, 2008], integral for sigma in equation 9
+/** \class IntegralForSigmaSqTTheta
+ * \ingroup PCT Functions
+ * Integral for sigma in equation 9 [Schulte, Med Phys, 2008].
+ */
 class IntegralForSigmaSqTTheta
 {
 public:
@@ -148,7 +157,10 @@ public:
   }
 };
 
-// [Schulte, Med Phys, 2008], integral for sigma in equation 7
+/** \class IntegralForSigmaSqT
+ * \ingroup PCT Functions
+ * Integral for sigma in equation 7 [Schulte, Med Phys, 2008].
+ */
 class IntegralForSigmaSqT
 {
 public:
@@ -186,9 +198,8 @@ public:
 } // end namespace Functor
 
 /** \class SchulteMLPFunction
- * \brief See [Schulte, Med Phys, 2008].
- *
- * \ingroup Functions PCT
+ * \ingroup PCT Functions
+ * Maximum-likelihood proton path for proton CT [Schulte, Med Phys, 2008].
  */
 class PCT_EXPORT SchulteMLPFunction : public MostLikelyPathFunction<double>
 {

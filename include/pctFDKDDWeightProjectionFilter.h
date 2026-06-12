@@ -4,23 +4,20 @@
 #include <itkInPlaceImageFilter.h>
 #include <rtkThreeDCircularProjectionGeometry.h>
 
+namespace pct
+{
+
 /** \class FDKDDWeightProjectionFilter
- *  \ingroup PCT
- * \brief Weighting of projections to correct for the divergence in
- * filtered backprojection reconstruction algorithms.
+ * \ingroup PCT
+ * \brief Weighting of projections to correct for the divergence in filtered backprojection reconstruction algorithms.
  * The weighting comprises:
  * - the 2D weighting of the FDK algorithm [Feldkamp, 1984],
  * - the correction of the ramp factor for divergent full scan,
  * - the angular weighting for the final 3D integral of FDK.
- * Note that SourceToDetectorDistance, SourceToDetectorIsocenter
- * SouceOffsets and ProjectionOffsets are accounted for on a per
- * projection basis but InPlaneRotation and OutOfPlaneRotation are not
- * accounted for.
+ * Note that SourceToDetectorDistance, SourceToDetectorIsocenter, SouceOffsets and ProjectionOffsets are accounted for
+ * on a per projection basis but InPlaneRotation and OutOfPlaneRotation are not accounted for.
  * \author Simon Rit
  */
-namespace pct
-{
-
 template <class TInputImage, class TOutputImage = TInputImage>
 class ITK_TEMPLATE_EXPORT FDKDDWeightProjectionFilter : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
 {

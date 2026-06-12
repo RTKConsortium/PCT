@@ -8,14 +8,13 @@
 #include <itkExtractImageFilter.h>
 #include <itkTimeProbe.h>
 
-/** \class FDKDDConeBeamReconstructionFilter
- * TODO
- *  \ingroup PCT
- * \author Simon Rit
- */
 namespace pct
 {
 
+/** \class FDKDDConeBeamVarianceReconstructionFilter
+ * \ingroup PCT
+ * Implements distance-driven FDK reconstruction [Rit, Med Phys, 2013].
+ */
 template <class TInputImage, class TOutputImage = TInputImage, class TFFTPrecision = double>
 class ITK_TEMPLATE_EXPORT FDKDDConeBeamReconstructionFilter : public itk::ImageToImageFilter<TInputImage, TOutputImage>
 {
