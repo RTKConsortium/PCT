@@ -5,8 +5,11 @@
 #include <rtkThreeDCircularProjectionGeometry.h>
 #include "rtkConfiguration.h"
 
+namespace pct
+{
+
 /** \class DDParkerShortScanImageFilter
- *  \ingroup PCT
+ * \ingroup PCT
  * Weighting of image projections to handle off-centered panels
  * in tomography reconstruction. Based on [Wang, Med Phys, 2002].
  *
@@ -16,9 +19,6 @@
  *
  * \author Simon Rit
  */
-namespace pct
-{
-
 template <class TInputImage, class TOutputImage = TInputImage>
 class ITK_TEMPLATE_EXPORT DDParkerShortScanImageFilter : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
 {

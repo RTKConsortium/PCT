@@ -66,7 +66,7 @@ def build_parser():
     )
     parser.add_argument(
         "--mlptrackeruncert",
-        help="Consider tracker uncertainties in MLP [Krah 2018, PMB]",
+        help="Consider tracker uncertainties in MLP [Krah, PMB, 2018]",
         action="store_true",
         default=False,
     )
