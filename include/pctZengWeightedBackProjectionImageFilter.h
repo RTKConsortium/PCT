@@ -8,7 +8,7 @@
 /** \class ZengWeightedBackProjectionImageFilter
  * \ingroup PCT
  * From an input 4D image where the 4th dimension is the angle, computes
- * the weighted backprojection for DBP described in [Zeng, Med Phys, 2007].
+ * the weighted backprojection for DBP described in [Zeng 2007, Medical Physics].
  *
  * \author Simon Rit
  */

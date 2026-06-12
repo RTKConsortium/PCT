@@ -59,7 +59,10 @@ static const std::vector<double> bm_4 = { 5.401888e-06, -7.991486e-08, 3.262799e
 static const std::vector<double> bm_5 = { 4.307328e-06, 9.657939e-08,  -3.338966e-09,
                                           6.069645e-11, -4.427153e-13, 1.201749e-15 };
 
-// ADD COMMENT HERE
+/** \class FactorsABCD
+ * \ingroup PCT
+ * Class which calculates factor A, B, C, D as in Eq. 19 in [Krah 2019, PMB].
+ */
 class FactorsABCD
 {
 public:
@@ -108,6 +111,10 @@ public:
   }
 };
 
+/** \class CoefficientsC
+ * \ingroup PCT
+ * Class which calculates factors c0 and c1 as in Eq. 15 in [Krah 2019, PMB].
+ */
 class CoefficientsC
 {
 public:
@@ -131,10 +138,9 @@ public:
 
 } // end namespace Functor
 
-/** \class SchulteMLPFunction
- * \brief See [Schulte, Med Phys, 2008].
- *
- * \ingroup Functions PCT
+/** \class PolynomialMLPFunction
+ * \ingroup PCT Functions
+ * Polynomial calculation of the most likely path [Krah 2019, PMB].
  */
 class PCT_EXPORT PolynomialMLPFunction : public MostLikelyPathFunction<double>
 {

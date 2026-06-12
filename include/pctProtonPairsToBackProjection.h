@@ -12,6 +12,10 @@
 namespace pct
 {
 
+/** \class ProtonPairsToBackProjection
+ * \ingroup PCT
+ * Backprojection of the proton pairs according to the MLP before applying the MLP.
+ */
 template <class TInputImage, class TOutputImage>
 class ITK_TEMPLATE_EXPORT ProtonPairsToBackProjection : public itk::InPlaceImageFilter<TInputImage, TOutputImage>
 {
