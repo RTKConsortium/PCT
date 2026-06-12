@@ -7,20 +7,19 @@
 namespace pct
 {
 
+namespace Functor
+{
+
 /** \class BetheBlochProtonStoppingPower
  * \ingroup PCT
- * \brief Proton stopping power according to the Bethe-Bloch equation
+ * \brief Proton stopping power according to the Bethe-Bloch equation.
  * The function corresponds to:
- *  - F in [Li, MIC-NSS, 2003].
- *  - S in [Schulte, Med Phys, 2005].
+ *  - F in [Li, MIC-NSS, 2003];
+ *  - S in [Schulte, Med Phys, 2005];
  *  - S in [Penfold, Med Phys, 2009].
  * Note that they have all an error. r must be squared in the equation.
  * The CLHEP system of units is used.
  */
-
-namespace Functor
-{
-
 template <class TInput, class TOutput>
 class BetheBlochProtonStoppingPower
 {
@@ -49,7 +48,7 @@ public:
 
 /** \class IntegratedBetheBlochProtonStoppingPowerInverse
  * \ingroup PCT
- * \brief Numerical for integral used in proton CT.
+ * \brief Numerical approximation of integrals used in proton CT.
  */
 template <class TInput, class TOutput>
 class IntegratedBetheBlochProtonStoppingPowerInverse

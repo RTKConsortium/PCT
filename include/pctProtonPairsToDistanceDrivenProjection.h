@@ -11,6 +11,10 @@
 namespace pct
 {
 
+/** \class ProtonPairsToDistanceDrivenProjection
+ * \ingroup PCT
+ * Conversion of the proton pairs to distance-driven projections [Rit 2013, Medical Physics].
+ */
 template <class TInputImage, class TOutputImage>
 class ITK_TEMPLATE_EXPORT ProtonPairsToDistanceDrivenProjection
   : public itk::InPlaceImageFilter<TInputImage, TOutputImage>

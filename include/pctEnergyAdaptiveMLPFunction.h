@@ -36,7 +36,10 @@ GetLinearCoefficients(itk::Vector<double, 2> & ab, const double E_in, const doub
   ab[0] = (inverseScatteringPower_out - inverseScatteringPower_in) / deltaU;
 }
 
-// class which calculates factor A, B, C, D as in eq. 19 in [Krah 2019, PMB]
+/** \class FactorsABCD
+ * \ingroup PCT
+ * Class which calculates factor A, B, C, D as in Eq. 7-10 in [Krah 2021, PMB].
+ */
 class FactorsABCD
 {
 public:
@@ -73,6 +76,10 @@ public:
   }
 };
 
+/** \class CoefficientsC
+ * \ingroup PCT
+ * Class which calculates factors c0 and c1 as in Eq. 15 in [Krah 2019, PMB].
+ */
 class CoefficientsC
 {
 public:
@@ -97,8 +104,8 @@ public:
 } // end namespace Functor
 
 /** \class EnergyAdaptiveMLPFunction
- * \ingroup PCT
- * \ingroup Functions
+ * \ingroup PCT Functions
+ * Energy-adaptive calculation of the most likely path [Krah 2021, PMB].
  */
 class PCT_EXPORT EnergyAdaptiveMLPFunction : public MostLikelyPathFunction<double>
 {

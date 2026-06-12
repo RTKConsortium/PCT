@@ -6,15 +6,14 @@
 namespace pct
 {
 
-/** \class EnergyStragglingFunctor
- *  \ingroup PCT
- * \brief Function to compute energy straggling
- * This is based on a fit of a pencil beam of 200 MeV protons in water
- */
-
 namespace Functor
 {
 
+/** \class EnergyStragglingFunctor
+ * \ingroup PCT
+ * \brief Function to compute energy straggling
+ * This is based on a fit of a pencil beam of 200 MeV protons in water
+ */
 template <class TInput, class TOutput>
 class EnergyStragglingFunctor
 {

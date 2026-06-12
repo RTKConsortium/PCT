@@ -7,6 +7,10 @@
 namespace pct
 {
 
+/** \class FDKDDBackProjectionImageFilter
+ * \ingroup PCT
+ * Distance-dirven FDK back projection for proton CT [Rit 2013, Medical Physics].
+ */
 template <class TInputImage, class TOutputImage>
 class ITK_TEMPLATE_EXPORT FDKDDBackProjectionImageFilter
   : public rtk::BackProjectionImageFilter<TInputImage, TOutputImage>
