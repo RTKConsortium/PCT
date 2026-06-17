@@ -100,3 +100,24 @@ def test_lomalinda_application(
     reference_lomalinda = itk.array_from_image(itk.imread(baseline_lomalinda_mhd))
     assert np.array_equal(test_lomalinda, reference_lomalinda)
     return output0000
+
+
+def test_pctsdpweplfit_application(tmp_path):
+    output = tmp_path / "weplfit"
+    pct.pctsdpweplfit(
+        f"-o {output} --wepl-samples 20 --max-wepl 200 -n 100 -d 350 -e 200 --seed 1234 -v"
+    )
+
+    with open(output / "fit.json", encoding="utf-8") as f:
+        tof_to_wepl_fit = np.array(json.load(f))
+        reference = np.array(
+            [
+                6.442623414633248e-10,
+                -2.0290342663978655e-07,
+                3.156008095976987e-05,
+                0.0008089935575671699,
+                0.8860555888373386,
+                -0.10785121476961806,
+            ]
+        )
+        assert np.allclose(tof_to_wepl_fit, reference)
