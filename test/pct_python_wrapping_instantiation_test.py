@@ -21,6 +21,7 @@ def test_python_wrapping_instantiation():
 
     pct.SchulteMLPFunction.New()
     pct.PolynomialMLPFunction.New()
+    pct.EnergyAdaptiveMLPFunction.New()
 
     for t1 in [itk.F, itk.D]:
         for t2 in [itk.F, itk.D]:
