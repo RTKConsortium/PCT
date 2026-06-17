@@ -19,9 +19,7 @@ FDKDDConeBeamVarianceReconstructionFilter<TInputImage, TOutputImage, TFFTPrecisi
   this->m_BackProjectionFilter->SetProjectionStack(this->m_RampFilter->GetOutput());
 
   // Default parameters
-#if ITK_VERSION_MAJOR >= 4
   this->m_ExtractFilter->SetDirectionCollapseToSubmatrix();
-#endif
   this->m_WeightFilter->InPlaceOn();
   this->m_BackProjectionFilter->InPlaceOn();
   this->m_BackProjectionFilter->SetTranspose(true);
