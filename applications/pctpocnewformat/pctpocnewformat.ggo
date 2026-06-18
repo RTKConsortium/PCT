@@ -1,0 +1,4 @@
+package "pct"
+version "Test new format"
+
+option "verbose"  v "Verbose execution"                                         flag      off
