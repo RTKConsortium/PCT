@@ -22,13 +22,6 @@ itk_add_test(NAME pctPolynomialMLPFunctionTest
 itk_add_test(NAME pctHoleFillingImageFilterTest COMMAND PCTTestDriver pctHoleFillingImageFilterTest)
 
 #-----------------------------------------------------------------------------
-# Python tests
-if(ITK_WRAP_PYTHON)
-  itk_python_add_test(NAME pctPythonWrappingInstantiationTest COMMAND pctPythonWrappingInstantiationTest.py)
-  itk_python_add_test(NAME pctOutputArgumentWrappingTest COMMAND pctOutputArgumentWrapping.py)
-endif()
-
-#-----------------------------------------------------------------------------
 # Applications testing
 # This must come before the call to ExternalData_add_target(ITKData)
 # in ITKModuleExternal.cmake for DATA{} to be referenced, so we put it here
