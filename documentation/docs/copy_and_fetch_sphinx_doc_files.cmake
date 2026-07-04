@@ -4,6 +4,7 @@ list(
   DOCSRCFILES
   "conf.py"
   "index.md"
+  "CodeContribution.md"
 )
 
 # List of subdirectories to be copied to PCT_DOC_OUTPUT_DIR
