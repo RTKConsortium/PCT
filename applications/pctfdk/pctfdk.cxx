@@ -1,4 +1,5 @@
 #include "pctfdk_ggo.h"
+#include "pctGgoFunctions.h"
 #include "rtkGgoFunctions.h"
 
 #include "rtkThreeDCircularProjectionGeometryXMLFile.h"
@@ -7,7 +8,6 @@
 #include "pctFDKDDConeBeamReconstructionFilter.h"
 #include "pctFDKDDConeBeamVarianceReconstructionFilter.h"
 
-#include <itkRegularExpressionSeriesFileNames.h>
 #include <itkImageFileWriter.h>
 
 int
@@ -23,26 +23,10 @@ main(int argc, char * argv[])
   itk::MultiThreaderBase::SetGlobalMaximumNumberOfThreads(
     std::min<double>(8, itk::MultiThreaderBase::GetGlobalMaximumNumberOfThreads()));
 
-  // Generate file names
-  itk::RegularExpressionSeriesFileNames::Pointer names = itk::RegularExpressionSeriesFileNames::New();
-  names->SetDirectory(args_info.path_arg);
-  names->SetNumericSort(false);
-  names->SetRegularExpression(args_info.regexp_arg);
-  names->SetSubMatch(0);
-
-  if (args_info.verbose_flag)
-    std::cout << "Regular expression matches " << names->GetFileNames().size() << " file(s)..." << std::endl;
-
   // Projections reader
   using ProjectionImageType = itk::Image<OutputPixelType, Dimension + 1>;
   auto reader = rtk::ProjectionsReader<ProjectionImageType>::New();
-  reader->SetFileNames(names->GetFileNames());
-  if (args_info.wpc_given)
-  {
-    std::vector<double> coeffs;
-    coeffs.assign(args_info.wpc_arg, args_info.wpc_arg + args_info.wpc_given);
-    reader->SetWaterPrecorrectionCoefficients(coeffs);
-  }
+  pct::SetProjectionsReaderFromGgo<rtk::ProjectionsReader<ProjectionImageType>, args_info_pctfdk>(reader, args_info);
 
   // Geometry
   if (args_info.verbose_flag)
