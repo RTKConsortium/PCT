@@ -1,4 +1,4 @@
-wrap_ggo(pctfdk_GGO_C pctfdk.ggo)
+wrap_ggo(pctfdk_GGO_C pctfdk.ggo ../pctinputprojections_section.ggo)
 add_executable(
   pctfdk
   pctfdk.cxx
