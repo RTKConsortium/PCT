@@ -88,7 +88,7 @@ def process(args_info: argparse.Namespace):
         def verbose(message):
             pass
 
-    measurement_column = "PreGlobalTime" if args_info.store_time else "KineticEnergy"
+    measurement_column = "LocalTime" if args_info.store_time else "KineticEnergy"
 
     def load_tree_as_df(root_file, tree_name):
 
