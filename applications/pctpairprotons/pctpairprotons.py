@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import argparse
 import json
+import re
 import itk
 from itk import PCT as pct
 import numpy as np
@@ -242,7 +243,7 @@ def process(args_info: argparse.Namespace):
 
         df_itk = itk.GetImageFromArray(ps_np, ttype=ImageType)
 
-        output_file = args_info.output.replace(".", f"{r:04d}.")
+        output_file = re.sub("\\.mhd$", f"{r:04d}.mhd", args_info.output)
         itk.imwrite(df_itk, output_file)
         verbose(f"Wrote file {output_file}.")
 
