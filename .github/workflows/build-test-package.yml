@@ -51,7 +51,7 @@ jobs:
         echo "Installing wheel: $wheel"
         pip install $wheel
 
-        pip install pytest uproot opengate hepunits
+        pip install pytest pytest-xdist uproot opengate hepunits
 
         # Force the installation of Geant4 data, required by opengate
         opengate_info
@@ -60,7 +60,7 @@ jobs:
         # SWIG < 4.4 triggers the Py_LIMITED_API "builtin type swig…" warning when
         # Python runs with -Walways; pytest enables that behavior, so we ignore it.
         test_log=$(mktemp)
-        pytest -vv -s -W error -W "ignore:builtin type swig" 2>&1 | tee "$test_log"
+        pytest -vv -s -W error -W "ignore:builtin type swig" -n $(nproc) 2>&1 | tee "$test_log"
         matches=$(grep -Ei "warning|exception|redefin(ed|ition)?" "$test_log" || true)
         if [ -n "$matches" ]; then
           echo "Unexpected output found:"

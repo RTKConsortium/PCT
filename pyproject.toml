@@ -48,6 +48,8 @@ pctweplfit = "itk.pctweplfit:main"
 pctlomalinda = "itk.pctlomalinda:main"
 pctaddnoise = "itk.pctaddnoise:main"
 pctdoublelut = "itk.pctdoublelut:main"
+pctstoppingpower = "itk.pctstoppingpower:main"
+pctgradientdescent = "itk.pctgradientdescent:main"
 
 [project.urls]
 Download = "https://github.com/RTKConsortium/PCT"

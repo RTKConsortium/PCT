@@ -181,7 +181,7 @@ def process(args_info: argparse.Namespace):
         )
 
     add_gaussian_noise(data, "KineticEnergy", rng, args_info.noise_energy, clamp=0.0)
-    add_gaussian_noise(data, "LocalTime", rng, args_info.noise_time)
+    add_gaussian_noise(data, "GlobalTime", rng, args_info.noise_time)
 
     if args_info.verbose:
         print("Writing output ROOT file…")

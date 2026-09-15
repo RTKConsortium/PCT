@@ -203,7 +203,7 @@ def process(args_info: argparse.Namespace):
         def verbose(message):
             pass
 
-    measurement_column = "PreGlobalTime" if args_info.store_time else "KineticEnergy"
+    measurement_column = "GlobalTime" if args_info.store_time else "KineticEnergy"
 
     def load_tree_as_df(root_file, tree_name):
 
@@ -314,7 +314,7 @@ def process(args_info: argparse.Namespace):
         with open(args_info.fit, encoding="utf-8") as f:
             p = json.load(f)
         if args_info.fit_kind == "tof":
-            xs = pairs["PreGlobalTime_out"] - pairs["PreGlobalTime_in"]
+            xs = pairs["GlobalTime_out"] - pairs["GlobalTime_in"]
         elif args_info.fit_kind == "energy":
             xs = pairs["KineticEnergy_in"] - pairs["KineticEnergy_out"]
         else:

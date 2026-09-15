@@ -1,10 +1,13 @@
 import json
+import os
 import pytest
-import itk
+import filecmp
 import urllib.request
 import numpy as np
 import uproot
+import itk
 from itk import PCT as pct
+from itk import RTK as rtk
 
 
 def download_file_fixture(file_key, filename):
@@ -216,3 +219,40 @@ def test_addnoise_application(tmp_path, phasespacein_root, baseline_addnoise):
     root_test = uproot.open(output)[tree].arrays(library="np")
     root_baseline = uproot.open(baseline_addnoise)[tree].arrays(library="np")
     assert np.array_equal(root_test, root_baseline)
+
+
+baseline_stoppingpower = download_file_fixture(
+    "6a9536bb44a3e1c97c3b9693", "baseline_stoppingpower.txt"
+)
+
+
+def test_stoppingpower_application(tmp_path, baseline_stoppingpower):
+    output = tmp_path / "sp_test.txt"
+    pct.pctstoppingpower(f"-o {output}")
+    assert filecmp.cmp(output, baseline_stoppingpower)
+
+
+def test_gradientdescent_application(
+    tmp_path, baseline_pairs_mhd, baseline_pairs_raw, baseline_stoppingpower
+):
+    output = tmp_path / "gradient_descent"
+
+    geometry = tmp_path / "geometry.xml"
+    rtk.rtksimulatedgeometry(nproj=1, output=geometry)
+
+    size = [110, 3, 110]
+    size_arg = ",".join(map(str, size))
+
+    number_of_iterations = 3
+
+    pct.pctgradientdescent(
+        f'-p {os.path.dirname(baseline_pairs_mhd)} -r "pairs.*\\.mhd" -o {output} --sp-fit {baseline_stoppingpower} -g {geometry} -n {number_of_iterations} -q energy --optimizer Adagrad --size {size_arg}'
+    )
+
+    # Roughly check that the output makes sense
+    img_itk = itk.imread(
+        os.path.join(output, f"iteration_{number_of_iterations}_subset_1.mhd")
+    )
+    img = itk.GetArrayFromImage(img_itk)
+    assert np.all(img >= 0.0)
+    assert img.shape == tuple(size)
