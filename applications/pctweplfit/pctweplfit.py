@@ -493,13 +493,6 @@ def build_parser():
         action="store_true",
     )
     parser.add_argument("--seed", help="Seed for random number generator", type=int)
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        help="Verbose execution",
-        action="store_true",
-    )
-
     return parser
 
 

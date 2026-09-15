@@ -58,9 +58,6 @@ def build_parser():
         type=float,
     )
     parser.add_argument("--seed", help="Random seed", type=int)
-    parser.add_argument(
-        "--verbose", "-v", help="Verbose execution", default=False, action="store_true"
-    )
     return parser
 
 

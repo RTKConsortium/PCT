@@ -55,9 +55,6 @@ def build_parser():
         action="store_true",
     )
     parser.add_argument(
-        "--verbose", "-v", help="Verbose execution", default=False, action="store_true"
-    )
-    parser.add_argument(
         "--psin", help="Name of tree in input phase space", default="PhaseSpace"
     )
     parser.add_argument(
