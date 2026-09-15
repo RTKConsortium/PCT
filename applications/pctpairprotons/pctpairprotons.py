@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import json
 import itk
 from itk import PCT as pct
 import numpy as np
@@ -311,8 +310,7 @@ def process(args_info: argparse.Namespace):
 
     if args_info.fit is not None:  # Single LUT
         verbose("Converting energy loss or TOF to WEPL using single LUT technique…")
-        with open(args_info.fit, encoding="utf-8") as f:
-            p = json.load(f)
+        p = np.loadtxt(f)
         if args_info.fit_kind == "tof":
             xs = pairs["PreGlobalTime_out"] - pairs["PreGlobalTime_in"]
         elif args_info.fit_kind == "energy":

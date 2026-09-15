@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import json
 import sys
 from multiprocessing import Pool, Manager
 import os

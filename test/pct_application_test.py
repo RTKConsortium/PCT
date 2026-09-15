@@ -1,4 +1,3 @@
-import json
 import pytest
 import itk
 import urllib.request
@@ -53,28 +52,26 @@ def test_weplfit_application(tmp_path):
         f"-o {output} --path-type phantom_length -d 220 -e 200 -l 220 --seed 1234 -v"
     )
 
-    with open(output / "tof_to_wepl_fit_deg3.json", encoding="utf-8") as f:
-        tof_to_wepl_fit = np.array(json.load(f))
-        reference = np.array(
-            [
-                8507.18830081492,
-                -38342.09213481464,
-                58268.25904916112,
-                -29633.875319259325,
-            ]
-        )
-        assert np.allclose(tof_to_wepl_fit, reference)
-    with open(output / "eloss_to_wepl_fit_deg3.json", encoding="utf-8") as f:
-        eloss_to_wepl_fit = np.array(json.load(f))
-        reference = np.array(
-            [
-                -5.4569381663242e-06,
-                -0.003455118013641362,
-                2.236667157315751,
-                -0.1768424416075149,
-            ]
-        )
-        assert np.allclose(eloss_to_wepl_fit, reference)
+    tof_to_wepl_fit = np.loadtxt(output / "tof_to_wepl_fit_deg3.txt")
+    reference = np.array(
+        [
+            8507.18830081492,
+            -38342.09213481464,
+            58268.25904916112,
+            -29633.875319259325,
+        ]
+    )
+    assert np.allclose(tof_to_wepl_fit, reference)
+    eloss_to_wepl_fit = np.loadtxt(output / "eloss_to_wepl_fit_deg3.txt")
+    reference = np.array(
+        [
+            -5.4569381663242e-06,
+            -0.003455118013641362,
+            2.236667157315751,
+            -0.1768424416075149,
+        ]
+    )
+    assert np.allclose(eloss_to_wepl_fit, reference)
 
 
 def test_doublelut_application(tmp_path):

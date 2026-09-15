@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import argparse
-import json
 import sys
 from multiprocessing import Pool, Manager
 import warnings
@@ -323,10 +322,7 @@ def tof_fit(
                 plt.show()
 
         for d, p in ps.items():
-            with open(
-                f"{output}/{xlabel}_to_{ylabel}_fit_deg{d}.json", "w", encoding="utf-8"
-            ) as f:
-                json.dump(p, f)
+            np.savetxt(f"{output}/{xlabel}_to_{ylabel}_fit_deg{d}.txt", p)
 
     fit(tofs, wepls, "tof", "wepl")
     fit(elosses, wepls, "eloss", "wepl")

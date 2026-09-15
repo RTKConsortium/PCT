@@ -16,7 +16,7 @@ pctweplfit \
     -v
 ```
 
-In the resulting `output` folder, along with all intermediate results (ROOT files from the GATE simulations) will be two files `eloss_to_wepl_fit_deg3.json` and `tof_to_wepl_fit_deg3.json` that contain the coefficients of the polynomials. These files can then be passed to `pctpairprotons` with the corresponding `--fit-kind` parameters.
+In the resulting `output` folder, along with all intermediate results (ROOT files from the GATE simulations) will be two files `eloss_to_wepl_fit_deg3.txt` and `tof_to_wepl_fit_deg3.txt` that contain the coefficients of the polynomials. These files can then be passed to `pctpairprotons` with the corresponding `--fit-kind` parameters.
 
 Here is an example of a `pctpairprotons` invocations with energy-loss fit:
 ```bash
@@ -26,7 +26,7 @@ pctpairprotons \
     -o pairs.mhd \
     --plane-in -110 \
     --plane-out 110 \
-    --fit output/eloss_to_wepl_fit_deg3.json \
+    --fit output/eloss_to_wepl_fit_deg3.txt \
     --fit-kind energy
 ```
 
@@ -42,7 +42,7 @@ pctdoublelut \
     -v
 ```
 
-In the resulting `output` folder, along with all intermediate results (ROOT files from the GATE simulations) will be files named `tof_coeffs_X.json` and `vel_coeffs_X.json` that contain the coefficients of the polynomials, where `X` is the polynomial degree. These files can then be passed to `pctpairprotons` with the appropriate parameters.
+In the resulting `output` folder, along with all intermediate results (ROOT files from the GATE simulations) will be files named `tof_coeffs_X.txt` and `vel_coeffs_X.txt` that contain the coefficients of the polynomials, where `X` is the polynomial degree. These files can then be passed to `pctpairprotons` with the appropriate parameters.
 
 Here is an example of a `pctpairprotons` invocations that uses the double LUT fits with polynomials of degree 9:
 ```bash
@@ -52,8 +52,8 @@ pctpairprotons \
     -o pairs.mhd \
     --plane-in -110 \
     --plane-out 110 \
-    --lut-tof output/tof_coeffs_9.json \
-    --lut-vel output/vel_coeffs_9.json \
+    --lut-tof output/tof_coeffs_9.txt \
+    --lut-vel output/vel_coeffs_9.txt \
     --quadric 1 0 1 0 0 0 0 0 0 -10000 \
     --angle 0
 ```
