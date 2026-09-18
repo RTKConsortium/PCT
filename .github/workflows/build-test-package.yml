@@ -43,6 +43,7 @@ jobs:
         python-version: '3.11'
 
     - name: Test python wheel
+      shell: bash
       run: |
         # Find wheel for Python 3.11 dynamically
         wheel=$(find wheels -name "*cp311*manylinux_2_28_x86_64.whl" -type f | head -1)
