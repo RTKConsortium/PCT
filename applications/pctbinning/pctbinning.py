@@ -40,10 +40,6 @@ def build_parser():
         default="proton",
     )
     parser.add_argument(
-        "-v", "--verbose", help="Verbose execution", action="store_true", default=False
-    )
-
-    parser.add_argument(
         "-s", "--source", help="Source position", type=float, default=0.0
     )
     parser.add_argument(
