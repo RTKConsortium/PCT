@@ -7,7 +7,7 @@ from itk import PCT as pct
 from itk import RTK as rtk
 from opengate.contrib.protonct.protonct import protonct
 
-if len(sys.argv) < 1:
+if len(sys.argv) < 2:
     print("Usage: python Reconstruction.py <outputfolder>")
     sys.exit(1)
 

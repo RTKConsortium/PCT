@@ -14,3 +14,7 @@ def run_example(tmp_path, rel_script, *args):
     os.chdir(tmp_path)
     sys.argv = [str(script), *map(str, args)]
     runpy.run_path(str(script), run_name="__main__")
+
+
+def test_Reconstruction(tmp_path):
+    run_example(tmp_path, "Reconstruction/Reconstruction.py", "Reconstruction")
