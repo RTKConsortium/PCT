@@ -52,7 +52,8 @@ jobs:
         echo "Installing wheel: $wheel"
         pip install $wheel
 
-        pip install pytest uproot opengate hepunits
+        # Install dependencies for tests as specified in pyproject.toml
+        pip install --group test
 
         # Force the installation of Geant4 data, required by opengate
         opengate_info

@@ -38,7 +38,7 @@ dependencies = [
     "itk-rtk == 2.7.*"
 ]
 [dependency-groups]
-test = ["pytest", "uproot", "opengate"]
+test = ["pytest", "uproot", "opengate == 10.1.1"]
 
 [project.scripts]
 pctbinning = "itk.pctbinning:main"
