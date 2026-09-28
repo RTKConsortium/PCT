@@ -107,6 +107,7 @@ def tof_fit_mc(
     # Geometry
     sim.world.material = "G4_AIR"
     sim.world.size = [4 * m, 4 * m, 4 * m]
+    sim.world.set_max_step_size(1.0 * mm)
 
     # Phantom
     if wepl > 0.0:
@@ -118,7 +119,6 @@ def tof_fit_mc(
         ]
         phantom.material = material
         phantom.color = blue
-        phantom.set_max_step_size(1.0 * mm)
 
     # Beam
     source = sim.add_source("GenericSource", "mybeam")
@@ -138,7 +138,7 @@ def tof_fit_mc(
 
     # Physics list
     sim.physics_manager.physics_list_name = "G4EmStandardPhysics_option4"
-    sim.physics_manager.set_user_limits_particles(["proton"])
+    sim.physics_manager.user_limits_particles = "proton"
 
     # Phase spaces
     def add_detector(name, translation, attach_to_phantom=False):
@@ -162,12 +162,8 @@ def tof_fit_mc(
             "LocalTime",
             "PostVelocity",
         ]
-        if int(gate.utility.version("opengate").split(".")[1]) > 0:
-            F = gate.actors.filters.GateFilterBuilder()
-            phase_space.filter = F.ParticleName == "proton"
-        else:
-            particle_filter = sim.add_filter("ParticleFilter", "Filter" + name)
-            particle_filter.particle = "proton"
+        F = gate.actors.filters.GateFilterBuilder()
+        phase_space.filter = F.ParticleName == "proton"
 
     add_detector("In", [0.0 * mm, 0.0 * mm, (-wepl / 2) * mm])
     add_detector("Out", [0.0 * mm, 0.0 * mm, (wepl / 2) * mm])

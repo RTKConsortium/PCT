@@ -89,7 +89,7 @@ def tof_fit_mc(
 
     # Physics list
     sim.physics_manager.physics_list_name = "G4EmStandardPhysics_option4"
-    sim.physics_manager.set_user_limits_particles(["proton"])
+    sim.physics_manager.user_limits_particles = "proton"
 
     # Phase spaces
     def add_detector(name, translation, attach_to_phantom=False):
