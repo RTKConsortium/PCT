@@ -49,7 +49,7 @@ def test_pairprotons_application(
 def test_weplfit_application(tmp_path):
     output = tmp_path / "weplfit"
     pct.pctweplfit(
-        f"-o {output} --path-type phantom_length -d 220 -e 200 -l 220 --seed 1234 -v"
+        f"-o {output} --path-type phantom_length -d 220 -e 200 -l 220 --seed 1234"
     )
 
     tof_to_wepl_fit = np.loadtxt(output / "tof_to_wepl_fit_deg3.txt")
@@ -190,7 +190,7 @@ def test_lomalinda_application(
 ):
     output = tmp_path_factory.getbasetemp() / "lomalinda.mhd"
     pct.pctlomalinda(
-        f"-i {lomalinda_data} -o {output} --plane-in -167.2 --plane-out 167.2 --ps recoENTRY -v"
+        f"-i {lomalinda_data} -o {output} --plane-in -167.2 --plane-out 167.2 --ps recoENTRY"
     )
     output0000 = str(output).replace(".", "0000.")
     test_lomalinda = itk.array_from_image(itk.imread(output0000))
