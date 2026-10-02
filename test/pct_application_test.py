@@ -6,12 +6,14 @@ import uproot
 from itk import PCT as pct
 
 
-def download_file_fixture(file_key, filename):
+def download_file_fixture(file_hash, filename):
 
     @pytest.fixture(scope="session")
     def fixture(tmp_path_factory):
         path = tmp_path_factory.getbasetemp() / filename
-        url = f"https://data.kitware.com/api/v1/file/{file_key}/download"
+        url = (
+            f"https://data.kitware.com/api/v1/file/hashsum/sha512/{file_hash}/download"
+        )
         with urllib.request.urlopen(url) as response, open(path, "wb") as out_file:
             out_file.write(response.read())
         return path
@@ -20,13 +22,21 @@ def download_file_fixture(file_key, filename):
 
 
 phasespacein_root = download_file_fixture(
-    "69cbef28303cec2e64feb78a", "PhaseSpaceIn.root"
+    "59c88136fd0f6b00241fe0a32cde402f1843da4cbb7547a9ffdd1355f25155bb8a458dd041733448897440145e38c96a4facd0d976428a9e34561824cc34b2c6",
+    "PhaseSpaceIn.root",
 )
 phasespaceout_root = download_file_fixture(
-    "69cbef2a303cec2e64feb78d", "PhaseSpaceOut.root"
+    "19d498c6d01bffac13b5aefe2d9382474ebdad77f64eeb536e6126a2ed2c296b02794d9ad78436d45745c51eeb85142cf87340e6967664c6851853063fde3ccd",
+    "PhaseSpaceOut.root",
 )
-baseline_pairs_mhd = download_file_fixture("69cbefdf303cec2e64feb790", "pairs0000.mhd")
-baseline_pairs_raw = download_file_fixture("69cbefe0303cec2e64feb793", "pairs0000.raw")
+baseline_pairs_mhd = download_file_fixture(
+    "5d3fdb78684c0355134bd2eb572f4303cab9e2848909cb4cd15e4b0fb42f461da9961c0523afd99c34d83ae211446aaa1baf11cad48c35f00abbeb481760ac20",
+    "pairs0000.mhd",
+)
+baseline_pairs_raw = download_file_fixture(
+    "e9eafd0490c52130452485a3b5328ac853f67996f13e58c444f4bfe745dd3b6f8ec371efbcffeb0b2570e303f9602c802e9fb496dce9388141762874c6029ab9",
+    "pairs0000.raw",
+)
 
 
 def test_pairprotons_application(
@@ -114,10 +124,12 @@ def test_doublelut_application(tmp_path):
 
 
 baseline_pairs_doublelut_mhd = download_file_fixture(
-    "6a8f008e92f283f838800623", "baseline_pairs_doublelut.mhd"
+    "90944573da740e633ffd1111994b4abd9f0542ae36fd2d760010d8942216bca0a3ec95c17f7500f7e9d30e26e5565d0ac8898d1de7ef5418366d5c82eb5b78c4",
+    "baseline_pairs_doublelut.mhd",
 )
 baseline_pairs_doublelut_raw = download_file_fixture(
-    "6a8f009092f283f838800626", "baseline_pairs_doublelut.raw"
+    "07322419bfc0998ae9744222a91c6f0d5b256b5bc1a1d8e6d6f9e5f7abd7682b56b9e22d9601cb261da41205601d24beb5d1e426f66a59fcd51f376637635103",
+    "baseline_pairs_doublelut.raw",
 )
 
 
@@ -174,13 +186,16 @@ def test_pairprotons_doublelut_application(
 
 
 lomalinda_data = download_file_fixture(
-    "69e21803ed08a1c077afd077", "projection_045.root"
+    "fd8242eeddf2047f8e66ab357fb081df47e64c4e756358d3f15a9c7c7dfee32afa23a5873b5154226fa976e45c04b707356038e8474e9e4fc921332afdc43cd5",
+    "projection_045.root",
 )
 baseline_lomalinda_mhd = download_file_fixture(
-    "69e89639ed08a1c077afd0d9", "baseline_lomalinda0000.mhd"
+    "4a5439516da57ee7de5c482b2447ab43fa4eef318d97c667c6b6c8b959adaf9fc2a13ede4eb0ca3306eeedbf032bfb6f13cde79bb91b7e28676af987fe207f7f",
+    "baseline_lomalinda0000.mhd",
 )
 baseline_lomalinda_raw = download_file_fixture(
-    "69e8963eed08a1c077afd0dc", "baseline_lomalinda0000.raw"
+    "bffdb9ff142eec5586509d575dc2c66b83689473bfb36a5c57299f91a5a46c2b032588e62647f528f550c4a13ec311f569582677a084f5c3f333412f25997a41",
+    "baseline_lomalinda0000.raw",
 )
 
 
@@ -200,7 +215,8 @@ def test_lomalinda_application(
 
 
 baseline_addnoise = download_file_fixture(
-    "6a8561052688ba21262c390a", "baseline_addnoise.root"
+    "20f798d1ddc57bd3f8784791cae050f665d47cd6c7aa097aee708a8ef007573e528cf9f84d90451dbdf3fe219d9adede2ae21cb36543a6924b786ab0c7325d31",
+    "baseline_addnoise.root",
 )
 
 
