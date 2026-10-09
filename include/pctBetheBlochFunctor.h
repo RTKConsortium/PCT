@@ -33,7 +33,7 @@ public:
     if (particle != "proton")
     {
       // only implemented for protons
-      throw std::invalid_argument("Invalid particle type in Bethe Block Functor.");
+      throw std::invalid_argument("Invalid particle type \"" + particle + "\" in Bethe-Bloch functor.");
     }
     /** Physical constants */
     static const double K = 4. * CLHEP::pi * CLHEP::classic_electr_radius * CLHEP::classic_electr_radius *
