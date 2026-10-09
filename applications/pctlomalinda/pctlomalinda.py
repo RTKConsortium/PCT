@@ -33,9 +33,6 @@ def build_parser():
         "--max-run", help="Maximum run (exclusive)", default=1e6, type=int
     )
     parser.add_argument(
-        "--verbose", "-v", help="Verbose execution", default=False, action="store_true"
-    )
-    parser.add_argument(
         "--ps", help="Name of tree in input phase space", default="PhaseSpace"
     )
 
