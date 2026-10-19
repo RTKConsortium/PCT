@@ -312,7 +312,7 @@ def process(args_info: argparse.Namespace):
         verbose("Converting energy loss or TOF to WEPL using single LUT technique…")
         p = np.loadtxt(f)
         if args_info.fit_kind == "tof":
-            xs = pairs["PreGlobalTime_out"] - pairs["PreGlobalTime_in"]
+            xs = pairs["LocalTime_out"] - pairs["LocalTime_in"]
         elif args_info.fit_kind == "energy":
             xs = pairs["KineticEnergy_in"] - pairs["KineticEnergy_out"]
         else:

@@ -6,4 +6,5 @@ This section provides a collection of Python code examples to demonstrate how to
 :maxdepth: 1
 
 ./Reconstruction/README.md
+./GradientDescentReconstruction/README.md
 ```

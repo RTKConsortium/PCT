@@ -22,6 +22,7 @@ documentation/docs/installation.md
 documentation/docs/getting_started.md
 documentation/docs/pct_format.md
 documentation/docs/wepl_calibration.md
+documentation/docs/reconstruction.md
 examples/README.md
 ```
 
