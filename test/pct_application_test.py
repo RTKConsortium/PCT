@@ -111,6 +111,50 @@ def test_weplfit_application(tmp_path):
     assert np.allclose(eloss_to_wepl_fit, reference)
 
 
+baseline_pairs_singlelut_mhd = download_file_fixture(
+    "a1c4c18e9f0a058b6118441beaa929bcc67d789927e9eaec94a6c15a5920d3144abc618bc6c10d90720964cb40660cdb7c9cf1a40bee438d2d8dc37b12686698",
+    "baseline_pairs_singlelut.mhd",
+)
+baseline_pairs_singlelut_raw = download_file_fixture(
+    "6ea05c8a910b39d0e0e9ee008a2dae317b8fef7a39a5a58ff927350a9726f8b7cb6b8c8699a8cb48090762b2557428d03d306644b9fa5d57c4692ee345ca9114",
+    "baseline_pairs_singlelut.raw",
+)
+
+
+def test_pairprotons_singlelut_application(
+    tmp_path,
+    phasespacein_root,
+    phasespaceout_root,
+    baseline_pairs_singlelut_mhd,
+    baseline_pairs_singlelut_raw,
+):
+    output = tmp_path / "pairs_singlelut.mhd"
+
+    coeffs_file = tmp_path / "coeffs.txt"
+    np.savetxt(
+        coeffs_file,
+        [
+            877450.9768826312,
+            -9320632.166647742,
+            42346598.21856138,
+            -106686595.75643599,
+            160995626.5121132,
+            -145550126.78808653,
+            73009616.38621964,
+            -15679503.98234496,
+        ],
+    )
+
+    pct.pctpairprotons(
+        f"-i {phasespacein_root} -j {phasespaceout_root} -o {output} --plane-in -110 --plane-out 110 --psin PhaseSpaceIn --psout PhaseSpaceOut --fit {coeffs_file} --fit-kind tof --quadric 1 0 1 0 0 0 0 0 0 -10000 --angle 0"
+    )
+
+    output0000 = tmp_path / "pairs_singlelut0000.mhd"
+    pairs_test = itk.array_from_image(itk.imread(output0000))
+    pairs_baseline = itk.array_from_image(itk.imread(baseline_pairs_singlelut_mhd))
+    assert np.array_equal(pairs_test, pairs_baseline)
+
+
 def test_doublelut_application(tmp_path):
     output = tmp_path / "doublelut"
     pct.pctdoublelut(f"-o {output} -n 1000 --wepl-samples 10 -e 200 --seed 1234")
